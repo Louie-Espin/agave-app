@@ -1,70 +1,11 @@
-import { Box, styled } from '@mui/material';
-import SideBar from "components/NavBar/SideBar";
-import Head from 'next/head';
-import BottomBar from "components/NavBar/BottomBar";
-import {Build, ChatBubble, Home, Person} from "@mui/icons-material";
 
-export const AgaveNavigations: AgaveNav[] = [
-    { key: 1, title: 'Home', NavIcon: Home, href: '/' },
-    { key: 2, title: 'Request', NavIcon: Build, href: '/#' },
-    { key: 3, title: 'Chat', NavIcon: ChatBubble, href: '/#' },
-    { key: 4, title: 'Account', NavIcon: Person, href: '/#' },
-]
 
-export interface AgaveNav {
-    key: number,
-    title: string,
-    NavIcon: any,
-    href: string
-}
+const HomePage = ({ children }) => {
+    const title = 'Agave Communications - Home';
 
-const AppContainer = styled(Box)(({theme}) => ({
-    height: '100vh',
-    margin: 0, padding: 0,
-    position: 'relative',
-    display: 'flex', flexFlow: 'row nowrap', alignItems: 'stretch',
-}));
-
-/* TODO: move HeaderContainer component to 'SideBar.tsx' */
-const HeaderContainer = styled(Box)(({ theme }) => ({
-    backgroundColor: '#fff',
-    borderRight: '1px solid #dedede',
-
-    display: 'flex',
-    flexFlow: 'column nowrap',
-    alignItems: 'flex-end',
-
-    flex: '1 1 0',
-
-    [theme.breakpoints.down('sm')]: {
-        display: 'none'
-    }
-}))
-
-const MainContainer = styled(Box)(({theme}) => ({
-    backgroundColor: '#fff',
-
-    flex: '3 1 0',
-}));
-
-const HomePage = () => {
     return(
         <>
-            <Head>
-                <title>{'Agave'}</title>
-                <meta charSet="utf-8" />
-                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-            </Head>
-            <AppContainer>
-
-                <BottomBar nav={AgaveNavigations} />
-                <HeaderContainer>
-                    <SideBar nav={AgaveNavigations} />
-                </HeaderContainer>
-                <MainContainer>
-                    mew mew
-                </MainContainer>
-            </AppContainer>
+            hi hi
         </>
     );
 }

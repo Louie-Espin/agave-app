@@ -1,6 +1,5 @@
 import AOS from "aos";
 import "aos/dist/aos.css";
-import RTL from "components/RTL";
 import { AppProvider } from "contexts/AppContext";
 import SettingsProvider from "contexts/SettingContext";
 import { NextPage } from "next";
@@ -13,6 +12,7 @@ import { Fragment, ReactElement, ReactNode, useEffect } from "react";
 import "react-quill/dist/quill.snow.css";
 import "simplebar/dist/simplebar.min.css";
 import MuiTheme from "theme/MuiTheme";
+import NavLayout from "layouts/NavLayout";
 // import GoogleAnalytics from "utils/GoogleAnalytics"; TODO
 // import OpenGraphTags from "utils/OpenGraphTags"; TODO
 // import "../src/fake-db"; TODO
@@ -49,6 +49,7 @@ const App = ({ Component, pageProps }: MyAppProps) => {
             <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
+                <meta charSet="utf-8" />
                 {/* <GoogleAnalytics /> TODO */}
                 {/* <OpenGraphTags /> TODO */}
             </Head>
@@ -56,7 +57,9 @@ const App = ({ Component, pageProps }: MyAppProps) => {
             <SettingsProvider>
                 <AppProvider>
                     <MuiTheme>
-                        <RTL>{getLayout(<Component {...pageProps} />)}</RTL>
+                        <NavLayout>
+                            <Component {...pageProps}/>
+                        </NavLayout>
                     </MuiTheme>
                 </AppProvider>
             </SettingsProvider>
