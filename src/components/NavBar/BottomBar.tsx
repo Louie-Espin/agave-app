@@ -16,13 +16,17 @@ const BottomBar = (
             <Paper elevation={3}>
                 <BottomNavigation showLabels {...rest}>
                     {nav.map(({key, NavIcon, title}) => (
-                        <BottomNavigationAction key={key} label={title} icon={<NavIcon />}/>
+                        <BottomNavigationAction
+                            key={key} label={title}
+                            icon={ <NavIcon sx={{color: 'rgba(0, 0, 0, 0.54)',}} /> }
+                        />
                     ))}
                 </BottomNavigation>
             </Paper>
         )
     })
     <BottomBarProps>(({ theme }) => ({
+        borderTop: '1px solid #dedede',
         position: 'fixed',
         bottom: 0, left: 0, right: 0,
         [theme.breakpoints.up('sm')]: { display: 'none' }
