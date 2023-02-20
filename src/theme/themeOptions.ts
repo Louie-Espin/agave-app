@@ -1,6 +1,6 @@
 import { ThemeOptions } from "@mui/material/styles";
 import { components } from "./components";
-import { blue, marron, paste, primary, ufe, themeColors } from "./themeColors";
+import { blue, marron, paste, primary, agave, themeColors } from "./themeColors";
 import { typography } from "./typography";
 
 const THEMES = {
@@ -31,7 +31,7 @@ const themesOptions: ThemeOptions = {
     typography,
     breakpoints,
     components: { ...components },
-    palette: { primary: { ...ufe, light: primary[100] }, ...themeColors },
+    palette: { primary: { ...agave, light: primary[100] }, ...themeColors },
   },
   [THEMES.GROCERY]: {
     typography,

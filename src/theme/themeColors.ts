@@ -53,17 +53,17 @@ export const primary = {
 };
 
 export const secondary = {
-  100: "#e8e8ee",
-  200: "#b9bacb",
-  300: "#8a8ca8",
-  400: "#5b5d85",
-  500: "#141850",
-  600: "#0F3460",
-  700: "#101340",
-  800: "#0e1138",
-  900: "#0c0e30",
-  main: "#0F3460",
-  dark: "#0c0e30",
+  100: "#c774bb",
+  200: "#b95dac",
+  300: "#b955ab",
+  400: "#a8409b",
+  500: "#a13494",
+  600: "#8E2680",
+  700: "#882178",
+  800: "#7a1a6a",
+  900: "#701660",
+  main: "#8E2680",
+  dark: "#5e1051",
 };
 
 export const error = {
@@ -134,17 +134,17 @@ export const paste = {
   contrastText: "#FFFFFF",
 };
 
-export const ufe = {
-  50: "#bde0a0",
-  100: "#9fc578",
-  200: "#9ecb73",
-  300: "#82b64e",
-  400: "#6A973F",
-  600: "#5e863d",
-  700: "#527931",
-  800: "#456922",
+export const agave = {
+  50: "#bbd3bd",
+  100: "#b0ccb3",
+  200: "#9dc2a0",
+  300: "#88af8b",
+  400: "#7A9F7D",
+  600: "#759b78",
+  700: "#5e8561",
+  800: "#4f7352",
   900: "#3c5b1a",
-  main: "#6A973F",
+  main: "#7A9F7D",
   contrastText: "#FFFFFF",
 }
 
@@ -178,7 +178,7 @@ export const themeColors = {
   divider: grey[200],
   paste: { ...paste },
   marron: { ...marron },
-  ufe: {...ufe},
+  ufe: {...agave},
   mono: {...mono},
   background: { default: grey[100] },
   text: { primary: grey[900], secondary: grey[800], disabled: grey[400] },
