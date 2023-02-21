@@ -5,9 +5,9 @@ import {Build, ChatBubble, Home, Person} from "@mui/icons-material";
 
 export const AgaveNavigations: AgaveNav[] = [
     { key: 1, title: 'Home', NavIcon: Home, href: '/' },
-    { key: 2, title: 'Request', NavIcon: Build, href: '/#' },
-    { key: 3, title: 'Chat', NavIcon: ChatBubble, href: '/#' },
-    { key: 4, title: 'Account', NavIcon: Person, href: '/#' },
+    { key: 2, title: 'Request', NavIcon: Build, href: '/request' },
+    { key: 3, title: 'Chat', NavIcon: ChatBubble, href: '/chat' },
+    { key: 4, title: 'Account', NavIcon: Person, href: '/account' },
 ]
 
 export interface AgaveNav {
