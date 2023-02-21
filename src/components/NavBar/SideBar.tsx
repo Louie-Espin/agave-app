@@ -22,15 +22,17 @@ const SideBar = (
                         </Link>
                     </ListItem>
 
-                    {nav.map(({key, NavIcon, title}) => (
+                    {nav.map(({key, NavIcon, title, href}) => (
                         <ListItem key={key} >
-                            <ListItemButton sx={{borderRadius: '30px'}} >
-                                <ListItemIcon><NavIcon sx={{fontSize: '1.9rem'}} /></ListItemIcon>
-                                <ListItemText
-                                    primary={title}
-                                    primaryTypographyProps={{sx: {color: 'rgba(0, 0, 0, 0.54)', fontSize: '1.3rem', fontWeight: 600} }}
-                                />
-                            </ListItemButton>
+                            <Link href={href} passHref>
+                                <ListItemButton sx={{borderRadius: '30px'}} >
+                                    <ListItemIcon><NavIcon sx={{fontSize: '1.9rem'}} /></ListItemIcon>
+                                    <ListItemText
+                                        primary={title}
+                                        primaryTypographyProps={{sx: {color: 'rgba(0, 0, 0, 0.54)', fontSize: '1.3rem', fontWeight: 600} }}
+                                    />
+                                </ListItemButton>
+                            </Link>
                         </ListItem>
                     ))}
                 </List>

@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import Link from 'next/link';
 import { Paper, BottomNavigation, BottomNavigationProps, BottomNavigationAction, styled, useMediaQuery, useTheme } from '@mui/material';
 import { Home, Build, ChatBubble, Person } from "@mui/icons-material";
 
@@ -15,11 +16,12 @@ const BottomBar = (
         return(
             <Paper elevation={3}>
                 <BottomNavigation showLabels {...rest}>
-                    {nav.map(({key, NavIcon, title}) => (
-                        <BottomNavigationAction
-                            key={key} label={title}
-                            icon={ <NavIcon sx={{color: 'rgba(0, 0, 0, 0.54)',}} /> }
-                        />
+                    {nav.map(({key, NavIcon, title, href}) => (
+                        <Link key={key} href={href} passHref>
+                            <BottomNavigationAction label={title}
+                                icon={ <NavIcon sx={{color: 'rgba(0, 0, 0, 0.54)',}} /> }
+                            />
+                        </Link>
                     ))}
                 </BottomNavigation>
             </Paper>
