@@ -21,6 +21,9 @@ const MainContainer = styled(Box)(({theme}) => ({
     backgroundColor: '#fff',
 
     flex: '3 1 0',
+    [theme.breakpoints.down('sm')]: {
+        maxWidth: '100%'
+    }
 }));
 
 const AppContainer = styled(Box)(({theme}) => ({
@@ -31,6 +34,7 @@ const AppContainer = styled(Box)(({theme}) => ({
 }));
 
 /* TODO: move HeaderContainer component to 'SideBar.tsx' */
+/* TODO: BOTTOMBAR - find way to avoid zIndex */
 const HeaderContainer = styled(Box)(({ theme }) => ({
     backgroundColor: '#fff',
     borderRight: '1px solid #dedede',
@@ -48,7 +52,7 @@ const HeaderContainer = styled(Box)(({ theme }) => ({
 const NavLayout = ({ children }) => {
     return(
         <AppContainer>
-            <BottomBar nav={AgaveNavigations} />
+            <BottomBar nav={AgaveNavigations} sx={{ zIndex: 1100 }}/>
             <HeaderContainer>
                 <SideBar nav={AgaveNavigations} />
             </HeaderContainer>

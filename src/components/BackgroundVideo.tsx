@@ -24,7 +24,8 @@ const BackgroundVideo: FC<BackgroundVideoProps> = (props, context) => {
                     width: '100%', height: '100%',
                     position: 'absolute',
                     top: '0%', left: '0%', bottom: '0%', right: '0%',
-                    backgroundColor: `rgba(0, 0, 0, ${coverAlpha})`
+                    backgroundColor: `rgba(0, 0, 0, ${coverAlpha})`,
+                    background: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(255,255,255,0.664) 59%, rgba(255,255,255,1) 95%)'
                 }
             }>
                 {children}
