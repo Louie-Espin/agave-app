@@ -79,7 +79,7 @@ const useMuiTable = (props: HookProps) => {
     setSelected(newSelected);
   };
 
-  const handleChangePage = (_, newPage: number) => setPage(newPage - 1);
+  const handleChangePage = (_: any, newPage: number) => setPage(newPage - 1); // TODO: update '_' type any
 
   const filteredList = stableSort(
     listData,

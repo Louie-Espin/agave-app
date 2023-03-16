@@ -1,13 +1,12 @@
+import { Fragment} from 'react';
+import { NextPage } from "next";
 
-
-const HomePage = ({ children }) => {
-    const title = 'Agave Communications - Home';
-
-    return(
-        <>
-            hi hi
-        </>
-    );
+const HomePage: NextPage = () => {
+    return (
+        <Fragment>
+            Heeowwwwo :x
+        </Fragment>
+    )
 }
 
 export default HomePage;
