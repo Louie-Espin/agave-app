@@ -32,6 +32,7 @@
     "stylis": "^4.1.1"
   },
   "devDependencies": {
+    "@types/aos": "^3.0.4",
     "@types/node": "^18.15.3",
     "@types/nprogress": "^0.2.0",
     "@types/react": "^18.0.28",
