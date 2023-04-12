@@ -11,6 +11,8 @@ import "nprogress/nprogress.css";
 import "react-quill/dist/quill.snow.css";
 import "simplebar-react/dist/simplebar.min.css";
 
+import AppLayout from "layouts/AppLayout";
+
 //Binding events.
 Router.events.on("routeChangeStart", () => nProgress.start());
 Router.events.on("routeChangeComplete", () => nProgress.done());
@@ -37,7 +39,9 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <meta charSet="utf-8" />
             </Head>
             <MuiTheme>
-                <Component {...pageProps} />
+                <AppLayout>
+                    <Component {...pageProps} />
+                </AppLayout>
             </MuiTheme>
         </Fragment>
     );
