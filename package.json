@@ -16,7 +16,6 @@
     "@mui/icons-material": "^5.0.4",
     "@mui/lab": "^5.0.0-alpha.51",
     "@mui/material": "^5.0.4",
-    "@mui/styles": "^5.0.2",
     "@mui/system": "^5.11.0",
     "aos": "^2.3.4",
     "clsx": "^1.1.1",
