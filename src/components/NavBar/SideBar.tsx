@@ -1,24 +1,18 @@
-import { FC, } from 'react';
+import { FC } from 'react';
 import Link from 'next/link';
-import { Box, BoxProps, Avatar, List, ListItem, ListItemButton, ListItemAvatar, ListItemIcon, ListItemText, styled, useMediaQuery, useTheme } from '@mui/material';
+import { styled, } from '@mui/material';
+import { Box, BoxProps, Avatar, List, ListItem, ListItemButton, ListItemAvatar, ListItemIcon, ListItemText } from '@mui/material';
 import Image from "components/BazarImage";
-
-type SideBarProps = {
-    nav: any[]
-}
+import { NavProps } from "./index";
 
 const SideBar = (
-
-    styled<FC<BoxProps & SideBarProps>>(({nav, children, ...rest}) => {
-        const theme = useTheme();
-        const isMedium = useMediaQuery(theme.breakpoints.down('sm')); // TODO: shrink sidebar on breakpoint
-
-        return(
+    styled<FC<BoxProps & NavProps>>(({ nav, children, ...rest }) => {
+        return (
             <Box {...rest}>
                 <List >
-                    <ListItem >
+                    <ListItem key={'logo-button'}>
                         <Link href="/" passHref>
-                            <a><Image width={225} sx={{margin: '0 auto'}} src="/assets/images/logo-agave.png" alt="logo" /></a>
+                            <Image width={225} sx={{margin: '0 auto'}} src="/assets/images/logo-agave.png" alt="logo" />
                         </Link>
                     </ListItem>
 
@@ -37,7 +31,7 @@ const SideBar = (
                     ))}
                 </List>
 
-                <ListItem >
+                <ListItem key={'account-button'}>
                     <ListItemButton sx={{borderRadius: '30px'}} >
                         <ListItemAvatar><Avatar alt={'avatar'}/></ListItemAvatar>
                         <ListItemText
@@ -50,10 +44,7 @@ const SideBar = (
             </Box>
         )
     })
-    <SideBarProps>(({ theme }) => ({
-        /* FOR DEV TODO REMOVE  */
-        /* outline: '1px dashed cyan' */
-
+    <NavProps>(({ theme }) => ({
         /* Root Element Styling */
         padding: `${theme.spacing(1)}`,
         width: 275, height: '100%',
@@ -61,9 +52,8 @@ const SideBar = (
         flexFlow: 'column nowrap',
         justifyContent: 'space-between',
 
-
         [theme.breakpoints.down('sm')]: { display: 'none' }
     }))
-)
+);
 
 export default SideBar;
