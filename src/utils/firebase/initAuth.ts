@@ -4,6 +4,7 @@ import type { InitConfig } from "next-firebase-auth";
 const TWELVE_DAYS_IN_MS = 12 * 60 * 60 * 24 * 1000
 
 const initConfig: InitConfig = {
+    debug: true,
     authPageURL: '/log-in',
     appPageURL: '/',
     loginAPIEndpoint: '/api/log-in',
