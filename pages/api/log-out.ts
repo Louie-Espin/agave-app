@@ -5,6 +5,21 @@ import initAuth from '@firebaseUtils/initAuth'
 
 initAuth()
 
+const logOutHandler = async (req: NextApiRequest, res: NextApiResponse) => {
+
+    const duration: number = 7000;
+    const id = setTimeout(() => res.json({message: "Request Timeout"}), duration);
+
+    try {
+        await unsetAuthCookies(req, res)
+        clearTimeout(id);
+        return res.status(200).json({ status: true })
+    } catch (e: any) {
+        console.log(e);
+        return res.status(500).json({ error: e.message })
+    }
+}
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         await unsetAuthCookies(req, res)
@@ -16,4 +31,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json({ status: true })
 }
 
-export default handler
+export default logOutHandler
