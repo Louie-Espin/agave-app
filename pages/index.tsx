@@ -1,12 +1,19 @@
-import { NextPage } from "next";
-import React, { Fragment } from "react";
-import { Box, Button, Container, Divider, Paper, List, ListItem, ListItemText, ListItemAvatar, ListSubheader } from "@mui/material";
+import {NextPage} from "next";
+import React, {Fragment} from "react";
+import {Box, Button, Container, Divider, List, ListItem, ListItemAvatar, ListItemText, Paper} from "@mui/material";
 import BackgroundVideo from "components/BackgroundVideo";
-import {H1, H2, H3, Paragraph,} from "components/Typography";
-import { Home, Build, Phone, ChatBubble } from "@mui/icons-material";
+import {H2, H3, Paragraph,} from "components/Typography";
+import {Build, ChatBubble, Home, Phone} from "@mui/icons-material";
 import Image from "next/image";
 
-const HomePage: NextPage = () => {
+import {AuthAction, withAuthUser} from 'next-firebase-auth';
+import Loader from 'components/Loader';
+
+type HomePageProps = {
+
+}
+
+const HomePage: NextPage<HomePageProps> = ({ }) => {
     return(
         <Fragment>
             <Container sx={{ mt: "3rem" }}>
@@ -78,4 +85,9 @@ const latestActivity = [
     { id: 6, primary: "New message received", Avatar: <ChatBubble/>, date: "December 20, 2022", secondary: "From Carol Escobar" },
 ]
 
-export default HomePage;
+export default withAuthUser<HomePageProps>({
+    whenAuthed: AuthAction.RENDER, // Page is rendered, if the user is authenticated
+    whenUnauthedBeforeInit: AuthAction.SHOW_LOADER, // Shows loader, if the user is not authenticated & the Firebase client JS SDK has not yet initialized.
+    whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN, // Redirect to log-in page, if user is not authenticated
+    LoaderComponent: Loader,
+})(HomePage);
