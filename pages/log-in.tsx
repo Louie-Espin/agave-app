@@ -56,7 +56,7 @@ const LogIn: NextPage = () => {
     return(
         <Wrapper elevation={0} passwordVisibility={passwordVisibility}>
             <form onSubmit={handleSubmit}>
-                <H2 textAlign="center" mb={1}>Welcome To Agave Communications</H2>
+                <H2 textAlign="center" mb={1}>Welcome To Agave</H2>
 
                 <Small mb={4.5} display="block" fontSize="12px" fontWeight="600" color="grey.800" textAlign="center">
                     Log in with email & password.
