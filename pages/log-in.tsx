@@ -1,12 +1,11 @@
-import {NextPage} from "next";
-import {useRouter} from 'next/navigation'
-import React, {useCallback, useState} from "react";
+import { NextPage } from "next";
+import React, { useCallback, useState, Fragment } from "react";
 import signIn from '@firebaseUtils/client/signIn';
-import {AuthAction, withAuthUser} from 'next-firebase-auth'
+import { AuthAction, withAuthUser } from 'next-firebase-auth'
 import {useFormik} from "formik";
 import * as yup from "yup";
 
-import {Button} from "@mui/material";
+import { Button, Alert, AlertColor, Collapse } from "@mui/material";
 import {H3, Small} from "components/Typography";
 import Wrapper from "components/Forms/Wrapper";
 import BazarTextField from "components/Forms/BazarTextField";
@@ -23,7 +22,10 @@ const formSchema = yup.object().shape({
 
 const LogIn: NextPage = () => {
 
-    const router = useRouter();
+    // Alert States
+    const [alert, setAlert] = useState(false);
+    const [alertSeverity, setAlertSeverity] = useState<AlertColor>('error');
+    const [alertContent, setAlertContent] = useState('');
 
     // passwordVisibility Hooks
     const [passwordVisibility, setPasswordVisibility] = useState(false);
@@ -36,10 +38,20 @@ const LogIn: NextPage = () => {
 
         const { result, error } = await signIn(values.email, values.password);
 
-        if (error) { return console.log(error) }
+        if (error) {
+            setAlert(true);
+            setAlertSeverity('error');
+            setAlertContent(error.message);
+
+            return console.log(error)
+        }
 
         // else successful
-        console.log(result)
+        setAlert(true);
+        setAlertSeverity('success');
+        setAlertContent("Success! Logging you in...")
+
+        return console.log(result)
     };
 
     // Initializing variables to use within form, provided by useFormik
@@ -56,55 +68,33 @@ const LogIn: NextPage = () => {
                 <Small mb={4.5} display="block" fontSize="12px" fontWeight="600" color="grey.800" textAlign="center">
                     Log in with email & password
                 </Small>
-                <BazarTextField
-                    mb={1.5}
-                    fullWidth
-                    name="email"
-                    size="small"
-                    type="email"
-                    variant="outlined"
-                    onBlur={handleBlur}
-                    value={values.email}
-                    onChange={handleChange}
-                    label="Email or Phone Number"
-                    placeholder="example@mail.com"
-                    error={!!touched.email && !!errors.email}
-                    helperText={touched.email && errors.email}
+
+                <BazarTextField mb={1.5} fullWidth size="small" variant="outlined" name="email" type="email"
+                    onBlur={handleBlur} value={values.email} onChange={handleChange}
+                    label="Email or Phone Number" placeholder="example@mail.com"
+                    error={!!touched.email && !!errors.email} helperText={touched.email && errors.email}
                 />
-                <BazarTextField
-                    mb={2}
-                    fullWidth
-                    size="small"
-                    name="password"
-                    label="Password"
-                    autoComplete="on"
-                    variant="outlined"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.password}
-                    placeholder="*********"
-                    type={passwordVisibility ? "text" : "password"}
-                    error={!!touched.password && !!errors.password}
-                    helperText={touched.password && errors.password}
+
+                <BazarTextField mb={2} fullWidth size="small" variant="outlined" name="password" label="Password"
+                    autoComplete="on" onBlur={handleBlur} onChange={handleChange} value={values.password}
+                    placeholder="*********" type={passwordVisibility ? "text" : "password"}
+                    error={!!touched.password && !!errors.password} helperText={touched.password && errors.password}
+
                     InputProps={{
-                        endAdornment: (
-                            <EyeToggleButton
-                                show={passwordVisibility}
-                                click={togglePasswordVisibility}
-                            />
-                        ),
+                        endAdornment: (<EyeToggleButton show={passwordVisibility} click={togglePasswordVisibility}/>),
                     }}
                 />
 
-                <Button
-                    fullWidth
-                    type="submit"
-                    color="primary"
-                    variant="contained"
-                    sx={{ mb: "1.65rem", height: 44 }}
-                >
+                <Button fullWidth type="submit" color="primary" variant="contained" sx={{ mb: "1.65rem", height: 44 }}>
                     Sign In
                 </Button>
+
+                <Collapse in={alert}>
+                    { alert ?
+                        <Alert onClose={() => setAlert(false)} severity={alertSeverity}>{alertContent}</Alert> :
+                        <Fragment/>
+                    }
+                </Collapse>
             </form>
         </Wrapper>
     );
