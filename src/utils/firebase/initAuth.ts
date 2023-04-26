@@ -1,10 +1,25 @@
 import { init } from 'next-firebase-auth';
-import type { InitConfig } from "next-firebase-auth";
+import type { InitConfig, CustomInitConfig } from "next-firebase-auth";
 
 const TWELVE_DAYS_IN_MS = 12 * 60 * 60 * 24 * 1000
 
-const initConfig: InitConfig = {
-    debug: true,
+// Module augmentation for custom InitConfig
+declare module 'next-firebase-auth' {
+    interface CustomInitConfig extends InitConfig {
+        firebaseAdminInitConfig?: {
+            credential: {
+                projectId: string
+                clientEmail: string
+                privateKey: string
+            }
+            databaseURL: string
+            storageBucket?: string // storageBucket is now an optional string
+        }
+    }
+}
+
+const initConfig: CustomInitConfig = {
+    // debug: true,
     authPageURL: '/log-in',
     appPageURL: '/',
     loginAPIEndpoint: '/api/log-in',
@@ -21,6 +36,7 @@ const initConfig: InitConfig = {
             privateKey: process.env.FIREBASE_PRIVATE_KEY as string,
         },
         databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL as string,
+        storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET as string,
     },
     firebaseClientInitConfig: {
         apiKey: process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY as string, // required
