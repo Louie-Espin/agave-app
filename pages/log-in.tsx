@@ -71,7 +71,7 @@ const LogIn: NextPage = () => {
 
                 <BazarTextField mb={1.5} fullWidth size="small" variant="outlined" name="email" type="email"
                     onBlur={handleBlur} value={values.email} onChange={handleChange}
-                    label="Email or Phone Number" placeholder="example@mail.com"
+                    label="Email Address" placeholder="example@mail.com"
                     error={!!touched.email && !!errors.email} helperText={touched.email && errors.email}
                 />
 
