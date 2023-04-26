@@ -1,24 +1,16 @@
 import { NextPage } from "next";
-import React, { useCallback, useState, Fragment } from "react";
+import React, { useCallback, useState } from "react";
 import clientLogIn from '@firebaseUtils/client/logIn';
 import { AuthAction, withAuthUser } from 'next-firebase-auth'
 import {useFormik} from "formik";
 import * as yup from "yup";
 
 import { Button, Alert, AlertColor, Collapse } from "@mui/material";
-import {H3, Small} from "components/Typography";
+import {H2, Small} from "components/Typography";
 import Wrapper from "components/Forms/Wrapper";
 import BazarTextField from "components/Forms/BazarTextField";
 import EyeToggleButton from "components/Forms/EyeToggleButton";
-
-// Initial values for formik
-const initialValues = { email: "", password: "", };
-
-// Form Schema by yup
-const formSchema = yup.object().shape({
-    password: yup.string().required("Password is required"),
-    email: yup.string().email("invalid email").required("Email is required"),
-});
+import Link from "components/Link";
 
 const LogIn: NextPage = () => {
 
@@ -62,11 +54,12 @@ const LogIn: NextPage = () => {
         );
 
     return(
-        <Wrapper elevation={3} passwordVisibility={passwordVisibility}>
+        <Wrapper elevation={0} passwordVisibility={passwordVisibility}>
             <form onSubmit={handleSubmit}>
-                <H3 textAlign="center" mb={1}>Welcome To Agave Communications</H3>
+                <H2 textAlign="center" mb={1}>Welcome To Agave Communications</H2>
+
                 <Small mb={4.5} display="block" fontSize="12px" fontWeight="600" color="grey.800" textAlign="center">
-                    Log in with email & password
+                    Log in with email & password.
                 </Small>
 
                 <BazarTextField mb={1.5} fullWidth size="small" variant="outlined" name="email" type="email"
@@ -89,6 +82,14 @@ const LogIn: NextPage = () => {
                     Sign In
                 </Button>
 
+                <Small mb={4.5} display="block" fontSize="12px" fontWeight="600" color="grey.800" textAlign="center">
+                    Dont have an account?
+                    {/* TODO: [CODE SMELL] hard-coded value */}
+                    <Link href="/sign-up" color="secondary" sx={{ textDecoration: 'none' }}>
+                        &nbsp;Sign Up Here.
+                    </Link>
+                </Small>
+
                 <Collapse in={alert}>
                     <Alert onClose={() => setAlert(false)} severity={alertSeverity}>{alertContent}</Alert>
                 </Collapse>
@@ -96,6 +97,15 @@ const LogIn: NextPage = () => {
         </Wrapper>
     );
 }
+
+// Initial values for formik
+const initialValues = { email: "", password: "", };
+
+// Form Schema by yup
+const formSchema = yup.object().shape({
+    password: yup.string().required("Password is required"),
+    email: yup.string().email("invalid email").required("Email is required"),
+});
 
 export default withAuthUser({
     whenAuthed: AuthAction.REDIRECT_TO_APP,
