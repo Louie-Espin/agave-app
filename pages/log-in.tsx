@@ -90,10 +90,7 @@ const LogIn: NextPage = () => {
                 </Button>
 
                 <Collapse in={alert}>
-                    { alert ?
-                        <Alert onClose={() => setAlert(false)} severity={alertSeverity}>{alertContent}</Alert> :
-                        <Fragment/>
-                    }
+                    <Alert onClose={() => setAlert(false)} severity={alertSeverity}>{alertContent}</Alert>
                 </Collapse>
             </form>
         </Wrapper>
