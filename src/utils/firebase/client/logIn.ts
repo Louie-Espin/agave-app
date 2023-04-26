@@ -4,7 +4,7 @@ import { FirebaseError } from "@firebase/util";
 
 const auth = getAuth(firebaseClient);
 
-export default async function signIn(email: string, password: string) {
+export default async function clientLogIn(email: string, password: string) {
     let result = null, error = null;
 
     try {

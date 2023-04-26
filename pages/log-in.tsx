@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import React, { useCallback, useState, Fragment } from "react";
-import signIn from '@firebaseUtils/client/signIn';
+import clientLogIn from '@firebaseUtils/client/logIn';
 import { AuthAction, withAuthUser } from 'next-firebase-auth'
 import {useFormik} from "formik";
 import * as yup from "yup";
@@ -36,14 +36,14 @@ const LogIn: NextPage = () => {
     // handling form submissions
     const handleFormSubmit = async (values: {email: string, password: string }) => {
 
-        const { result, error } = await signIn(values.email, values.password);
+        const { result, error } = await clientLogIn(values.email, values.password);
 
         if (error) {
             setAlert(true);
             setAlertSeverity('error');
             setAlertContent(error.message);
 
-            return console.log(error)
+            return console.error(error);
         }
 
         // else successful
