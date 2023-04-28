@@ -16,7 +16,6 @@ const TableRow = styled(Card)({
 });
 
 type AccountPageProps = {
-
 }
 
 const AccountPage: NextPage<AccountPageProps> = ({ }) => {
@@ -53,7 +52,7 @@ const AccountPage: NextPage<AccountPageProps> = ({ }) => {
                                     <Box ml={1.5} flex="1 1 0">
                                         <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                                             <Box>
-                                                <H5 my="0px">{AuthUser.displayName ?? "None"}</H5>
+                                                <H5 my="0px">{AuthUser.displayName ?? "Your Account"}</H5>
                                                 <Box display="flex" alignItems="center">
                                                     <Typography color="grey.600">{AuthUser.email ?? "E-mail not found."}</Typography>
                                                 </Box>
