@@ -2,10 +2,9 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 
-import createHttpError from "http-errors";
 import { useFormik } from "formik";
-import * as yup from "yup";
 import axios, {AxiosError} from "axios";
+import { postUserSchema as Schema } from "utils/api/yup";
 
 import { Button, Alert, AlertColor, Collapse } from "@mui/material";
 import {H2, Small} from "components/Typography";
@@ -14,7 +13,11 @@ import BazarTextField from "components/Forms/BazarTextField";
 import EyeToggleButton from "components/Forms/EyeToggleButton";
 import Link from "components/Link";
 
-const SignUpPage: NextPage = () => {
+// Formik Initial Values
+const initialValues = { displayName: "", email: "", password: "", re_password: "", };
+type SignUpPageProps = { };
+
+const SignUpPage: NextPage<SignUpPageProps> = () => {
 
     const router = useRouter();
 
@@ -56,7 +59,7 @@ const SignUpPage: NextPage = () => {
     // Initializing variables to use within form, provided by useFormik
     const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
         useFormik({
-                initialValues, onSubmit: handleFormSubmit, validationSchema: formSchema,
+                initialValues, onSubmit: handleFormSubmit, validationSchema: Schema,
         }
     );
 
@@ -119,17 +122,5 @@ const SignUpPage: NextPage = () => {
         </Wrapper>
     );
 }
-
-const initialValues = { displayName: "", email: "", password: "", re_password: "", };
-
-const formSchema = yup.object().shape({
-    displayName: yup.string().required("Name is required"),
-    email: yup.string().email("invalid email").required("Email is required"),
-    password: yup.string().required("Password is required"),
-    re_password: yup
-        .string()
-        .oneOf([yup.ref("password"),], "Passwords must match")
-        .required("Please re-type password"),
-});
 
 export default SignUpPage;

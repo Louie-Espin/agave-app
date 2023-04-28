@@ -2,21 +2,12 @@ import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import initFirebaseAdminSDK from "@firebaseUtils/firebaseAdmin";
 import { getAuth } from "firebase-admin/auth";
 import { apiHandler } from "utils/api/apiHandler";
+import { postUserSchema } from "utils/api/yup";
 import createHttpError from "http-errors";
-import * as yup from "yup";
 
 type PostResponse = { uid: string; message: string; };
-const postUserSchema = yup.object().shape({
-    displayName: yup.string().required("name is required"),
-    email: yup.string().email("invalid email").required("email is required"),
-    password: yup.string().required("password is required"),
-    re_password: yup
-        .string()
-        .oneOf([yup.ref("password"),], "passwords must match")
-        .required("please re-type password"),
-});
 interface postUserRequest extends NextApiRequest {
-    // use TypeOf to infer the properties from postUserSchema
+    // use typeOf to infer the properties from postUserSchema
     body: { values : typeof postUserSchema };
 }
 
