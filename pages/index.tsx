@@ -1,43 +1,18 @@
-import {GetServerSideProps, GetStaticProps, NextPage} from "next";
-import React, {Fragment} from "react";
-import {Box, Button, Container, Divider, List, ListItem, ListItemAvatar, ListItemText, Paper} from "@mui/material";
+import { NextPage } from "next";
+import React, { Fragment } from "react";
+import { Box, Button, Container, Divider, Paper } from "@mui/material";
 import BackgroundVideo from "components/BackgroundVideo";
-import {H2, H3, H4, Paragraph,} from "components/Typography";
-import {Build, ChatBubble, Home, Phone, Person} from "@mui/icons-material";
+import { H2, H3, } from "components/Typography";
+import { Build, ChatBubble, Home, Phone } from "@mui/icons-material";
 import Image from "next/image";
-import axios from "axios";
-import {AnnouncementSchema, } from "utils/api/yup";
-import * as yup from "yup";
+import AnnouncementList from "layouts/AnnouncementList";
 
 import {AuthAction, withAuthUser} from 'next-firebase-auth';
 import Loader from 'components/Loader';
 
-type Announcement = yup.InferType<typeof AnnouncementSchema>;
+type HomePageProps = { }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-    let data:any[] = []
-
-    try {
-        const response = await axios.get("/api/announcements");
-        data = response.data.announcements;
-        console.log(response.data);
-
-    } catch (e: unknown) {
-        console.error(e);
-    }
-
-    return {
-        props: {
-            announcements: data,
-        }, revalidate: 1000,
-    }
-}
-
-type HomePageProps = {
-    announcements: Announcement[] | null;
-}
-
-const HomePage: NextPage<HomePageProps> = ({ announcements }) => {
+const HomePage: NextPage<HomePageProps> = ({ }) => {
 
     return(
         <Fragment>
@@ -67,36 +42,7 @@ const HomePage: NextPage<HomePageProps> = ({ announcements }) => {
                 </Box>
                 <H3>Latest Activity</H3>
                 <Paper elevation={0} variant={'outlined'}>
-                    {announcements !== null &&
-                        <List disablePadding>
-                            {announcements.map((i) => (
-                                <Fragment key={i.id}>
-                                    <ListItem>
-                                        <ListItemAvatar>
-                                            {<Person/>}
-                                        </ListItemAvatar>
-                                        <ListItemText
-                                            primary={<H4>{i.title}</H4>}
-                                            secondary={
-                                                <>
-                                                    <Paragraph
-                                                        sx={{ display: 'block' }}
-                                                        component="span"
-                                                        color="text.primary"
-                                                        mb={1}
-                                                    >
-                                                        {i.description}
-                                                    </Paragraph>
-                                                    {" — "}{`${new Date(i.created._seconds * 1000 + i.created._nanoseconds / 1000000,)}`}
-                                                </>
-                                            }
-                                        />
-                                    </ListItem>
-                                    <Divider variant="inset" component="li" />
-                                </Fragment>
-                            ))}
-                        </List>
-                    }
+                    <AnnouncementList/>
                 </Paper>
             </Container>
         </Fragment>
