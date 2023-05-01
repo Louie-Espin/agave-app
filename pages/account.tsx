@@ -59,7 +59,7 @@ const AccountPage: NextPage<AccountPageProps> = ({ }) => {
                                             </Box>
 
                                             <Typography color="grey.600" letterSpacing="0.1em">
-                                                ADMINISTRATOR
+                                                USER
                                             </Typography>
                                         </Box>
                                     </Box>
