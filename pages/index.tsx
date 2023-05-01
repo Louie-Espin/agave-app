@@ -33,7 +33,7 @@ const HomePage: NextPage<HomePageProps> = ({ }) => {
             </BackgroundVideo>
             <Container sx={{ py: 1, pb: 8 } }>
                 <Box textAlign={'center'}>
-                    <Button variant='outlined' color='primary' size='medium' endIcon={<Phone/>} sx={{mr: 2, borderRadius: '25px', my: 2}}>
+                    <Button href="tel:6022541464" variant='outlined' color='primary' size='medium' endIcon={<Phone/>} sx={{mr: 2, borderRadius: '25px', my: 2}}>
                         Contact Us
                     </Button>
                     <Button variant='contained' color='primary' size='medium' endIcon={<Build/>} sx={{borderRadius: '25px', my: 2}}>

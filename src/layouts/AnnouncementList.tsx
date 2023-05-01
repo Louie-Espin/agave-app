@@ -2,7 +2,7 @@ import React, { FC, Fragment } from "react";
 import { H4, Paragraph, Small } from "components/Typography";
 import axios from "axios";
 import useSWR from "swr";
-import { Divider, List, ListItem, ListItemAvatar, ListItemText, Alert, CircularProgress } from "@mui/material";
+import { Box, Divider, List, ListItem, ListItemAvatar, ListItemText, Alert, CircularProgress } from "@mui/material";
 import { Person } from "@mui/icons-material";
 import * as yup from "yup";
 import { AnnouncementSchema } from "utils/api/yup";
@@ -13,7 +13,11 @@ const AnnouncementList: FC = () => {
     const fetched = useSWR('/api/announcements', fetcher);
 
     if (fetched.error) return(<Alert severity="error">Error - could not retrieve announcements</Alert>);
-    if (fetched.isLoading) return(<CircularProgress />);
+    if (fetched.isLoading) return(
+        <Box height='100%' display='flex' flexDirection='column' p={3}>
+            <CircularProgress />
+        </Box>
+    );
 
     return(
         <Fragment>
