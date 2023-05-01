@@ -4,6 +4,7 @@ import { getAuth } from "firebase-admin/auth";
 import { apiHandler } from "utils/api/apiHandler";
 import { postUserSchema } from "utils/api/yup";
 import createHttpError from "http-errors";
+import { FirebaseError } from "firebase-admin";
 
 type PostResponse = { uid: string; message: string; };
 interface postUserRequest extends NextApiRequest {
@@ -33,13 +34,14 @@ const signUpHandler: NextApiHandler<PostResponse> = async (req: postUserRequest,
             return res.status(200).json({uid: customToken, message: 'createUser success!'});
         })
         .catch((e: unknown) => {
+
+            // TODO: API resolved without sending a response for /api/sign-up, this may result in stalled requests.
+            // if FirebaseError, return 400 response
+            if ((e as FirebaseError).code) return res.status(400).json({ error: (e as FirebaseError).toJSON() });
+
             // eslint-disable-next-line no-console
             console.error(e);
-
-            let message = 'Unknown internal error occurred!';
-            if (e instanceof Error) message = e.message;
-
-            throw new createHttpError.InternalServerError(message);
+            throw new createHttpError.InternalServerError((e as Error).message ?? "Unknown internal error occurred!");
         })
 }
 

@@ -18,7 +18,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     let data:any[] = []
 
     try {
-        const response = await axios.get("http://localhost:3000/api/announcements");
+        const response = await axios.get("/api/announcements");
         data = response.data.announcements;
         console.log(response.data);
 
