@@ -8,12 +8,14 @@ IMPORTANT
 
 Not as important
 - 
-- make a pretty loader
-- I feel like firebaseUtils' 'initAuth' should only be called once
+- initial page load is really slow, find out why; might need module import refactoring
+- fix the swr announcements loader, should just be a div centering
+- [PROBABLY WRONG] I feel like firebaseUtils' 'initAuth' should only be called once
+- the log-in and log-out API endpoints accept POST methods, use this for error handling
 
 NOTES
 - 
-- PAU ERROR: u added single qoutes to the private key local environment variable, and u updated firebaseAdmin.ts
+- [IMPORTANT] if formik is stressing you out, do folders! Do not tunnel vision.
 - Remember that you can call your firebase-admin object from getFirebaseAdmin
 - next-firebase-auth Docs: https://github.com/gladly-team/next-firebase-auth/tree/main#API
 - Issue - vercel, storing complex secrets: https://github.com/vercel/vercel/issues/749#issuecomment-707515089

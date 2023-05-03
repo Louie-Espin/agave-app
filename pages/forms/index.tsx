@@ -7,6 +7,8 @@ import { Avatar, Box, Button, Card, Container, Divider, Grid, Typography } from 
 import Assignment from "@mui/icons-material/Assignment";
 import { H2 } from "components/Typography";
 
+import ProposalForm from "layouts/ProposalForm";
+
 type FormsPageProps = {}
 
 const FormsPage: NextPage<FormsPageProps> = ({}) => {
@@ -26,7 +28,7 @@ const FormsPage: NextPage<FormsPageProps> = ({}) => {
                 </Container>
                 <Container>
                     <Box mb={4}>
-
+                        <ProposalForm/>
                     </Box>
                 </Container>
             </Box>
