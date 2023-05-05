@@ -20,6 +20,13 @@ export const AnnouncementSchema = yup.object().shape({
         .max(500, ({ max }) => `Character limit exceeded! Max ${max} characters allowed!`),
 });
 
+export const FolderSchema = yup.object({
+    id: yup.string(),
+    name: yup.string().required("folder name is required"),
+    owner: yup.object().required("folder owner is required"),
+    viewers: yup.array().of(yup.object()).required("viewers list is required"),
+});
+
 export const ProposalSchema = yup.object({
     division: yup.string().oneOf(["enhancement", "tree", "irrigation"]).required("division is required"),
     requester: yup.object().shape({
@@ -74,5 +81,6 @@ export const ProposalSchema = yup.object({
 export default {
     postUserSchema,
     AnnouncementSchema,
+    FolderSchema,
     ProposalSchema,
 }
