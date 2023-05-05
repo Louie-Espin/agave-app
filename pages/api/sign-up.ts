@@ -5,6 +5,9 @@ import { apiHandler } from "utils/api/apiHandler";
 import { postUserSchema } from "utils/api/yup";
 import createHttpError from "http-errors";
 import { FirebaseError } from "firebase-admin";
+import { getFirestore } from "firebase-admin/firestore";
+
+const USERS_COL_: string = 'users';
 
 type PostResponse = { uid: string; message: string; };
 interface postUserRequest extends NextApiRequest {
@@ -14,35 +17,47 @@ interface postUserRequest extends NextApiRequest {
 
 const signUpHandler: NextApiHandler<PostResponse> = async (req: postUserRequest, res: NextApiResponse) => {
 
-    // Initializing Firebase Admin SDK and validating request values
+    // Initializing Firebase Admin SDK
     initFirebaseAdminSDK();
-    const validate = await postUserSchema.validate(req.body.values, { abortEarly: false, strict: true, });
+    const db = getFirestore();
 
-    getAuth()
-        .createUser({
+    try {
+        // Validating request values
+        const validate = await postUserSchema.validate(req.body.values, { abortEarly: false, strict: true, });
+
+        // Create a user in the Auth database
+        const userRecord = await getAuth().createUser({
             email: validate.email,
             emailVerified: false,
             password: validate.password,
             displayName: validate.displayName,
             disabled: false,
-        })
-        .then(async (userRecord) => {
-            // eslint-disable-next-line no-console
-            console.log('Successfully created new user:', userRecord.uid);
+        });
 
-            const customToken = await getAuth().createCustomToken(userRecord.uid);
-            return res.status(200).json({uid: customToken, message: 'createUser success!'});
-        })
-        .catch((e: unknown) => {
+        // eslint-disable-next-line no-console
+        console.log('Successfully created new user:', userRecord.uid);
 
-            // TODO: API resolved without sending a response for /api/sign-up, this may result in stalled requests.
-            // if FirebaseError, return 400 response
-            if ((e as FirebaseError).code) return res.status(400).json({ error: (e as FirebaseError).toJSON() });
+        // Set a new user document(userRecord.id) with default settings
+        await db.collection(USERS_COL_).doc(userRecord.uid).set({
+            displayName: userRecord.displayName,
+            role: {
+                admin: false,
+                client: false,
+                user: true,
+            }
+        });
 
-            // eslint-disable-next-line no-console
-            console.error(e);
-            throw new createHttpError.InternalServerError((e as Error).message ?? "Unknown internal error occurred!");
-        })
+        const customToken = await getAuth().createCustomToken(userRecord.uid);
+        return res.status(200).json({uid: customToken, message: 'POST User success!'});
+    } catch (e: unknown) {
+        // TODO: API resolved without sending a response for /api/sign-up, this may result in stalled requests.
+        // if FirebaseError, return 400 response
+        if ((e as FirebaseError).toJSON) return res.status(400).json({ error: (e as FirebaseError).toJSON() });
+
+        // eslint-disable-next-line no-console
+        console.error(e);
+        throw new createHttpError.InternalServerError((e as Error).message ?? "Unknown internal error occurred!");
+    }
 }
 
 export default apiHandler({
