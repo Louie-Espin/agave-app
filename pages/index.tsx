@@ -1,12 +1,19 @@
 import { NextPage } from "next";
 import React, { Fragment } from "react";
-import { Box, Button, Container, Divider, Paper, List, ListItem, ListItemText, ListItemAvatar, ListSubheader } from "@mui/material";
+import { Box, Button, Container, Divider, Paper } from "@mui/material";
 import BackgroundVideo from "components/BackgroundVideo";
-import {H1, H2, H3, Paragraph,} from "components/Typography";
-import { Home, Build, Phone, ChatBubble } from "@mui/icons-material";
+import { H2, H3, } from "components/Typography";
+import { Build, ChatBubble, Home, Phone } from "@mui/icons-material";
 import Image from "next/image";
+import AnnouncementList from "layouts/AnnouncementList";
 
-const HomePage: NextPage = () => {
+import {AuthAction, withAuthUser} from 'next-firebase-auth';
+import Loader from 'components/Loader';
+
+type HomePageProps = { }
+
+const HomePage: NextPage<HomePageProps> = ({ }) => {
+
     return(
         <Fragment>
             <Container sx={{ mt: "3rem" }}>
@@ -26,7 +33,7 @@ const HomePage: NextPage = () => {
             </BackgroundVideo>
             <Container sx={{ py: 1, pb: 8 } }>
                 <Box textAlign={'center'}>
-                    <Button variant='outlined' color='primary' size='medium' endIcon={<Phone/>} sx={{mr: 2, borderRadius: '25px', my: 2}}>
+                    <Button href="tel:6022541464" variant='outlined' color='primary' size='medium' endIcon={<Phone/>} sx={{mr: 2, borderRadius: '25px', my: 2}}>
                         Contact Us
                     </Button>
                     <Button variant='contained' color='primary' size='medium' endIcon={<Build/>} sx={{borderRadius: '25px', my: 2}}>
@@ -35,33 +42,7 @@ const HomePage: NextPage = () => {
                 </Box>
                 <H3>Latest Activity</H3>
                 <Paper elevation={0} variant={'outlined'}>
-                    <List disablePadding>
-                        {latestActivity.map((i) => (
-                            <Fragment key={i.id}>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        {i.Avatar}
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary={i.primary}
-                                        secondary={
-                                            <>
-                                                <Paragraph
-                                                    sx={{ display: 'inline' }}
-                                                    component="span"
-                                                    color="text.primary"
-                                                >
-                                                    {i.date}
-                                                </Paragraph>
-                                                {" — "}{i.secondary}
-                                            </>
-                                        }
-                                    />
-                                </ListItem>
-                                <Divider variant="inset" component="li" />
-                            </Fragment>
-                        ))}
-                    </List>
+                    <AnnouncementList/>
                 </Paper>
             </Container>
         </Fragment>
@@ -78,4 +59,9 @@ const latestActivity = [
     { id: 6, primary: "New message received", Avatar: <ChatBubble/>, date: "December 20, 2022", secondary: "From Carol Escobar" },
 ]
 
-export default HomePage;
+export default withAuthUser<HomePageProps>({
+    whenAuthed: AuthAction.RENDER, // Page is rendered, if the user is authenticated
+    whenUnauthedBeforeInit: AuthAction.SHOW_LOADER, // Shows loader, if the user is not authenticated & the Firebase client JS SDK has not yet initialized.
+    whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN, // Redirect to log-in page, if user is not authenticated
+    LoaderComponent: Loader,
+})(HomePage);

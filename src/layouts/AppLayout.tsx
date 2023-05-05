@@ -1,12 +1,16 @@
 import { ReactNode } from 'react';
 import { Box, styled } from '@mui/material';
 import NavBar from "components/NavBar/index";
-import { Build, ChatBubble, Home, Person } from "@mui/icons-material";
+
+import Person from "@mui/icons-material/Person";
+import Home from "@mui/icons-material/Home";
+import Assignment from "@mui/icons-material/Assignment";
+import Folder from "@mui/icons-material/Folder";
 
 const AgaveNavigations: { key: number, title: string, NavIcon: any, href: string }[] = [
     { key: 1, title: 'Home', NavIcon: Home, href: '/' },
-    { key: 2, title: 'Request', NavIcon: Build, href: '/request' },
-    { key: 3, title: 'Chat', NavIcon: ChatBubble, href: '/chat' },
+    { key: 2, title: 'Forms', NavIcon: Assignment, href: '/forms' },
+    { key: 3, title: 'Folders', NavIcon: Folder, href: '/folders' },
     { key: 4, title: 'Account', NavIcon: Person, href: '/account' },
 ]
 
