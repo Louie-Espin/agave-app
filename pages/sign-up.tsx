@@ -1,17 +1,19 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
-
+import { verifyIdToken } from "next-firebase-auth";
 import { useFormik } from "formik";
-import axios, {AxiosError} from "axios";
+import axios, { AxiosError } from "axios";
 import { postUserSchema as Schema } from "utils/api/yup";
 
 import { Button, Alert, AlertColor, Collapse } from "@mui/material";
-import {H2, Small} from "components/Typography";
+import { H2, Small } from "components/Typography";
 import Wrapper from "components/Forms/Wrapper";
 import BazarTextField from "components/Forms/BazarTextField";
 import EyeToggleButton from "components/Forms/EyeToggleButton";
 import Link from "components/Link";
+import { getAuth, signInWithCustomToken } from "firebase/auth";
+import firebaseClient from "@firebaseUtils/firebaseClient";
 
 // Formik Initial Values
 const initialValues = { displayName: "", email: "", password: "", re_password: "", };
@@ -20,6 +22,7 @@ type SignUpPageProps = { };
 const SignUpPage: NextPage<SignUpPageProps> = () => {
 
     const router = useRouter();
+    const auth = getAuth(firebaseClient);
 
     // passwordVisibility Hooks
     const [passwordVisibility, setPasswordVisibility] = useState(false);
@@ -40,7 +43,14 @@ const SignUpPage: NextPage<SignUpPageProps> = () => {
             // eslint-disable-next-line no-console
             console.log(result);
 
-            await router.push('/');
+            signInWithCustomToken(auth, result.data.uid)
+                .then(() => {
+                    setAlert(true);
+                    setAlertSeverity('success');
+                    setAlertContent("Success! Redirecting to email verification...");
+
+                    router.push('/verify-email');
+                });
 
         } catch (e: unknown) {
             setAlert(true);
