@@ -13,10 +13,6 @@ import "simplebar-react/dist/simplebar.min.css";
 
 import AppLayout from "layouts/AppLayout";
 
-import initAuth from '@firebaseUtils/initAuth'
-
-initAuth();
-
 //Binding events.
 Router.events.on("routeChangeStart", () => nProgress.start());
 Router.events.on("routeChangeComplete", () => nProgress.done());
