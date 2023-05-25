@@ -4,7 +4,7 @@ import { apiHandler } from "utils/api/apiHandler";
 import initAuth from "@firebaseUtils/initAuth";
 import initFirebaseAdminSDK from "@firebaseUtils/firebaseAdmin";
 
-const GET_URL: string = "https://accounts.goformz.com/v2/templates";
+const GET_URL: string = "https://api.goformz.com/v2/templates";
 
 const ENCODED: string = Buffer.from(`${process.env.GOFORMZ_LOGIN}:${process.env.GOFORMZ_PASS}`).toString('base64');
 
