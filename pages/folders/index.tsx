@@ -22,6 +22,10 @@ const FoldersPage: NextPage<FoldersPageProps> = ({}) => {
     const AuthUser = useAuthUser(); // according to next-firebase-auth, the user is guaranteed to be authenticated
     const fetched = useSWR(AuthUser ? url : null, (async () => {
         const token = await AuthUser.getIdToken();
+
+        const categories = await axios.get('api/go-formz/categories', { headers: { Authorization: token } } )
+        console.log(categories.data);
+
         return await axios.get(url, { headers: { Authorization: token, } } )
             .then(res => res.data)
             .catch(e => { console.error(e); throw e });
