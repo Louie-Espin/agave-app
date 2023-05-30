@@ -18,7 +18,7 @@ type FoldersPageProps = {}
 
 const FoldersPage: NextPage<FoldersPageProps> = ({}) => {
 
-    const url: string = 'api/go-formz/categories';
+    const url: string = 'api/go-formz/templates';
     const AuthUser = useAuthUser(); // according to next-firebase-auth, the user is guaranteed to be authenticated
     const fetched = useSWR(AuthUser ? url : null, (async () => {
         const token = await AuthUser.getIdToken();
