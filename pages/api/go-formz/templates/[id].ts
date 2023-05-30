@@ -25,28 +25,30 @@ const getTemplateForms: NextApiHandler = async (req: NextApiRequest, res: NextAp
     initAuth();
     initFirebaseAdminSDK();
 
-    const id = req.query;
+    const id = req.query.id;
     const goFormzConfig = getConfig(`https://api.goformz.com/v2/templates/${id}/formz`);
 
     const token = req.headers['authorization'];
     if (!token) return res.status(401).json({ forms: null, message: "GET template forms failed; No token!" });
 
-    try {
+    return res.status(200).json({ forms: goFormzConfig, message: "testing:3" });
 
-        const getFormz = await axios(goFormzConfig);
-        return res.status(200).json({ forms: getFormz.data, message: "GET template forms success." });
-
-    } catch (err: any | AxiosError) {
-
-        if (isAxiosError(err)) {
-            console.log(err);
-            return res.status(400).json({ forms: null, message: "Couldn't connect to Go Formz!" });
-        }
-
-        // eslint-disable-next-line no-console
-        console.error(err);
-        throw new createHttpError.InternalServerError((err as Error).message ?? "Unknown internal error occurred!");
-    }
+    // try {
+    //
+    //     const getFormz = await axios(goFormzConfig);
+    //     return res.status(200).json({ forms: getFormz.data, message: "GET template forms success." });
+    //
+    // } catch (err: any | AxiosError) {
+    //
+    //     if (isAxiosError(err)) {
+    //         console.log(err);
+    //         return res.status(400).json({ forms: null, message: "Couldn't connect to Go Formz!" });
+    //     }
+    //
+    //     // eslint-disable-next-line no-console
+    //     console.error(err);
+    //     throw new createHttpError.InternalServerError((err as Error).message ?? "Unknown internal error occurred!");
+    // }
 
 };
 

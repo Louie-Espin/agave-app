@@ -26,7 +26,7 @@ const Folder: NextPage = () => {
     const AuthUser = useAuthUser(); // according to next-firebase-auth, the user is guaranteed to be authenticated
     const fetched = useSWR(AuthUser ? url : null, (async () => {
         const token = await AuthUser.getIdToken();
-        return await axios.get(url, { headers: { Authorization: token, } } )
+        return await axios.get(url, { baseURL: '/', headers: { Authorization: token, } } )
             .then(res => res.data)
             .catch(e => { console.error(e); throw e });
     }));
