@@ -1,5 +1,5 @@
 import React, { FC, Fragment, useState } from "react";
-import { Box, List, ListItem, IconButton, ListItemText, ListItemSecondaryAction } from "@mui/material"
+import { Box, List, ListItem, IconButton, ListItemText, ListItemSecondaryAction, CircularProgress } from "@mui/material"
 import ErrorMessage from "components/ErrorMessage";
 import axios from "axios";
 import useSWR from "swr";
@@ -37,6 +37,7 @@ const FormHistory: FC<FormHistoryProps> = ({ title, templateId, idToken }) => {
     }));
     const { data, error, isLoading } = fetched;
 
+    if (isLoading) return <CircularProgress />
     if (error) return <ErrorMessage code={error?.code}/>
 
     return(
