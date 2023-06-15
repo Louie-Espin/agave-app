@@ -24,7 +24,7 @@ const DownLoadAction: FC<DownLoadActionProps> = ({ formId }) => {
 type FormHistoryProps = { title: string, templateId: string, idToken: string | null };
 const FormHistory: FC<FormHistoryProps> = ({ title, templateId, idToken }) => {
 
-    const url: string = `api/history/`;
+    const url: string = `api/history`;
 
     const fetched = useSWR(idToken ? url : null, (async () => {
         return await axios.get(url, {
@@ -35,9 +35,10 @@ const FormHistory: FC<FormHistoryProps> = ({ title, templateId, idToken }) => {
             .then(res => res.data)
             .catch(e => { console.error(e); throw e });
     }));
-    const { data, error, isLoading } = fetched;
+    const { data, error, isLoading, isValidating } = fetched;
 
     if (isLoading) return <CircularProgress />
+    if (isValidating) return <CircularProgress />
     if (error) return <ErrorMessage code={error?.code}/>
 
     return(
