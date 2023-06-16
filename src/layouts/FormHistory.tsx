@@ -29,7 +29,7 @@ const FormHistory: FC<FormHistoryProps> = ({ templateId, idToken }) => {
     }
 
     const url: string = `api/history`;
-    const fetched = useSWR(idToken ? url : null, (async () => {
+    const fetcher = useSWR(idToken ? [url, templateId] : null, (async ([url, templateId]) => {
         return await axios.get(url, {
             baseURL: '/',
             params: { templateId: templateId },
@@ -39,7 +39,7 @@ const FormHistory: FC<FormHistoryProps> = ({ templateId, idToken }) => {
             .catch(e => { console.error(e); throw e });
     }));
 
-    const { data, error, isLoading, isValidating } = fetched;
+    const { data, error, isLoading, isValidating } = fetcher;
 
     if (isLoading) return <LoadingScreen />
     if (isValidating) return <LoadingScreen />
