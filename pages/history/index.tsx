@@ -3,7 +3,8 @@ import React, { Fragment, SyntheticEvent, useEffect, useState } from "react";
 import { AuthAction, withAuthUser, useAuthUser } from "next-firebase-auth";
 import Loader from "components/Loader";
 
-import { Box, Tabs, Tab, Container, Divider, } from "@mui/material";
+import { Box, Tab, Container, } from "@mui/material";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { H2, H5 } from "components/Typography";
 import { NextLinkComposed } from 'components/Link';
 import FormHistory from "layouts/FormHistory";
@@ -17,49 +18,28 @@ import Build from "@mui/icons-material/Build";
 
 type HistoryPageProps = {}
 
-/** Tab Panel DECLARATION**/
-interface TabPanelProps { children?: React.ReactNode; index: number; value: number; }
-function a11yProps(index: number) { return { id: `simple-tab-${index}`, 'aria-controls': `simple-tabpanel-${index}`, }; }
-function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div role="tabpanel" hidden={value !== index} aria-labelledby={`simple-tab-${index}`}
-            id={`simple-tabpanel-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box sx={{ p: 3 }}>
-                    {children}
-                </Box>
-            )}
-        </div>
-    );
-}
-/** Tab Panel END **/
-
 const HistoryPage: NextPage<HistoryPageProps> = ({}) => {
 
     const AuthUser = useAuthUser(); // according to next-firebase-auth, the user is guaranteed to be authenticated
     const [token, setToken] = useState<string | null>(null);
+    const [tabVal, setTabVal] = useState(TemplateID.PUNCH_LIST);
+
+    const handleChange = (event: SyntheticEvent, eventValue: TemplateID) => {
+        setTabVal(eventValue);
+    };
 
     useEffect(() => {
         const getToken = async () => {
             const idToken = await AuthUser.getIdToken();
-            console.warn(`getToken effect was called! Token: ${idToken}`)
+            console.log(`getToken called; Token: ${!!idToken}`);
             setToken(idToken);
         }
 
         void getToken();
     }, [AuthUser]);
 
-    const [value, setValue] = React.useState(0);
-    const handleChange = (event: SyntheticEvent, newValue: number) => {
-        setValue(newValue);
-    };
-
     return(
-        <Fragment>
+        <TabContext value={tabVal}>
             <Box height='100%' display='flex' flexDirection='column'>
                 <Container sx={{ mt: "2rem", borderBottom: 1, borderColor: "grey.300"}}>
                     <Box display='flex' alignItems='center' mt={2} mb={1}>
@@ -69,59 +49,49 @@ const HistoryPage: NextPage<HistoryPageProps> = ({}) => {
                         </H2>
                     </Box>
 
-                    <Tabs value={value} onChange={handleChange} variant={"scrollable"} allowScrollButtonsMobile
+                    <TabList onChange={handleChange} variant="scrollable" allowScrollButtonsMobile aria-label="History Tabs"
                           sx={{'.MuiTabs-scrollButtons.Mui-disabled': { opacity: 0.3 }}}
                     >
-                        <Tab icon={<List/>} iconPosition="start" label="Punch Lists" {...a11yProps(0)}/>
-                        <Tab icon={<CircleNotificationsOutlined/>} iconPosition="start" label="Status Updates" {...a11yProps(1)}/>
-                        <Tab icon={<AssignmentTurnedInIcon/>} iconPosition="start" label="Service Reports" {...a11yProps(2)}/>
-                        <Tab icon={<Build/>} iconPosition="start" label="Work Orders" {...a11yProps(3)}/>
-                    </Tabs>
+                        <Tab icon={<List/>} iconPosition="start" label="Punch Lists" value={TemplateID.PUNCH_LIST}/>
+                        <Tab icon={<CircleNotificationsOutlined/>} iconPosition="start" label="Status Updates" value={TemplateID.STATUS_UPDATE}/>
+                        <Tab icon={<AssignmentTurnedInIcon/>} iconPosition="start" label="Service Reports" value={TemplateID.WEEKLY_REPORT}/>
+                        <Tab icon={<Build/>} iconPosition="start" label="Work Orders" value={TemplateID.WORK_ORDER}/>
+                    </TabList>
                 </Container>
 
-                {/* FIXME */}
                 <Container>
-                    <TabPanel index={0} value={value}>
-                        <FormHistory title="Punch Lists" idToken={token} templateId={templateInfo[0].id}/>
+                    <TabPanel value={TemplateID.PUNCH_LIST}>
+                        <FormHistory templateId={TemplateID.PUNCH_LIST} idToken={token} />
                     </TabPanel>
-                    <TabPanel index={1} value={value}>
-                        <FormHistory title="Status Updates" idToken={token} templateId={templateInfo[1].id}/>
+                    <TabPanel value={TemplateID.STATUS_UPDATE}>
+                        <FormHistory templateId={TemplateID.STATUS_UPDATE} idToken={token} />
                     </TabPanel>
-                    <TabPanel index={2} value={value}>
-                        <FormHistory title="Service Reports" idToken={token} templateId={templateInfo[2].id}/>
+                    <TabPanel value={TemplateID.WEEKLY_REPORT}>
+                        <FormHistory templateId={TemplateID.WEEKLY_REPORT} idToken={token} />
                     </TabPanel>
-                    <TabPanel index={3} value={value}>
-                        <FormHistory title="Work Orders" idToken={token} templateId={templateInfo[3].id}/>
+                    <TabPanel value={TemplateID.WORK_ORDER}>
+                        <FormHistory templateId={TemplateID.WORK_ORDER} idToken={token} />
                     </TabPanel>
                 </Container>
             </Box>
-        </Fragment>
+        </TabContext>
     );
 }
 
-/** FIXME: this should not be a static list. PLEASE fix later! **/
-const templateInfo = [
-    {
-        id: 'd131b34f-7bda-482e-8c66-4d39d2005387',
-        name: 'Maintenance Punch List',
-        curr_version: 'v.2',
-    },
-    {
-        id: 'f9b58d1a-0101-400c-ab2c-f4f2b1532bb2',
-        name: 'Report template V.6 - GoFormz',
-        curr_version: 'v.3',
-    },
-    {
-        id: '6efc08b0-8942-42f0-a7d0-2c19981e1684',
-        name: 'Service Report Template - 2.0',
-        curr_version: 'v.10',
-    },
-    {
-        id: '68dac9d2-20d9-4ca8-9156-c7158bd85fbe',
-        name: 'Work Order - Extra Work 2.0',
-        curr_version: 'v.4',
-    }
-]
+/** FIXME: this should not be static **/
+enum TemplateID {
+    PUNCH_LIST = 'd131b34f-7bda-482e-8c66-4d39d2005387',
+    STATUS_UPDATE = 'f9b58d1a-0101-400c-ab2c-f4f2b1532bb2',
+    WEEKLY_REPORT = '6efc08b0-8942-42f0-a7d0-2c19981e1684',
+    WORK_ORDER = '68dac9d2-20d9-4ca8-9156-c7158bd85fbe',
+}
+
+const templateRec: Record<TemplateID, { name: string , currVersion: string }> = {
+    [TemplateID.PUNCH_LIST]: { name: 'Maintenance Punch List', currVersion: 'v.2' },
+    [TemplateID.STATUS_UPDATE]: { name: 'Report template V.6 - GoFormz', currVersion: 'v.3' },
+    [TemplateID.WEEKLY_REPORT]: { name: 'Service Report Template - 2.0', currVersion: 'v.10' },
+    [TemplateID.WORK_ORDER]: { name: 'Work Order - Extra Work 2.0', currVersion: 'v.4' }
+}
 
 export default withAuthUser<HistoryPageProps>({
     whenAuthed: AuthAction.RENDER, // Page is rendered, if the user is authenticated
