@@ -1,4 +1,5 @@
 import { FC, Fragment, useState, useEffect } from "react";
+import { useRouter } from 'next/router'
 import { Dialog, DialogTitle, DialogContent, Button, CircularProgress } from "@mui/material";
 import axios from "axios";
 
@@ -20,6 +21,7 @@ const downloadStatus: Record<'inactive' | 'loading' | 'complete' | 'error', { pr
 
 const DownloadDialog: FC<DownloadDialogProps> = ({ formId, token, open, onClose }) => {
 
+    const router = useRouter();
     const [status, setStatus] = useState(downloadStatus.inactive);
     const [download, setDownload] = useState<{ formId: null | string, exportId: null | string }>({ formId: null, exportId: null });
 
@@ -69,6 +71,11 @@ const DownloadDialog: FC<DownloadDialogProps> = ({ formId, token, open, onClose 
 
         return () => { source.cancel(); }
     }, [formId, token]);
+
+    useEffect(() => {
+        if (download.formId && download.exportId)
+            void router.push({ pathname: '/history/[formId]', query: { formId: download.formId, exportId: download.exportId } })
+    }, [router, download]);
 
     return(
         <Dialog open={open} fullWidth >
