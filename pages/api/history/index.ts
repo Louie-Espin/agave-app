@@ -17,7 +17,8 @@ const config = (templateId: string) => {
             'Accept': '*/*',
             'Accept-Encoding': 'gzip, deflate, sdch',
             'Authorization': `Basic ${ENCODED}`,
-        }
+        },
+        params: { status: 'complete', },
     }
 };
 
