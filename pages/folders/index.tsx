@@ -18,7 +18,7 @@ type FoldersPageProps = {}
 
 const FoldersPage: NextPage<FoldersPageProps> = ({}) => {
 
-    const url: string = '/api/folders';
+    const url: string = 'api/go-formz/templates';
     const AuthUser = useAuthUser(); // according to next-firebase-auth, the user is guaranteed to be authenticated
     const fetched = useSWR(AuthUser ? url : null, (async () => {
         const token = await AuthUser.getIdToken();
@@ -51,9 +51,9 @@ const FoldersPage: NextPage<FoldersPageProps> = ({}) => {
                 </Container>
                 <Container>
                     <Box mb={4} >
-                        {fetched.data.folders !== null &&
+                        {fetched.data.categories !== null &&
                             <Grid container spacing={3}>
-                                {fetched.data.folders.map((i: Folder) => (
+                                {fetched.data.categories.map((i: Folder) => (
                                     <Grid item xs={12} sm={6} md={6} key={i.id} component={NextLinkComposed} to={{pathname: `/folders/${i.id}`}}>
                                         <Card sx={{ display: "flex", p: "14px 32px", height: "100%", alignItems: "center",}}>
                                             <Avatar><Folder/></Avatar>

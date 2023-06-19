@@ -8,7 +8,7 @@ import firebaseClient from "@firebaseUtils/firebaseClient";
 import Loader from "components/Loader";
 
 import { Alert, AlertColor, Box, Button, Collapse, Container, Divider } from "@mui/material";
-import { Home } from "@mui/icons-material";
+import { Settings } from "@mui/icons-material";
 import { H2, H4 } from "components/Typography";
 
 type VerifyEmailProps = {}
@@ -60,7 +60,7 @@ const VerifyEmail: NextPage<VerifyEmailProps> = () => {
             <Box height='100%' display='flex' flexDirection='column'>
                 <Container sx={{ mt: "3rem" }}>
                     <Box display='flex' alignItems='center' my={2}>
-                        <Home color="primary"/>
+                        <Settings color="primary"/>
                         <H2 ml={1.5} my="0px" lineHeight="1" whiteSpace="pre">
                             Verify Email
                         </H2>
