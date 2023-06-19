@@ -32,7 +32,7 @@ const SideBar = (
                 </List>
 
                 <ListItem key={'account-button'}>
-                    <ListItemButton sx={{borderRadius: '30px'}} >
+                    <ListItemButton sx={{borderRadius: '30px', display: 'none'}} >
                         <ListItemAvatar><Avatar alt={'avatar'}/></ListItemAvatar>
                         <ListItemText
                             primary={'Mike McMahon'}
