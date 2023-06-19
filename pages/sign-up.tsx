@@ -49,7 +49,7 @@ const SignUpPage: NextPage<SignUpPageProps> = () => {
                     setAlertSeverity('success');
                     setAlertContent("Success! Redirecting to email verification...");
 
-                    router.push('/verify-email');
+                    router.push('/settings/verify-email');
                 });
 
         } catch (e: unknown) {

@@ -2,22 +2,15 @@ import { NextPage } from "next";
 import React, { Fragment } from "react";
 import { AuthAction, withAuthUser, useAuthUser } from "next-firebase-auth";
 import Loader from "components/Loader";
+import { NextLinkComposed } from "components/Link";
 
-import { styled } from "@mui/material/styles";
 import {Avatar, Box, Button, Card, Container, Divider, Grid, Typography, IconButton} from "@mui/material";
 import Settings from "@mui/icons-material/Settings";
 import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos";
 import { H2, H5, H6 } from "components/Typography";
 import clientLogOut from "@firebaseUtils/client/logOut";
 
-const TableRow = styled(Card)({
-    display: "flex", flexWrap: "wrap", alignItems: "center", borderRadius: "10px", cursor: "pointer",
-    "& > *": { flex: "1 1 0", },
-    "& .pre": { whiteSpace: "pre", },
-});
-
-type SettingsPageProps = {
-}
+type SettingsPageProps = { }
 
 const SettingsPage: NextPage<SettingsPageProps> = ({ }) => {
     const AuthUser = useAuthUser();
@@ -82,7 +75,9 @@ const SettingsPage: NextPage<SettingsPageProps> = ({ }) => {
                                         </Card>
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <Card sx={{ display: "flex", p: "14px 14px", height: "100%", alignItems: "center",}}>
+                                        <Card  component={NextLinkComposed} to={'/settings/verify-email'}
+                                               sx={{ display: "flex", p: "14px 14px", height: "100%", alignItems: "center",}}
+                                        >
                                             <Box ml={1.5} flex="1 1 0">
                                                 <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                                                     <H6 my="0px" color="grey.700">VERIFY E-MAIL</H6>
@@ -94,7 +89,9 @@ const SettingsPage: NextPage<SettingsPageProps> = ({ }) => {
                                         </Card>
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <Card sx={{ display: "flex", p: "14px 14px", height: "100%", alignItems: "center",}}>
+                                        <Card component={NextLinkComposed} to={'/settings/admin-dashboard'}
+                                              sx={{ display: "flex", p: "14px 14px", height: "100%", alignItems: "center",}}
+                                        >
                                             <Box ml={1.5} flex="1 1 0">
                                                 <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                                                     <H6 my="0px" color="grey.700">MANAGE USERS</H6>
