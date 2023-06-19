@@ -40,11 +40,8 @@ const signUpHandler: NextApiHandler<PostResponse> = async (req: postUserRequest,
         // Set a new user document(userRecord.id) with default settings
         await db.collection(USERS_COL_).doc(userRecord.uid).set({
             displayName: userRecord.displayName,
-            role: {
-                admin: false,
-                client: false,
-                user: true,
-            }
+            admin: false,
+            properties: [],
         });
 
         const customToken = await getAuth().createCustomToken(userRecord.uid);
