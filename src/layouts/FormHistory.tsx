@@ -46,7 +46,7 @@ const FormHistory: FC<FormHistoryProps> = ({ templateId, idToken }) => {
     if (error) return <ErrorMessage code={error?.code}/>
 
     return(
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', mb: 12 }}>
             <List disablePadding>
                 {data?.forms.map((i: Form) => (
                     <ListItem key={i.formId}>
