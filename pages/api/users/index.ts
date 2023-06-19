@@ -6,6 +6,7 @@ import { getFirestore } from "firebase-admin/firestore";
 import { verifyIdToken } from "next-firebase-auth";
 import { AxiosError, isAxiosError } from "axios";
 import createHttpError from "http-errors";
+import initAuth from "@firebaseUtils/initAuth";
 
 type User = { id: string, displayName: string, admin: boolean, properties: any[] }
 const USERS_COL_: string = 'users';
@@ -16,6 +17,7 @@ const getUsersHandler: NextApiHandler = async (req, res) => {
     let users: User[] = [];
 
     // Initializing Firebase Admin SDK
+    initAuth();
     initFirebaseAdminSDK();
     const db = getFirestore();
 
