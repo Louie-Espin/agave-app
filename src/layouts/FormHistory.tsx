@@ -7,6 +7,7 @@ import useSWR from "swr";
 
 import Download from "@mui/icons-material/Download";
 import { useTabContext } from "@mui/lab";
+import {format} from "date-fns";
 
 type FormHistoryProps = { templateId: string, idToken: string | null, };
 const FormHistory: FC<FormHistoryProps> = ({ templateId, idToken }) => {
@@ -48,16 +49,21 @@ const FormHistory: FC<FormHistoryProps> = ({ templateId, idToken }) => {
     return(
         <Box sx={{ width: '100%', mb: 12 }}>
             <List disablePadding>
-                {data?.forms.map((i: Form) => (
-                    <ListItem key={i.formId}>
-                        <ListItemText primary={i.name} secondary={i.status.status}/>
-                        <ListItemSecondaryAction onClick={() => handleSelectForm(i.formId)}>
-                            <IconButton>
-                                <Download color="primary"/>
-                            </IconButton>
-                        </ListItemSecondaryAction>
-                    </ListItem>
-                ))}
+                {
+                    (data?.forms && data.forms.length > 0) ?
+                        data?.forms.map((i: Form) => (
+                            <ListItem key={i.formId}>
+                                <ListItemText primary={i.name}
+                                    secondary={format(new Date(i.lastUpdateDate), 'MM/dd/yyyy')}
+                                />
+                                <ListItemSecondaryAction onClick={() => handleSelectForm(i.formId)}>
+                                    <IconButton>
+                                        <Download color="primary"/>
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        )) : <Box>There is no work history to report from this category</Box>
+                }
             </List>
             <DownloadDialog formId={selectedForm} open={dialog} onClose={handleCloseDialog} token={idToken}/>
         </Box>
