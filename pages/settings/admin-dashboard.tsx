@@ -2,6 +2,7 @@ import { NextPage } from "next";
 import React, { Fragment, useEffect, useState } from "react";
 import { AuthAction, withAuthUser, useAuthUser } from "next-firebase-auth";
 import Loader from "components/Loader";
+import ErrorMessage from "components/ErrorMessage";
 import PropertyDialog from "layouts/PropertyDialog";
 import { Box, Container, Divider, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, Button } from "@mui/material"
 import useSWR from "swr";
@@ -49,7 +50,14 @@ const AdminDashboardPage: NextPage<AdminDashboardProps> = ({}) => {
     }));
 
     const { data, error, isLoading, isValidating } = fetcher;
+
     if (isLoading || isValidating) return <Loader/>;
+
+    if (error) return (
+        <Container sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <ErrorMessage code={ (error.code) ? error.code : 500} message={ (error.message) ? error.message : undefined}/>
+        </Container>
+    )
 
     return(
         <Fragment>
