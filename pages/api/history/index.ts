@@ -4,10 +4,31 @@ import { apiHandler } from "utils/api/apiHandler";
 import initAuth from "@firebaseUtils/initAuth";
 import initFirebaseAdminSDK from "@firebaseUtils/firebaseAdmin";
 import createHttpError from "http-errors";
+import { verifyIdToken } from "next-firebase-auth";
+import { getFirestore } from "firebase-admin/firestore";
+
+type User = { id: string, displayName: string, admin: boolean, properties: any[] }
+const USERS_COL_: string = 'users';
+const ADMIN_FIELD_: string = 'admin';
+const PROPERTIES_F: string = 'properties';
 
 const ENCODED: string = Buffer.from(`${process.env.GOFORMZ_LOGIN}:${process.env.GOFORMZ_PASS}`).toString('base64');
 
-const config = (templateId: string) => {
+const config = (templateId: string, nameParam?: string) => {
+
+    if (nameParam) return {
+        url: `https://api.goformz.com/v2/templates/${templateId}/formz`,
+        method: 'GET',
+        headers: {
+            'Host': 'api.goformz.com',
+            'Connection': 'keep-alive',
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, sdch',
+            'Authorization': `Basic ${ENCODED}`,
+        },
+        params: { status: 'complete', name: nameParam },
+    }
+
     return {
         url: `https://api.goformz.com/v2/templates/${templateId}/formz`,
         method: 'GET',
@@ -23,8 +44,10 @@ const config = (templateId: string) => {
 };
 
 const getForms: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse) => {
+
     initAuth();
     initFirebaseAdminSDK();
+    const db = getFirestore();
 
     const token = req.headers['authorization'];
     if (!token) return res.status(401).json({ forms: null, message: "GET forms failed; No token!" });
@@ -33,8 +56,30 @@ const getForms: NextApiHandler = async (req: NextApiRequest, res: NextApiRespons
     if (!templateId) return res.status(400).json({ forms: null, message: "GET forms failed; No templateId!" });
 
     try {
-        const getForms = await axios(config(templateId as string));
-        return res.status(200).json({ forms: getForms.data, message: "GET forms success." });
+        // Verifying ID Token
+        const authUser = await verifyIdToken(token);
+        if (!authUser.id) return res.status(401).json({ forms: null, message: "GET forms failed. Unauthorized!" })
+
+        // Querying authenticated user in DB & checking for admin rights
+        const authDoc = await db.collection(USERS_COL_).doc(authUser.id).get();
+        if (!authDoc.exists) return res.status(500).json({ forms: null, message: "GET forms failed. User not found!" })
+
+        // Query GoFormz without filtering by Property name
+        if (authDoc.get(ADMIN_FIELD_)) {
+            const getForms = await axios(config(templateId as string));
+            return res.status(200).json({ forms: getForms.data, message: "GET forms success. (Admin)" })
+        }
+
+        let clientForms: any[] = [];
+        let getClientForms;
+
+        for (let pName of authDoc.get(PROPERTIES_F) as string[]) {
+            getClientForms = await axios(config(templateId as string, pName));
+            clientForms = clientForms.concat(getClientForms.data);
+        }
+
+        return res.status(200).json({ forms: clientForms, message: "GET forms success. (Client)" });
+
 
     } catch (err: any | AxiosError) {
 
