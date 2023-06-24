@@ -17,11 +17,13 @@ declare module "@mui/material/styles" {
     interface Palette {
         paste: CustomPaletteColor;
         marron: CustomPaletteColor;
+        beige: CustomPaletteColor;
     }
 
     interface PaletteOptions {
         paste: CustomPaletteColor;
         marron: CustomPaletteColor;
+        beige: CustomPaletteColor;
     }
 }
 // =================================================================
@@ -32,27 +34,41 @@ export const primary = {
     200: "#9dc2a0",
     300: "#88af8b",
     400: "#7A9F7D",
-    600: "#759b78",
-    700: "#5e8561",
-    800: "#4f7352",
-    900: "#3c5b1a",
+    600: "#6b8e6e",
+    700: "#5c755e",
+    800: "#3f4a40",
+    900: "#323a32",
     main: "#7A9F7D",
     contrastText: "#FFFFFF",
 };
 
 export const secondary = {
-    100: "#c774bb",
-    200: "#b95dac",
-    300: "#b955ab",
-    400: "#a8409b",
-    500: "#a13494",
-    600: "#8E2680",
-    700: "#882178",
-    800: "#7a1a6a",
-    900: "#701660",
-    main: "#8E2680",
-    dark: "#5e1051",
+    100: "#d09fcc",
+    200: "#bb90b7",
+    300: "#9f7a9c",
+    400: "#89749b",
+    500: "#7f6f8d",
+    600: "#7b688b",
+    700: "#6c5e78",
+    800: "#5a5062",
+    900: "#3b373f",
+    main: "#7b688e",
+    dark: "#3b373f",
 };
+
+export const beige = {
+    50: "#e5dbcf",
+    100: "#e1d5c7",
+    200: "#c7bcaf",
+    300: "#b2a99c",
+    400: "#b0a89b",
+    600: "#9f9689",
+    700: "#c9a87c",
+    800: "#b0956d",
+    900: "#a1845e",
+    main: "#b0a89b",
+    contrastText: "#151515",
+}
 
 export const warning = {
     100: "#FFF8E5",
@@ -160,6 +176,7 @@ export const themeColors = {
     warning,
     success,
     secondary,
+    beige: { ...beige },
     grey: { ...grey },
     info: { ...blue },
     divider: grey[200],
