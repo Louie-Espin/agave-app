@@ -41,11 +41,14 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
                 <meta charSet="utf-8" />
+                <link href="/favicon.jpg" rel="shortcut icon" type="image/x-icon"/>
+                <title>Client Portal - Agave Environment Contracting, Inc.</title>
+
             </Head>
             <MuiTheme>
-                <AppLayout>
+                {/*<AppLayout>*/}
                     <Component {...pageProps} />
-                </AppLayout>
+                {/*</AppLayout>*/}
             </MuiTheme>
         </Fragment>
     );
