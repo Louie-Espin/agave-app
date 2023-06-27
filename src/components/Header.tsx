@@ -1,23 +1,8 @@
 import Image from "next/image";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { alpha, Box, BoxProps, Button, styled } from "@mui/material";
-import Home from "@mui/icons-material/Home";
-import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-import Settings from "@mui/icons-material/Settings";
-import HomeWorkIcon from "@mui/icons-material/HomeWork";
 import { NextLinkComposed } from "components/Link";
 import agaveLogo from '@public/assets/images/logo-agave.png'
-
-
-// FIXME: dev, remove later
-const AgaveNavigations: { key: number, title: string, NavIcon: any, href: string }[] = [
-    { key: 1, title: 'Home', NavIcon: Home, href: '/' },
-    { key: 2, title: 'History', NavIcon: WorkHistoryIcon, href: '/history/' },
-    { key: 3, title: 'Settings', NavIcon: Settings, href: '/settings/' },
-    // { key: 2, title: 'Forms', NavIcon: Assignment, href: '/forms' },
-    // { key: 3, title: 'Folders', NavIcon: Folder, href: '/folders' },
-    { key: 4, title: 'Properties', NavIcon: HomeWorkIcon, href: '/properties/' },
-]
 
 interface HeaderProps extends BoxProps {
     hLarge: number,
@@ -54,10 +39,11 @@ const SmoothHeader = styled(Box, {
 
 (({ theme, scrollDir, hLarge, hSmall, ...props }) => ({
 
+    backgroundImage: `linear-gradient(to right, ${alpha(theme.palette.grey['500'], .4)}, ${alpha(theme.palette.grey['300'], 1)})`,
+
     position: 'fixed',
     height: hLarge,
     width: '100%',
-    backgroundColor: alpha(theme.palette.grey['500'], .5),
     backdropFilter: 'blur(5px)',
     top: 0,
     padding: theme.spacing(2),
@@ -76,7 +62,7 @@ const SmoothHeader = styled(Box, {
 
     ...((scrollDir == 'down') && { // the overrides added when the 'scrollDir' prop == 'down'
         height: hSmall,
-        backgroundColor: alpha(theme.palette.grey['500'], .7),
+        backgroundColor: alpha(theme.palette.grey['500'], .5),
         backdropFilter: 'blur(7px)',
     })
 }));
@@ -90,16 +76,9 @@ const Header: FC<HeaderProps> = ({ hLarge, hSmall, children, ...props }) => {
             <Box position='relative' height='100%' minWidth={150} component={NextLinkComposed} to={{pathname: '/'}} >
                 <Image src={agaveLogo} alt='Agave Logo' fill loading='lazy' sizes={'150px'} style={{ objectFit: 'contain'}}/>
             </Box>
-            <Box flex='1 1 auto' justifyContent='space-evenly' display={{ xs: 'none', md: 'flex' }} maxWidth='50%'>
-                {AgaveNavigations.map((nav) => (
-                    <Button
-                        key={nav.key}
-                        color={'inherit'}
-                        sx={{ my: 2, color: 'white', display: 'block' }}
-                    >
-                        {nav.title}
-                    </Button>
-                ))}
+            <Box flex='1 1 auto' justifyContent='flex-end' display='flex'>
+                <Button variant='contained' color='primary' sx={{ mr: 2, borderRadius: '20px' }}>Sign Up</Button>
+                <Button variant='outlined' color='secondary' sx={{ borderRadius: '20px' }}>Log In</Button>
             </Box>
         </SmoothHeader>
     );
