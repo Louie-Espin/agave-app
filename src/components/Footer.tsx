@@ -4,7 +4,7 @@ import { LinkedIn, Instagram, Facebook, Twitter } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import {NextLinkComposed} from "./Link";
 import Image from "next/image";
-import agaveLogo from "@public/assets/images/logo-agave.png";
+import agaveLogo from "@public/assets/images/logo-agave-white.png";
 
 const FooterWrapper = styled(Box, {})
 (({ theme }) => ({

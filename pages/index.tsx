@@ -1,63 +1,61 @@
+import { Fragment, FC, useState, useEffect } from 'react';
 import { NextPage } from "next";
-import React, { Fragment } from "react";
-import { Box, Button, Container, Divider, Paper } from "@mui/material";
+import { useAuthUser, AuthAction, withAuthUser } from "next-firebase-auth";
+
+import {Box, BoxProps, Container, styled, Theme, Typography, withTheme} from "@mui/material";
+import Grid2 from "@mui/material/Unstable_Grid2";
 import BackgroundVideo from "components/BackgroundVideo";
-import { H2, H3, } from "components/Typography";
-import { Build, ChatBubble, Home, Phone } from "@mui/icons-material";
-import Image from "next/image";
-import AnnouncementList from "layouts/AnnouncementList";
+import Header from "components/Header";
+import Footer from "components/Footer";
+import Loader from "components/Loader";
+import WhatWeDoSection from "layouts/Home/WhatWeDo";
 
-import {AuthAction, withAuthUser} from 'next-firebase-auth';
-import Loader from 'components/Loader';
+type HomePageProps = {
 
-type HomePageProps = { }
-
-const HomePage: NextPage<HomePageProps> = ({ }) => {
-
-    return(
-        <Fragment>
-            <Container sx={{ mt: "3rem" }}>
-                <Box display='flex' alignItems='center' my={2}>
-                    <Home color="primary"/>
-                    <H2 ml={1.5} my="0px" lineHeight="1" whiteSpace="pre">
-                        Home
-                    </H2>
-                </Box>
-
-                <Divider sx={{ mb: 1, borderColor: "grey.300" }} />
-            </Container>
-            <BackgroundVideo source={"/assets/videos/homepage-video.mp4"} coverAlpha={0.5} gradient>
-                <Box height='100%' display='flex' flexDirection='column' justifyContent='center' alignItems='center' mx={4} position={'relative'}>
-                    <Image src={"/assets/images/logo-agave.png"} fill style={{objectFit: 'contain'}} alt={'agave logo'}/>
-                </Box>
-            </BackgroundVideo>
-            <Container sx={{ py: 1, pb: 8 } }>
-                <Box textAlign={'center'}>
-                    <Button href="tel:6022541464" variant='outlined' color='primary' size='medium' endIcon={<Phone/>} sx={{mr: 2, borderRadius: '25px', my: 2}}>
-                        Contact Us
-                    </Button>
-                    <Button variant='contained' color='primary' size='medium' endIcon={<Build/>} sx={{borderRadius: '25px', my: 2}}>
-                        Request Service
-                    </Button>
-                </Box>
-                <H3>Latest Activity</H3>
-                <Paper elevation={0} variant={'outlined'}>
-                    <AnnouncementList/>
-                </Paper>
-            </Container>
-        </Fragment>
-    );
 }
 
-/* TODO: dummy data */
-const latestActivity = [
-    { id: 1, primary: "Repair Request Closed", Avatar: <Build/>, date: "March 1, 2023", secondary: "Your maintenance request has been closed by Luis Espinoza" },
-    { id: 2, primary: "New message received", Avatar: <ChatBubble/>, date: "January 20, 2023", secondary: "From Braulio Antonio" },
-    { id: 3, primary: "New message received", Avatar: <ChatBubble/>, date: "January 19, 2023", secondary: "From Esteban Rodriguez" },
-    { id: 4, primary: "Consultation Request Received", Avatar: <Build/>, date: "January 1, 2023", secondary: "New consultation request from Luis Espinoza" },
-    { id: 5, primary: "Feedback Received", Avatar: <Build/>, date: "December 20, 2022", secondary: "Feedback from Carol Escobar" },
-    { id: 6, primary: "New message received", Avatar: <ChatBubble/>, date: "December 20, 2022", secondary: "From Carol Escobar" },
-]
+const HomePage: NextPage<HomePageProps> = () => {
+
+    const AuthUser = useAuthUser();
+
+    return(
+        <Box position="relative">
+            <Header hLarge={90} hSmall={75} zIndex={100}/>
+            <Box display='block' position='relative' height="90vh" overflow="hidden" >
+                <video src={"/assets/videos/homepage-video.mp4"} autoPlay playsInline loop muted
+                       style={{ height: '90vh',maxWidth: '100%', objectFit: "cover", zIndex: -1 }}
+                />
+                <Box sx={{ width: '100%', height: '100%', position: 'absolute', top: '0%', left: '0%', bottom: '0%', right: '0%', }}>
+
+                </Box>
+            </Box>
+            <Box justifyContent={'center'} alignItems={'center'} alignContent='stretch' display='flex' flexWrap={'wrap'}
+                 sx={{ backgroundColor: (theme) => theme.palette.beige['50'] }} py={5} px={{ xs: 3, md: 12 }}
+            >
+                <Box display='flex' flex={'1 1 0'} flexDirection='column' alignItems='center' justifyContent='center' textAlign='center'>
+                    <Typography fontSize='4rem' color={'primary'}>1200</Typography>
+                    <Typography fontSize='1.2rem'>Clients</Typography>
+                </Box>
+                <Box display='flex' flex={'1 1 0'}  flexDirection='column' alignItems='center' justifyContent='center' textAlign='center'>
+                    <Typography fontSize='4rem' color={'primary'}>6000</Typography>
+                    <Typography fontSize='1.2rem'>Projects</Typography>
+                </Box>
+                <Box display='flex' flex={'1 1 0'}  flexDirection='column' alignItems='center' justifyContent='center' textAlign='center'>
+                    <Typography fontSize='4rem' color={'primary'}>30</Typography>
+                    <Typography fontSize='1.2rem'>Years of Experience</Typography>
+                </Box>
+                <Box display='flex' flex={'1 1 0'} flexDirection='column' alignItems='center' justifyContent='center' textAlign='center'>
+                    <Typography fontSize='4rem' color={'primary'}>80</Typography>
+                    <Typography fontSize='1.2rem'>Awards</Typography>
+                </Box>
+            </Box>
+            <Box p={4} >
+                <WhatWeDoSection/>
+            </Box>
+            <Footer/>
+        </Box>
+    );
+}
 
 export default withAuthUser<HomePageProps>({
     whenAuthed: AuthAction.RENDER, // Page is rendered, if the user is authenticated
