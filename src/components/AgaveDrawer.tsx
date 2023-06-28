@@ -122,11 +122,11 @@ const AuthedItem: FC<{ signedIn: boolean, name: string | null  }> = ({ signedIn,
         <ListItem key={'account-button'} disableGutters sx={{ borderRadius: '10px', my: 2 }}
                   secondaryAction={<IconButton onClick={handleLogOut}><Logout/></IconButton>}
         >
-            <ListItemButton >
+            <ListItemButton component={NextLinkComposed} to={'/dashboard'} sx={{ borderRadius: '10px' }}>
                 <ListItemAvatar><Avatar alt={'avatar'}/></ListItemAvatar>
                 <ListItemText
-                    primary={'Welcome!'}
-                    secondary={name ? name : 'Your account'}
+                    primary={name ? name : 'Your account'}
+                    secondary={'View Dashboard'}
                     primaryTypographyProps={{sx: {color: 'rgba(0, 0, 0, 0.54)', fontSize: '1rem', fontWeight: 600} }}
                 />
             </ListItemButton>
