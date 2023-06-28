@@ -78,7 +78,7 @@ const AgaveDrawer: FC<AgaveDrawerProps> = ({ open, closeCallback, signedIn, disp
                 <List >
                     <ListItem key={'logo-button'} divider sx={{ mb: 2 }}>
                         <Box position='relative' height='100%' minHeight={100} minWidth={225} component={NextLinkComposed} to={{pathname: '/'}} >
-                            <Image src={agaveLogo} alt='Agave Logo' fill loading='lazy' style={{ objectFit: 'cover'}}/>
+                            <Image src={agaveLogo} alt='Agave Logo' fill loading='lazy' placeholder='blur' style={{ objectFit: 'cover'}}/>
                         </Box>
                     </ListItem>
 

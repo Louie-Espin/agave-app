@@ -77,7 +77,7 @@ const Header: FC<HeaderProps> = ({ hLarge, hSmall, action, children, ...props })
     return(
         <SmoothHeader scrollDir={scrollDir} hLarge={hLarge} hSmall={hSmall} {...props} >
             <Box position='relative' height='100%' minWidth={150} component={NextLinkComposed} to={{pathname: '/'}} >
-                <Image src={agaveLogo} alt='Agave Logo' fill loading='lazy' sizes={'150px'} style={{ objectFit: 'contain'}}/>
+                <Image src={agaveLogo} alt='Agave Logo' fill loading='lazy' placeholder='blur' sizes={'150px'} style={{ objectFit: 'contain'}}/>
             </Box>
             <Box flex='1 1 auto' justifyContent='flex-end' display='flex'>
                 <IconButton color="primary" aria-label="open drawer" onClick={action} edge="start" sx={{ mr: 2 }}>
