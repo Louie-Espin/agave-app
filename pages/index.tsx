@@ -5,11 +5,10 @@ import { useAuthUser, AuthAction, withAuthUser } from "next-firebase-auth";
 import {Box, BoxProps, Container, styled, Theme, Typography, withTheme} from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import BackgroundVideo from "components/BackgroundVideo";
-import Header from "components/Header";
-import AgaveDrawer from "components/AgaveDrawer";
-import Footer from "components/Footer";
 import Loader from "components/Loader";
 import WhatWeDoSection from "layouts/Home/WhatWeDo";
+
+import AuthLayout from "layouts/AuthLayout";
 
 type HomePageProps = {
 
@@ -19,21 +18,9 @@ const HomePage: NextPage<HomePageProps> = () => {
 
     const AuthUser = useAuthUser();
 
-    const [drawer, setDrawer] = useState(false);
-
-    const openDrawer = () => {
-        setDrawer(true);
-    }
-
-    const closeDrawer = () => {
-        setDrawer(false);
-    }
-
     return(
-        <Box position="relative">
-            <Header hLarge={90} hSmall={75} zIndex={100} action={openDrawer}/>
-            <AgaveDrawer open={drawer} closeCallback={closeDrawer} signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}/>
-            <Box display='block' position='relative' height="90vh" overflow="hidden" >
+        <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
+            <Box display='block' position='relative' height="75vh" overflow="hidden" >
                 <video src={"/assets/videos/homepage-video.mp4"} autoPlay playsInline loop muted
                        style={{ height: '90vh',maxWidth: '100%', objectFit: "cover", zIndex: -1 }}
                 />
@@ -64,8 +51,7 @@ const HomePage: NextPage<HomePageProps> = () => {
             <Box p={4} >
                 <WhatWeDoSection/>
             </Box>
-            <Footer/>
-        </Box>
+        </AuthLayout>
     );
 }
 

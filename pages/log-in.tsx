@@ -11,15 +11,10 @@ import Wrapper from "components/Forms/Wrapper";
 import BazarTextField from "components/Forms/BazarTextField";
 import EyeToggleButton from "components/Forms/EyeToggleButton";
 import Link from "components/Link";
-import Header from "components/Header";
-import Footer from "components/Footer";
-import AgaveDrawer from "components/AgaveDrawer";
+
+import AuthLayout from "layouts/AuthLayout";
 
 const LogIn: NextPage = () => {
-
-    const [drawer, setDrawer] = useState(false);
-    const openDrawer = () => { setDrawer(true); }
-    const closeDrawer = () => { setDrawer(false); }
 
     // Alert States
     const [alert, setAlert] = useState(false);
@@ -61,10 +56,7 @@ const LogIn: NextPage = () => {
         );
 
     return(
-        <Box position="relative">
-            <Header hLarge={90} hSmall={75} zIndex={100} action={openDrawer}/>
-            <AgaveDrawer open={drawer} closeCallback={closeDrawer} signedIn={false} displayName={null}/>
-
+        <AuthLayout>
             <Box position='relative' py={4} bgcolor={'beige.main'}>
                 <Container maxWidth='sm'>
                     <Wrapper elevation={0} passwordVisibility={passwordVisibility} sx={{m: 'auto'}}>
@@ -110,9 +102,7 @@ const LogIn: NextPage = () => {
                     </Wrapper>
                 </Container>
             </Box>
-
-            <Footer/>
-        </Box>
+        </AuthLayout>
     );
 }
 
