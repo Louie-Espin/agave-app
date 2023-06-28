@@ -6,6 +6,7 @@ import {Box, BoxProps, Container, styled, Theme, Typography, withTheme} from "@m
 import Grid2 from "@mui/material/Unstable_Grid2";
 import BackgroundVideo from "components/BackgroundVideo";
 import Header from "components/Header";
+import AgaveDrawer from "components/AgaveDrawer";
 import Footer from "components/Footer";
 import Loader from "components/Loader";
 import WhatWeDoSection from "layouts/Home/WhatWeDo";
@@ -18,9 +19,20 @@ const HomePage: NextPage<HomePageProps> = () => {
 
     const AuthUser = useAuthUser();
 
+    const [drawer, setDrawer] = useState(false);
+
+    const openDrawer = () => {
+        setDrawer(true);
+    }
+
+    const closeDrawer = () => {
+        setDrawer(false);
+    }
+
     return(
         <Box position="relative">
-            <Header hLarge={90} hSmall={75} zIndex={100}/>
+            <Header hLarge={90} hSmall={75} zIndex={100} action={openDrawer}/>
+            <AgaveDrawer open={drawer} closeCallback={closeDrawer} signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}/>
             <Box display='block' position='relative' height="90vh" overflow="hidden" >
                 <video src={"/assets/videos/homepage-video.mp4"} autoPlay playsInline loop muted
                        style={{ height: '90vh',maxWidth: '100%', objectFit: "cover", zIndex: -1 }}
@@ -59,7 +71,7 @@ const HomePage: NextPage<HomePageProps> = () => {
 
 export default withAuthUser<HomePageProps>({
     whenAuthed: AuthAction.RENDER, // Page is rendered, if the user is authenticated
-    whenUnauthedBeforeInit: AuthAction.SHOW_LOADER, // Shows loader, if the user is not authenticated & the Firebase client JS SDK has not yet initialized.
-    whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN, // Redirect to log-in page, if user is not authenticated
+    whenUnauthedBeforeInit: AuthAction.RENDER, // Shows loader, if the user is not authenticated & the Firebase client JS SDK has not yet initialized.
+    whenUnauthedAfterInit: AuthAction.RENDER, // Redirect to log-in page, if user is not authenticated
     LoaderComponent: Loader,
 })(HomePage);

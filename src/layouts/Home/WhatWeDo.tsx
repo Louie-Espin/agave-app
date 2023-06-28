@@ -26,17 +26,17 @@ const WhatWeDoSection: FC = () => {
 
     // @ts-ignore
     return(
-        <Container>
+        <Container sx={{ overflow: 'hidden' }}>
             <Stack direction='row' spacing={2} justifyContent='center'>
                 <Stack spacing={2}>
-                    <Image width={400} src={landscapeMaintenance} alt={'Landscape Maintenance'} style={{ objectFit: 'none' }} placeholder='blur'/>
-                    <Image width={400} src={landscapeConstruction} alt={'Landscape Construction'} style={{ objectFit: 'cover' }} placeholder='blur'/>
-                    <Image width={400} src={nativePlantsSalvage} alt={'Native Plants Salvage'} style={{ objectFit: 'cover' }} placeholder='blur'/>
+                    <Image width={200} src={landscapeMaintenance} alt={'Landscape Maintenance'} style={{ objectFit: 'cover' }} placeholder='blur'/>
+                    <Image width={200} src={landscapeConstruction} alt={'Landscape Construction'} style={{ objectFit: 'cover' }} placeholder='blur'/>
+                    <Image width={200} src={nativePlantsSalvage} alt={'Native Plants Salvage'} style={{ objectFit: 'cover' }} placeholder='blur'/>
                 </Stack>
                 <Stack spacing={2}>
-                    <Image width={400} src={waterManagement} alt={'Water Management'} style={{ objectFit: 'none' }} placeholder='blur'/>
-                    <Image width={400} src={arborServices} alt={'Arbor Services'} style={{ objectFit: 'none' }} placeholder='blur'/>
-                    <Image width={400} src={enhancementServices} alt={'Enhancement Services'} style={{ objectFit: 'none' }} placeholder='blur'/>
+                    <Image width={200} src={waterManagement} alt={'Water Management'} style={{ objectFit: 'none' }} placeholder='blur'/>
+                    <Image width={200} src={arborServices} alt={'Arbor Services'} style={{ objectFit: 'none' }} placeholder='blur'/>
+                    <Image width={200} src={enhancementServices} alt={'Enhancement Services'} style={{ objectFit: 'none' }} placeholder='blur'/>
                 </Stack>
             </Stack>
         </Container>

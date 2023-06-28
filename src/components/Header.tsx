@@ -1,12 +1,15 @@
 import Image from "next/image";
 import { FC, ReactNode, useEffect, useState } from "react";
-import { alpha, Box, BoxProps, Button, styled } from "@mui/material";
+import { alpha, Box, BoxProps, Button, IconButton, styled } from "@mui/material";
 import { NextLinkComposed } from "components/Link";
 import agaveLogo from '@public/assets/images/logo-agave.png'
+
+import MenuIcon from '@mui/icons-material/Menu'
 
 interface HeaderProps extends BoxProps {
     hLarge: number,
     hSmall: number,
+    action: () => void,
     children?: ReactNode
 }
 
@@ -67,7 +70,7 @@ const SmoothHeader = styled(Box, {
     })
 }));
 
-const Header: FC<HeaderProps> = ({ hLarge, hSmall, children, ...props }) => {
+const Header: FC<HeaderProps> = ({ hLarge, hSmall, action, children, ...props }) => {
 
     const scrollDir = useScrollDirection();
 
@@ -77,8 +80,9 @@ const Header: FC<HeaderProps> = ({ hLarge, hSmall, children, ...props }) => {
                 <Image src={agaveLogo} alt='Agave Logo' fill loading='lazy' sizes={'150px'} style={{ objectFit: 'contain'}}/>
             </Box>
             <Box flex='1 1 auto' justifyContent='flex-end' display='flex'>
-                <Button variant='contained' color='primary' sx={{ mr: 2, borderRadius: '20px' }}>Sign Up</Button>
-                <Button variant='outlined' color='secondary' sx={{ borderRadius: '20px' }}>Log In</Button>
+                <IconButton color="primary" aria-label="open drawer" onClick={action} edge="start" sx={{ mr: 2 }}>
+                    <MenuIcon />
+                </IconButton>
             </Box>
         </SmoothHeader>
     );
