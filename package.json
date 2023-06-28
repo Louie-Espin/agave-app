@@ -25,6 +25,7 @@
     "firebase": "^9.17.2",
     "firebase-admin": "^11.7.0",
     "formik": "^2.2.9",
+    "framer-motion": "^10.12.17",
     "http-errors": "^2.0.0",
     "lodash": "^4.17.21",
     "merge": "^2.1.1",
