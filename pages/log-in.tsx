@@ -5,14 +5,21 @@ import { AuthAction, withAuthUser } from 'next-firebase-auth'
 import {useFormik} from "formik";
 import * as yup from "yup";
 
-import { Button, Alert, AlertColor, Collapse } from "@mui/material";
+import {Button, Alert, AlertColor, Collapse, Box, Container} from "@mui/material";
 import {H2, Small} from "components/Typography";
 import Wrapper from "components/Forms/Wrapper";
 import BazarTextField from "components/Forms/BazarTextField";
 import EyeToggleButton from "components/Forms/EyeToggleButton";
 import Link from "components/Link";
+import Header from "components/Header";
+import Footer from "components/Footer";
+import AgaveDrawer from "components/AgaveDrawer";
 
 const LogIn: NextPage = () => {
+
+    const [drawer, setDrawer] = useState(false);
+    const openDrawer = () => { setDrawer(true); }
+    const closeDrawer = () => { setDrawer(false); }
 
     // Alert States
     const [alert, setAlert] = useState(false);
@@ -54,47 +61,58 @@ const LogIn: NextPage = () => {
         );
 
     return(
-        <Wrapper elevation={0} passwordVisibility={passwordVisibility}>
-            <form onSubmit={handleSubmit}>
-                <H2 textAlign="center" mb={1}>Welcome To Agave</H2>
+        <Box position="relative">
+            <Header hLarge={90} hSmall={75} zIndex={100} action={openDrawer}/>
+            <AgaveDrawer open={drawer} closeCallback={closeDrawer} signedIn={false} displayName={null}/>
 
-                <Small mb={4.5} display="block" fontSize="12px" fontWeight="600" color="grey.800" textAlign="center">
-                    Log in with email & password.
-                </Small>
+            <Box position='relative' py={4} bgcolor={'beige.main'}>
+                <Container maxWidth='sm'>
+                    <Wrapper elevation={0} passwordVisibility={passwordVisibility} sx={{m: 'auto'}}>
+                        <form onSubmit={handleSubmit}>
+                            <H2 textAlign="center" mb={1}>Welcome To Agave</H2>
 
-                <BazarTextField mb={1.5} fullWidth size="small" variant="outlined" name="email" type="email"
-                    onBlur={handleBlur} value={values.email} onChange={handleChange}
-                    label="Email Address" placeholder="example@mail.com"
-                    error={!!touched.email && !!errors.email} helperText={touched.email && errors.email}
-                />
+                            <Small mb={4.5} display="block" fontSize="12px" fontWeight="600" color="grey.800" textAlign="center">
+                                Log in with email & password.
+                            </Small>
 
-                <BazarTextField mb={2} fullWidth size="small" variant="outlined" name="password" label="Password"
-                    autoComplete="on" onBlur={handleBlur} onChange={handleChange} value={values.password}
-                    placeholder="*********" type={passwordVisibility ? "text" : "password"}
-                    error={!!touched.password && !!errors.password} helperText={touched.password && errors.password}
+                            <BazarTextField mb={1.5} fullWidth size="small" variant="outlined" name="email" type="email"
+                                onBlur={handleBlur} value={values.email} onChange={handleChange}
+                                label="Email Address" placeholder="example@mail.com"
+                                error={!!touched.email && !!errors.email} helperText={touched.email && errors.email}
+                            />
 
-                    InputProps={{
-                        endAdornment: (<EyeToggleButton show={passwordVisibility} click={togglePasswordVisibility}/>),
-                    }}
-                />
+                            <BazarTextField mb={2} fullWidth size="small" variant="outlined" name="password" label="Password"
+                                autoComplete="on" onBlur={handleBlur} onChange={handleChange} value={values.password}
+                                placeholder="*********" type={passwordVisibility ? "text" : "password"}
+                                error={!!touched.password && !!errors.password} helperText={touched.password && errors.password}
 
-                <Button fullWidth type="submit" color="primary" variant="contained" sx={{ mb: "1.65rem", height: 44 }}>
-                    Sign In
-                </Button>
+                                InputProps={{
+                                    endAdornment: (<EyeToggleButton show={passwordVisibility} click={togglePasswordVisibility}/>),
+                                }}
+                            />
 
-                <Small mb={4.5} display="block" fontSize="12px" fontWeight="600" color="grey.800" textAlign="center">
-                    Dont have an account?
-                    {/* TODO: [CODE SMELL] hard-coded value */}
-                    <Link href="/sign-up" color="secondary" sx={{ textDecoration: 'none' }}>
-                        &nbsp;Sign Up Here.
-                    </Link>
-                </Small>
+                            <Button fullWidth type="submit" color="primary" variant="contained" sx={{ mb: "1.65rem", height: 44 }}>
+                                Sign In
+                            </Button>
 
-                <Collapse in={alert}>
-                    <Alert onClose={() => setAlert(false)} severity={alertSeverity}>{alertContent}</Alert>
-                </Collapse>
-            </form>
-        </Wrapper>
+                            <Small mb={4.5} display="block" fontSize="12px" fontWeight="600" color="grey.800" textAlign="center">
+                                Dont have an account?
+                                {/* TODO: [CODE SMELL] hard-coded value */}
+                                <Link href="/sign-up" color="secondary" sx={{ textDecoration: 'none' }}>
+                                    &nbsp;Sign Up Here.
+                                </Link>
+                            </Small>
+
+                            <Collapse in={alert}>
+                                <Alert onClose={() => setAlert(false)} severity={alertSeverity}>{alertContent}</Alert>
+                            </Collapse>
+                        </form>
+                    </Wrapper>
+                </Container>
+            </Box>
+
+            <Footer/>
+        </Box>
     );
 }
 

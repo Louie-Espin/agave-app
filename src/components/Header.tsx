@@ -44,7 +44,7 @@ const SmoothHeader = styled(Box, {
 
     backgroundImage: `linear-gradient(to right, ${alpha(theme.palette.grey['500'], .4)}, ${alpha(theme.palette.grey['300'], 1)})`,
 
-    position: 'fixed',
+    position: 'sticky',
     height: hLarge,
     width: '100%',
     backdropFilter: 'blur(5px)',

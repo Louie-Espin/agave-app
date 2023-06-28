@@ -50,6 +50,7 @@ const DrawerLinkButton = styled(ListItemButton, {})(({ theme, selected }) => ({
         color: '#871a78',
         '& svg': {
             color: '#871a78',
+            fontSize: '1.9rem',
         },
     })
 
