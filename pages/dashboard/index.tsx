@@ -30,7 +30,7 @@ const DashboardPage: NextPage = () => {
     const { data, error, isLoading, isValidating } = fetcher;
 
     return(
-        <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
+        <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName} sx={{ backgroundColor: '#c6e4cd' }}>
             <Container maxWidth='md' sx={{ my: 2 }}>
                 <Stack spacing={2}>
                     <PropertiesList validating={isValidating} loading={isLoading} error={error} properties={data?.properties}/>
