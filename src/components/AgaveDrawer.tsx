@@ -23,6 +23,7 @@ import Home from "@mui/icons-material/Home";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import Settings from "@mui/icons-material/Settings";
 import HomeWorkIcon from "@mui/icons-material/HomeWork";
+import PhoneIcon from '@mui/icons-material/Phone';
 import Logout from "@mui/icons-material/Logout";
 import clientLogOut from "@firebaseUtils/client/logOut";
 import agaveLogo from "@public/assets/images/logo-agave.png";
@@ -136,9 +137,9 @@ const AuthedItem: FC<{ signedIn: boolean, name: string | null  }> = ({ signedIn,
 
 const AgaveNavigations: { key: number, title: string, NavIcon: any, href: string }[] = [
     { key: 1, title: 'Home', NavIcon: Home, href: '/' },
-    { key: 2, title: 'History', NavIcon: WorkHistoryIcon, href: '/history/' },
-    { key: 3, title: 'Properties', NavIcon: HomeWorkIcon, href: '/properties/' },
-    { key: 4, title: 'Settings', NavIcon: Settings, href: '/settings/' },
+    { key: 2, title: 'Work History', NavIcon: WorkHistoryIcon, href: '/history' },
+    { key: 3, title: 'Settings', NavIcon: Settings, href: '/settings' },
+    { key: 4, title: 'Contact', NavIcon: PhoneIcon, href: '/contact' },
 ]
 
 export default AgaveDrawer;
