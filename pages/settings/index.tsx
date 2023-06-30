@@ -15,7 +15,7 @@ import React from "react";
 import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos";
 
 import clientLogOut from "@firebaseUtils/client/logOut";
-import TitleBar from "../../src/components/TitleBar";
+import TitleBar from "components/TitleBar";
 
 type SettingsPageProps = { }
 const SettingsPage: NextPage<SettingsPageProps> = () => {
