@@ -15,6 +15,7 @@ import React from "react";
 import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos";
 
 import clientLogOut from "@firebaseUtils/client/logOut";
+import TitleBar from "../../src/components/TitleBar";
 
 type SettingsPageProps = { }
 const SettingsPage: NextPage<SettingsPageProps> = () => {
@@ -31,11 +32,8 @@ const SettingsPage: NextPage<SettingsPageProps> = () => {
 
     return(
         <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName} >
-            <Container maxWidth='md' sx={{ mt: 2, mb: 4, minHeight: '50vh' }}>
-                <Box display='flex' alignItems='center' my={2}>
-                    <Settings color='primary' fontSize={'large'}/>
-                    <H1 ml={1.5}>Settings</H1>
-                </Box>
+            <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
+                <TitleBar TitleIcon={Settings} Title={'Settings'}/>
                 <Stack direction='row' flexWrap='wrap' position='relative' width='100%' sx={{ gap: '1em' }}>
                     <Stack direction='column' spacing={2} flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(50% - 1em)' }}>
                         <UserCard displayName={AuthUser?.displayName} phoneNumber={AuthUser?.phoneNumber}

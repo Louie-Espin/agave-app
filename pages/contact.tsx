@@ -4,7 +4,8 @@ import AuthLayout from "layouts/AuthLayout";
 
 import { Container, Stack, Paper, Box, Divider } from "@mui/material";
 import Phone from "@mui/icons-material/Phone";
-import {H1, H2, H3, Paragraph} from "components/Typography";
+import { H2, H3, Paragraph } from "components/Typography";
+import TitleBar from "components/TitleBar";
 import React from "react";
 
 const embed: any = {
@@ -22,10 +23,7 @@ const ContactPage: NextPage<ContactPageProps> = () => {
     return(
         <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
             <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
-                <Box display='flex' alignItems='center' my={2}>
-                    <Phone color='primary' fontSize={'large'}/>
-                    <H1 ml={1.5}>Contact Us</H1>
-                </Box>
+                <TitleBar TitleIcon={Phone} Title={'Contact Us'}/>
                 <Stack direction='row' flexWrap='wrap' position='relative' width='100%' sx={{ gap: '1em' }}>
                     <Stack direction='column' spacing={2} flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(50% - 1em)' }}>
                         <Box component={Paper} p={3}>

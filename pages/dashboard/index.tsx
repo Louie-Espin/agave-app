@@ -13,6 +13,9 @@ import Loader from "components/Loader";
 import { H2 } from "components/Typography";
 import useSWR from "swr";
 import axios from "axios";
+import Settings from "@mui/icons-material/Settings";
+import PersonIcon from '@mui/icons-material/Person';
+import TitleBar from "components/TitleBar";
 
 type DashboardPageProps = { }
 const DashboardPage: NextPage = () => {
@@ -30,8 +33,9 @@ const DashboardPage: NextPage = () => {
     const { data, error, isLoading, isValidating } = fetcher;
 
     return(
-        <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName} sx={{ backgroundColor: '#c6e4cd' }}>
-            <Container maxWidth='md' sx={{ my: 2 }}>
+        <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
+            <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
+                <TitleBar TitleIcon={PersonIcon} Title={'Dashboard'}/>
                 <Stack spacing={2}>
                     <PropertiesList validating={isValidating} loading={isLoading} error={error} properties={data?.properties}/>
 
