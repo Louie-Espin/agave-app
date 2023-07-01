@@ -124,7 +124,9 @@ const AuthedItem: FC<{ signedIn: boolean, name: string | null  }> = ({ signedIn,
                   secondaryAction={<IconButton onClick={handleLogOut}><Logout/></IconButton>}
         >
             <ListItemButton component={NextLinkComposed} to={'/dashboard'} sx={{ borderRadius: '10px' }}>
-                <ListItemAvatar><Avatar alt={'avatar'}/></ListItemAvatar>
+                <ListItemAvatar>
+                    <Avatar src={undefined}>{ (name) ? name.charAt(0) : undefined }</Avatar>
+                </ListItemAvatar>
                 <ListItemText
                     primary={name ? name : 'Your account'}
                     secondary={'View Dashboard'}
@@ -137,7 +139,7 @@ const AuthedItem: FC<{ signedIn: boolean, name: string | null  }> = ({ signedIn,
 
 const AgaveNavigations: { key: number, title: string, NavIcon: any, href: string }[] = [
     { key: 1, title: 'Home', NavIcon: Home, href: '/' },
-    { key: 2, title: 'Work History', NavIcon: WorkHistoryIcon, href: '/history' },
+    { key: 2, title: 'Work History', NavIcon: WorkHistoryIcon, href: '/work-history' },
     { key: 3, title: 'Settings', NavIcon: Settings, href: '/settings' },
     { key: 4, title: 'Contact', NavIcon: PhoneIcon, href: '/contact' },
 ]
