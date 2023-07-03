@@ -56,8 +56,9 @@ const HomePage: NextPage<HomePageProps> = () => {
 }
 
 export default withAuthUser<HomePageProps>({
-    whenAuthed: AuthAction.RENDER, // Page is rendered, if the user is authenticated
+    whenAuthed: AuthAction.REDIRECT_TO_APP, // User is redirected to dashboard page, if the user is authenticated
     whenUnauthedBeforeInit: AuthAction.RENDER, // Shows loader, if the user is not authenticated & the Firebase client JS SDK has not yet initialized.
     whenUnauthedAfterInit: AuthAction.RENDER, // Redirect to log-in page, if user is not authenticated
     LoaderComponent: Loader,
+    appPageURL: '/dashboard', // Dashboard Page
 })(HomePage);
