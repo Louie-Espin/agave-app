@@ -15,6 +15,7 @@ import ImageWithFallback from "components/ImageFallback";
 import downloadImage from "@firebaseUtils/client/downloadImage";
 import loadingGif from "@public/assets/images/loading.gif";
 import { useEffect, useState } from 'react';
+import {NextLinkComposed} from "components/Link";
 
 const HoverBox = styled(Box)(({ theme }) => ({
 
@@ -68,7 +69,8 @@ const PropertyCard = ({ propertyName, propertyContent, imageUrl = "", ...props }
                 </CardMedia>
                 <CardHeader titleTypographyProps={{ color: "#96772c" }} title={propertyName}></CardHeader>
                 <CardActions sx={{ justifyContent: 'flex-end' }}>
-                    <Button variant='text' color={'secondary'}>View Details</Button>{/* [TODO] */}
+                    <Button variant='text' color={'secondary'} component={NextLinkComposed} to={'/work-history'}>
+                        View Details</Button>{/* [TODO] */}
                 </CardActions>
             </CardActionArea>
         </Card>
