@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Card, CardProps, CardContent, CardMedia, Typography, Avatar } from "@mui/material";
-import coverPhoto from "@public/assets/images/profile-cover.png";
+import coverPhoto from "@public/assets/agave-graphics/dark-green/agave.svg";
 
 interface UserCardProps extends CardProps {
     displayName?: string | null,
@@ -12,7 +12,7 @@ const UserCard: FC<UserCardProps> = ({ photoURL = null, displayName = null, emai
 
     return(
         <Card {...props}>
-            <CardMedia image={coverPhoto.src} component={'div'} sx={{ minHeight: 150, backgroundColor: 'primary.main' }}/>
+            <CardMedia image={coverPhoto.src} component={'div'} sx={{ minHeight: 150, backgroundColor: '#c6e4cd' }}/>
             <CardContent sx={{ position: 'relative', px: 4, pt: 6, pb: 4 }}>
 
                 <Avatar src={photoURL ? photoURL : undefined}
