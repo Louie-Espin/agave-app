@@ -1,10 +1,8 @@
-import { Fragment, FC, useState, useEffect } from 'react';
+// import { Fragment, FC, useState, useEffect } from 'react';
 import { NextPage } from "next";
 import { useAuthUser, AuthAction, withAuthUser } from "next-firebase-auth";
 
-import {Box, BoxProps, Container, styled, Theme, Typography, withTheme} from "@mui/material";
-import Grid2 from "@mui/material/Unstable_Grid2";
-import BackgroundVideo from "components/BackgroundVideo";
+import { Box, Typography } from "@mui/material";
 import Loader from "components/Loader";
 import WhatWeDoSection from "layouts/Home/WhatWeDo";
 
@@ -57,8 +55,9 @@ const HomePage: NextPage<HomePageProps> = () => {
 
 export default withAuthUser<HomePageProps>({
     whenAuthed: AuthAction.REDIRECT_TO_APP, // User is redirected to dashboard page, if the user is authenticated
-    whenUnauthedBeforeInit: AuthAction.RENDER, // Shows loader, if the user is not authenticated & the Firebase client JS SDK has not yet initialized.
+    whenUnauthedBeforeInit: AuthAction.RENDER, // Renders page, if the user is not authenticated & the Firebase client JS SDK has not yet initialized.
     whenUnauthedAfterInit: AuthAction.RENDER, // Redirect to log-in page, if user is not authenticated
+    whenAuthedBeforeRedirect: AuthAction.SHOW_LOADER, // Shows loader while redirecting
     LoaderComponent: Loader,
     appPageURL: '/dashboard', // Dashboard Page
 })(HomePage);
