@@ -9,7 +9,7 @@ type LoaderProps = {
 const Loader: FC<LoaderProps> = ({}) => {
     return(
         <Box height='100%' display='flex' flexDirection='column' p={3}>
-            <Container sx={{ my: "2rem", position: 'relative' }}>
+            <Container maxWidth='sm' sx={{ my: "2rem", position: 'relative' }}>
                 <Image
                     src="/assets/images/logo-agave.png"
                     width={558}
