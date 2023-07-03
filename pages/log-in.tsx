@@ -11,6 +11,7 @@ import Wrapper from "components/Forms/Wrapper";
 import BazarTextField from "components/Forms/BazarTextField";
 import EyeToggleButton from "components/Forms/EyeToggleButton";
 import Link from "components/Link";
+import Loader from "components/Loader";
 
 import AuthLayout from "layouts/AuthLayout";
 
@@ -117,7 +118,8 @@ const formSchema = yup.object().shape({
 
 export default withAuthUser({
     whenAuthed: AuthAction.REDIRECT_TO_APP,
-    whenAuthedBeforeRedirect: AuthAction.RETURN_NULL,
-    whenUnauthedBeforeInit: AuthAction.RETURN_NULL,
+    whenAuthedBeforeRedirect: AuthAction.SHOW_LOADER,
+    whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
     whenUnauthedAfterInit: AuthAction.RENDER,
+    LoaderComponent: Loader,
 })(LogIn as any)
