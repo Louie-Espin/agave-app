@@ -12,6 +12,9 @@ import {
     styled
 } from "@mui/material";
 import ImageWithFallback from "components/ImageFallback";
+import downloadImage from "@firebaseUtils/client/downloadImage";
+import loadingGif from "@public/assets/images/loading.gif";
+import { useEffect, useState } from 'react';
 
 const HoverBox = styled(Box)(({ theme }) => ({
 
@@ -38,16 +41,35 @@ interface PropertyCardProps extends CardProps {
 }
 
 const PropertyCard = ({ propertyName, propertyContent, imageUrl = "", ...props }: PropertyCardProps ) => {
+
+    // [FIXME] >>>>>>>>
+    const [image, setImage] = useState(loadingGif.src);
+
+    useEffect(() => {
+        const getImage = async () => {
+            const { result, error } = await downloadImage(imageUrl);
+            if (error) { return console.error(error.message); }
+            if (result) setImage(result)
+            return console.log(`DOWNLOAD IMAGE ${imageUrl} : ${result}`);
+        }
+
+        if (imageUrl) void getImage();
+
+    }, [imageUrl]);
+    // [FIXME] <<<<<<<<<
+
     return(
         <Card sx={{ minWidth: { md: 350 } }} { ...props }>
             <CardActionArea>
                 <CardMedia>
                     <HoverBox height={{ xs: 200, md: 180 }} >
-                        <ImageWithFallback src={imageUrl} fill imgObjectFit={"cover"} alt={"Image for [PROPERTY]"}/>
+                        <ImageWithFallback src={image} fill imgObjectFit={"cover"} alt={"Image for [PROPERTY]"}/>
                     </HoverBox>
                 </CardMedia>
                 <CardHeader titleTypographyProps={{ color: "#96772c" }} title={propertyName}></CardHeader>
-                <CardContent>{propertyContent}</CardContent>
+                <CardActions sx={{ justifyContent: 'flex-end' }}>
+                    <Button variant='text' color={'secondary'}>View Details</Button>{/* [TODO] */}
+                </CardActions>
             </CardActionArea>
         </Card>
     );

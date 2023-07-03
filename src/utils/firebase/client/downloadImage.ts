@@ -8,8 +8,12 @@ export default async function downloadImage(imgPath: string) {
     let result = null, error = null;
 
     try {
-        
         const imgRef = ref(storage, imgPath)
+
+        console.log('STORAGE: ', storage)
+        console.log('IMAGE PATH:', imgPath)
+        console.log('REF:', imgRef)
+
         result = await getDownloadURL(imgRef);
 
     } catch (e: any) {
