@@ -1,6 +1,6 @@
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
-// Create a reference to the file we want to download
+// Get a Firebase Storage instance with default app and bucket
 const storage = getStorage();
 
 // Get the download URL
