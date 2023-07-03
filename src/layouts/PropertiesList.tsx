@@ -7,7 +7,7 @@ import { H2 } from "components/Typography";
 
 import { PropertySchema } from "utils/api/yup";
 import * as yup from "yup";
-import PropertyCard from "../components/PropertyCard";
+import PropertyCard from "components/PropertyCard";
 
 type PropertiesListProps = {
     properties?: yup.InferType<typeof PropertySchema>[],
@@ -34,7 +34,7 @@ const PropertiesList: FC<PropertiesListProps> = ({ properties = [], validating, 
                 {
                     (properties.length) ? properties.map((p) =>
                         <Grid xs={12} md={6} lg={6} key={p.id}>
-                            <PropertyCard propertyName={p.name} propertyContent={JSON.stringify(p)}/>
+                            <PropertyCard propertyName={p.name} imageUrl={p.displayImage as string} propertyContent={p.address}/>
                         </Grid>
                     ) : <div>No Properties!</div>
                 }
