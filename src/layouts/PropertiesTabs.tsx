@@ -30,7 +30,7 @@ const PropertiesTabs: FC<PropertiesTabsProps> = ({overviewValue, properties = []
                 <Tab label="Overview" value={overviewValue}/>
                 {properties.map((p) => <Tab key={p.id} label={p.name} value={p.id}/>)}
                 {(validating || loading ) ? <Tab label='•••' disabled/> : null }
-                {(error ) ? <Tab label='ERROR' disabled/> : null }
+                {(error ) ? <Tab label='⚠' disabled/> : null }
             </TabList>
         </Stack>
     );
