@@ -27,7 +27,7 @@ const WhatWeDoItem: FC<{ img: ImageProps['src'] } & BoxProps> = ({ img, title, .
                 }}
                 {...props}
             >
-                <Image src={img} alt={title ? title : 'What We Do Image'} fill style={{ objectFit: 'cover' }}/>
+                <Image src={img} alt={title ? title : 'What We Do Image'} fill style={{ objectFit: 'cover' }} placeholder='blur'/>
                 <Box sx={{ position: 'absolute', inset: '0 0 50%', background: 'linear-gradient(rgba(0,0,0,1), rgba(0,0,0,0))' }}>
                     <Box sx={{
                         position: 'absolute',
