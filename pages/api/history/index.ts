@@ -52,7 +52,7 @@ const getForms: NextApiHandler = async (req: NextApiRequest, res: NextApiRespons
     const token = req.headers['authorization'];
     if (!token) return res.status(401).json({ forms: null, message: "GET forms failed; No token!" });
 
-    const { templateId } = req.query;
+    const { templateId, propertyName } = req.query;
     if (!templateId) return res.status(400).json({ forms: null, message: "GET forms failed; No templateId!" });
 
     try {
@@ -64,21 +64,23 @@ const getForms: NextApiHandler = async (req: NextApiRequest, res: NextApiRespons
         const authDoc = await db.collection(USERS_COL_).doc(authUser.id).get();
         if (!authDoc.exists) return res.status(500).json({ forms: null, message: "GET forms failed. User not found!" })
 
-        // Query GoFormz without filtering by Property name
-        if (authDoc.get(ADMIN_FIELD_)) {
-            const getForms = await axios(config(templateId as string));
-            return res.status(200).json({ forms: getForms.data, message: "GET forms success. (Admin)" })
-        }
+        // // Query GoFormz without filtering by Property name
+        // if (authDoc.get(ADMIN_FIELD_)) {
+        //     const getForms = await axios(config(templateId as string));
+        //     return res.status(200).json({ forms: getForms.data, message: "GET forms success. (Admin)" })
+        // }
+        //
+        // let clientForms: any[] = [];
+        // let getClientForms;
+        //
+        // for (let pName of authDoc.get(PROPERTIES_F) as string[]) {
+        //     getClientForms = await axios(config(templateId as string, pName));
+        //     clientForms = clientForms.concat(getClientForms.data);
+        // }
 
-        let clientForms: any[] = [];
-        let getClientForms;
+        const getForms = await axios(config(templateId as string, (propertyName ? propertyName as string : undefined) ));
 
-        for (let pName of authDoc.get(PROPERTIES_F) as string[]) {
-            getClientForms = await axios(config(templateId as string, pName));
-            clientForms = clientForms.concat(getClientForms.data);
-        }
-
-        return res.status(200).json({ forms: clientForms, message: "GET forms success. (Client)" });
+        return res.status(200).json({ forms: getForms.data, message: "GET forms success. (Client)" });
 
 
     } catch (err: any | AxiosError) {

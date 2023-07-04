@@ -6,15 +6,20 @@ import { Container, Stack, Box, Paper } from "@mui/material";
 import HomeWorkIcon from "@mui/icons-material/HomeWork";
 import AuthLayout from "layouts/AuthLayout";
 import PropertiesTabs from "layouts/PropertiesTabs";
+import WorkHistoryPanel from "layouts/Templates/WorkHistoryPanel";
 import Loader from "components/Loader";
 import TitleBar from "components/TitleBar";
 import useSWR from "swr";
 import axios from "axios";
 
-import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
+import Tab from '@mui/material/Tab';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+
+import CircleNotificationsOutlined from "@mui/icons-material/CircleNotificationsOutlined";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import Build from "@mui/icons-material/Build";
 
 
 type PropertiesPageProps = { }
@@ -40,6 +45,10 @@ const PropertiesPage: NextPage<PropertiesPageProps> = () => {
         setProperty(newValue);
     };
 
+    const changeTemplate = (event: SyntheticEvent, newValue: TemplateID) => {
+        setTemplate(newValue);
+    }
+
     const propertiesFetcher = useSWR(AuthUser.id ? propertiesURL: null, (async () => {
         const token = await AuthUser.getIdToken();
         return await axios.get(propertiesURL, { headers: { Authorization: token, } } )
@@ -61,7 +70,7 @@ const PropertiesPage: NextPage<PropertiesPageProps> = () => {
     );
 
     const { data: pData, error: pError, isLoading: pLoading, isValidating: pValidating } = propertiesFetcher;
-    // const { data: fData, error: fError, isLoading: fLoading, isValidating: fValidating } = formsFetcher;
+    const { data: fData, error: fError, isLoading: fLoading, isValidating: fValidating } = formsFetcher;
 
     return(
         <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
@@ -74,9 +83,27 @@ const PropertiesPage: NextPage<PropertiesPageProps> = () => {
                                         loading={pLoading} validating={pValidating} error={pError}
                         />
 
-                        <Stack direction='column' spacing={2} flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(70% - 1em)' }}>
-                            <Box component={Paper} minHeight={'50vh'} height={'100%'}>{property}</Box>
-                        </Stack>
+                        <TabContext value={template}>
+                            <Stack direction='column' spacing={2} flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(70% - 1em)' }}>
+
+                                <TabList onChange={changeTemplate} variant={'fullWidth'} indicatorColor='secondary' aria-label="History Tabs">
+                                    <Tab icon={<CircleNotificationsOutlined/>} iconPosition="start" label="Status Updates" value={TemplateID.STATUS_UPDATE}/>
+                                    <Tab icon={<AssignmentTurnedInIcon/>} iconPosition="start" label="Weekly Reports" value={TemplateID.WEEKLY_REPORT}/>
+                                    <Tab icon={<Build/>} iconPosition="start" label="Work Orders" value={TemplateID.WORK_ORDER}/>
+                                </TabList>
+
+                                <WorkHistoryPanel value={TemplateID.STATUS_UPDATE} forms={fData?.forms} pName={property}
+                                                  validating={fValidating} loading={fLoading} error={fError} Icon={CircleNotificationsOutlined}
+                                />
+                                <WorkHistoryPanel value={TemplateID.WEEKLY_REPORT} forms={fData?.forms} pName={property}
+                                                  validating={fValidating} loading={fLoading} error={fError} Icon={AssignmentTurnedInIcon}
+                                />
+                                <WorkHistoryPanel value={TemplateID.WORK_ORDER} forms={fData?.forms} pName={property}
+                                                  validating={fValidating} loading={fLoading} error={fError} Icon={Build}
+                                />
+                            </Stack>
+                        </TabContext>
+
                     </Stack>
                 </TabContext>
             </Container>
