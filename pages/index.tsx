@@ -7,6 +7,7 @@ import Loader from "components/Loader";
 
 import AuthLayout from "layouts/AuthLayout";
 import WhatWeDoGrid from "layouts/Home/WhatWeDoGrid";
+import Statistics from "../src/layouts/Home/Statistics";
 
 type HomePageProps = {
 
@@ -26,26 +27,9 @@ const HomePage: NextPage<HomePageProps> = () => {
 
                 </Box>
             </Box>
-            <Box justifyContent={'center'} alignItems={'center'} alignContent='stretch' display='flex' flexWrap={'wrap'}
-                 sx={{ backgroundColor: (theme) => theme.palette.beige['50'] }} py={5} px={{ xs: 3, md: 12 }}
-            >
-                <Box display='flex' flex={'1 1 0'} flexDirection='column' alignItems='center' justifyContent='center' textAlign='center'>
-                    <Typography fontSize='4rem' color={'primary'}>1200</Typography>
-                    <Typography fontSize='1.2rem'>Clients</Typography>
-                </Box>
-                <Box display='flex' flex={'1 1 0'}  flexDirection='column' alignItems='center' justifyContent='center' textAlign='center'>
-                    <Typography fontSize='4rem' color={'primary'}>6000</Typography>
-                    <Typography fontSize='1.2rem'>Projects</Typography>
-                </Box>
-                <Box display='flex' flex={'1 1 0'}  flexDirection='column' alignItems='center' justifyContent='center' textAlign='center'>
-                    <Typography fontSize='4rem' color={'primary'}>30</Typography>
-                    <Typography fontSize='1.2rem'>Years of Experience</Typography>
-                </Box>
-                <Box display='flex' flex={'1 1 0'} flexDirection='column' alignItems='center' justifyContent='center' textAlign='center'>
-                    <Typography fontSize='4rem' color={'primary'}>80</Typography>
-                    <Typography fontSize='1.2rem'>Awards</Typography>
-                </Box>
-            </Box>
+
+            <Statistics/>
+
             <Box py={4}>
                 <WhatWeDoGrid/>
             </Box>
