@@ -4,9 +4,9 @@ import { useAuthUser, AuthAction, withAuthUser } from "next-firebase-auth";
 
 import { Box, Typography } from "@mui/material";
 import Loader from "components/Loader";
-import WhatWeDoSection from "layouts/Home/WhatWeDo";
 
 import AuthLayout from "layouts/AuthLayout";
+import WhatWeDoGrid from "layouts/Home/WhatWeDoGrid";
 
 type HomePageProps = {
 
@@ -46,8 +46,8 @@ const HomePage: NextPage<HomePageProps> = () => {
                     <Typography fontSize='1.2rem'>Awards</Typography>
                 </Box>
             </Box>
-            <Box p={4} >
-                <WhatWeDoSection/>
+            <Box py={4}>
+                <WhatWeDoGrid/>
             </Box>
         </AuthLayout>
     );
