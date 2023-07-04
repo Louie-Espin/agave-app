@@ -7,7 +7,7 @@ import Loader from "components/Loader";
 
 import AuthLayout from "layouts/AuthLayout";
 import WhatWeDoGrid from "layouts/Home/WhatWeDoGrid";
-import Statistics from "../src/layouts/Home/Statistics";
+import Statistics from "layouts/Home/Statistics";
 
 type HomePageProps = {
 
