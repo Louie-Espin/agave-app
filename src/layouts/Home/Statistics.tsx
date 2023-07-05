@@ -27,7 +27,7 @@ const Statistics: FC = () => {
     return(
         <Box overflow='hidden' sx={{ bgcolor: 'beige.50' }} py={5}>
             <Container disableGutters maxWidth='md'>
-                <Grid container spacing={2}>
+                <Grid container spacing={2} sx={{ maxWidth: '100%' }}>
                     <Grid xs={6} sm={3}>
                         <StatItem stat={1200} title={'Clients'}/>
                     </Grid>
