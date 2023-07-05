@@ -49,7 +49,7 @@ const PropertyCard = ({ propertyName, propertyContent, imageUrl = "", ...props }
     useEffect(() => {
         const getImage = async () => {
             const { result, error } = await downloadImage(imageUrl);
-            if (error) { return console.error(error.message); }
+            if (error) { setImage('/not-found.jpg'); return console.error(error.message); } // FIXME
             if (result) setImage(result)
             return console.log(`DOWNLOAD IMAGE ${imageUrl} : ${result}`);
         }
