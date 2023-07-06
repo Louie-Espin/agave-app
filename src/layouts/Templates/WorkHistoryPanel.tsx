@@ -16,10 +16,9 @@ import { H2, Paragraph } from "components/Typography";
 import { NextLinkComposed } from "components/Link";
 import { format } from "date-fns";
 
-import CircleNotificationsOutlined from "@mui/icons-material/CircleNotificationsOutlined";
 import CactusSVG from "@public/assets/agave-graphics/dark-green/cactus2.svg";
-import {TabPanel, TabPanelProps} from "@mui/lab";
-import {SvgIconComponent} from "@mui/icons-material";
+import { TabPanel, TabPanelProps } from "@mui/lab";
+import { SvgIconComponent } from "@mui/icons-material";
 
 interface WorkHistoryPanel extends TabPanelProps {
     forms?: any[],
@@ -28,11 +27,10 @@ interface WorkHistoryPanel extends TabPanelProps {
     error: any,
     pName: string,
     Icon: SvgIconComponent,
+    label: string,
 }
 
-const WorkHistoryPanel: FC<WorkHistoryPanel> = ({ forms = [], Icon, validating, loading, error, pName, ...props  }) => {
-
-    if (!pName) return(<></>);
+const WorkHistoryPanel: FC<WorkHistoryPanel> = ({ forms = [], Icon, validating, loading, error, pName, label, ...props  }: WorkHistoryPanel) => {
 
     if (loading) return(
         <TabPanel {...props} sx={{ minHeight: '40vh' }} >
@@ -42,7 +40,7 @@ const WorkHistoryPanel: FC<WorkHistoryPanel> = ({ forms = [], Icon, validating, 
 
     if (forms.length == 0) return(
         <TabPanel {...props} sx={{ p: 0, minHeight: '40vh' }} >
-            <EmptyList hide={false} property={pName}/>
+            <EmptyList hide={false} property={pName} label={label}/>
         </TabPanel>
     )
 
@@ -58,7 +56,7 @@ const WorkHistoryPanel: FC<WorkHistoryPanel> = ({ forms = [], Icon, validating, 
                                 </ListItemIcon>
                                 <ListItemText
                                     primaryTypographyProps={{ sx: { fontWeight: 500 } }}
-                                    primary={`Status Update`}
+                                    primary={label}
                                     secondaryTypographyProps={{ sx: { color: 'grey' } }}
                                     secondary={pName}
                                 />
@@ -74,7 +72,7 @@ const WorkHistoryPanel: FC<WorkHistoryPanel> = ({ forms = [], Icon, validating, 
     )
 }
 
-const EmptyList: FC<{ hide: boolean, property: string }> = ({ hide, property }) => {
+const EmptyList: FC<{ hide: boolean, property: string, label: string }> = ({ hide, property, label }) => {
 
     return(
         <Box component={Paper} display={ (hide) ? 'none' : "flex" } p={3} alignItems={'center'}
@@ -93,7 +91,7 @@ const EmptyList: FC<{ hide: boolean, property: string }> = ({ hide, property }) 
         >
             <Box ml={{ sm: 2 }}>
                 <H2 sx={{ color: '#871A78' }}>{"It's a little dry in here."}</H2>
-                <Paragraph>{`We have no work history to display for ${property}.`}</Paragraph>
+                <Paragraph>{`We have no ${label}s to display for ${property}.`}</Paragraph>
                 <Paragraph mb={2}>{'Check back later!'}</Paragraph>
                 <Button variant='contained' color='secondary' component={NextLinkComposed} to='/contact'>Contact Us</Button>
             </Box>
