@@ -2,6 +2,10 @@ import { NextPage } from "next";
 import React, { useState } from "react";
 
 import { Box, Container, Paper, Stack } from "@mui/material";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import enUS from 'date-fns/locale/en-US';
 import TodayIcon from '@mui/icons-material/Today';
 
 import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'next-firebase-auth';
@@ -16,6 +20,10 @@ import axios from "axios";
 import Settings from "@mui/icons-material/Settings";
 import PersonIcon from '@mui/icons-material/Person';
 import TitleBar from "components/TitleBar";
+import UserCard from "components/UserCard";
+
+import wateringGuidelines from "@public/assets/images/dashboard/landscape-watering-guidelines.png"
+import Image from "next/image";
 
 type DashboardPageProps = { }
 const DashboardPage: NextPage = () => {
@@ -35,20 +43,23 @@ const DashboardPage: NextPage = () => {
     return(
         <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
             <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
-                <TitleBar TitleIcon={PersonIcon} Title={'Dashboard'}/>
-                <Stack spacing={2}>
-                    <PropertiesList validating={isValidating} loading={isLoading} error={error} properties={data?.properties}/>
+                <TitleBar TitleIcon={PersonIcon} Title={(AuthUser?.displayName) ? `Hello, ${AuthUser.displayName}!` : 'Dashboard'}/>
+                <Stack direction='row' flexWrap='wrap' position='relative' width='100%' sx={{ gap: '1em' }}>
 
-                    <Box component={Paper} pt='1.5rem' pb='2.5rem' px='1.5rem'>
-                        <Box sx={{ mb: 2, borderBottom: 1, borderColor: "grey.300", backgroundColor: 'white'}}>
-                            <Box display='flex' alignItems='center' my={2}>
-                                <TodayIcon color="primary"/>
-                                <H2 ml={1.5} my="0px" lineHeight="1" whiteSpace="pre">
-                                    Watering Guidelines
-                                </H2>
-                            </Box>
+                    <Stack direction='row' flexWrap='wrap' position='relative' justifyContent='center' width='100%' sx={{ gap: '1em' }}>
+                        <UserCard displayName={AuthUser?.displayName} phoneNumber={AuthUser?.phoneNumber}
+                                  photoURL={AuthUser?.photoURL} email={AuthUser?.email}
+                                  sx={{ minWidth: { xs: '100%', sm: 'calc(50% - 1em)', md: 'calc(60% - 1em)' } }}
+                        />
+
+                        <Box minWidth={{ xs: '100%', sm: 'calc(50% - 1em)', md: 'calc(40% - 1em)' }} maxWidth={'100%'} position='relative'>
+                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enUS}>
+                                <DateCalendar />
+                            </LocalizationProvider>
                         </Box>
-                    </Box>
+                    </Stack>
+
+                    <PropertiesList validating={isValidating} loading={isLoading} error={error} properties={data?.properties}/>
 
                 </Stack>
             </Container>
