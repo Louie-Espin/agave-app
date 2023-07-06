@@ -34,7 +34,7 @@ const PropertiesList: FC<PropertiesListProps> = ({ properties = [], validating, 
             <Stack direction='row' flexWrap='wrap' sx={{ gap: '1em' }} width={'100%'}>
                 {
                     (!loading) ? properties.map((p) =>
-                        <PropertyCard key={p.id} propertyName={p.name} imageUrl={p.displayImage as string} propertyContent={p.address}
+                        <PropertyCard key={p.id} propertyName={p.name} imageUrl={p.displayImage as string} propertyId={p.id}
                                       sx={{ flex: '1 1 100%', maxWidth: { xs: '100%', md: 'calc(50% - 1em)' } }}/>
                     ) : <Skeleton variant='rounded' height={300}
                                   sx={{ flex: '1 1 100%', maxWidth: { xs: '100%', md: 'calc(50% - 1em)' } }}/>

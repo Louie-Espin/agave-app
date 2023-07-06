@@ -15,7 +15,7 @@ import ImageWithFallback from "components/ImageFallback";
 import downloadImage from "@firebaseUtils/client/downloadImage";
 import loadingGif from "@public/assets/images/loading.gif";
 import { useEffect, useState } from 'react';
-import {NextLinkComposed} from "components/Link";
+import { NextLinkComposed } from "components/Link";
 
 const HoverBox = styled(Box)(({ theme }) => ({
 
@@ -37,11 +37,11 @@ const HoverBox = styled(Box)(({ theme }) => ({
 
 interface PropertyCardProps extends CardProps {
     propertyName: string,
-    propertyContent: string,
+    propertyId: string,
     imageUrl?: string,
 }
 
-const PropertyCard = ({ propertyName, propertyContent, imageUrl = "", ...props }: PropertyCardProps ) => {
+const PropertyCard = ({ propertyName, propertyId, imageUrl = "", ...props }: PropertyCardProps ) => {
 
     // [FIXME] >>>>>>>>
     const [image, setImage] = useState(loadingGif.src);
@@ -61,7 +61,7 @@ const PropertyCard = ({ propertyName, propertyContent, imageUrl = "", ...props }
 
     return(
         <Card sx={{ minWidth: { md: 350 } }} { ...props }>
-            <CardActionArea>
+            <CardActionArea component={NextLinkComposed} to={`/work-history/${encodeURIComponent(propertyId)}`}>
                 <CardMedia>
                     <HoverBox height={{ xs: 200, md: 180 }} >
                         <ImageWithFallback src={image} fill imgObjectFit={"cover"} alt={"Image for [PROPERTY]"}/>
@@ -69,8 +69,7 @@ const PropertyCard = ({ propertyName, propertyContent, imageUrl = "", ...props }
                 </CardMedia>
                 <CardHeader titleTypographyProps={{ color: "#96772c" }} title={propertyName}></CardHeader>
                 <CardActions sx={{ justifyContent: 'flex-end' }}>
-                    <Button variant='text' color={'secondary'} component={NextLinkComposed} to={'/work-history'}>
-                        View Details</Button>{/* [TODO] */}
+                    <Button variant='text' color={'secondary'}>View Details</Button>
                 </CardActions>
             </CardActionArea>
         </Card>

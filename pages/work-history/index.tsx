@@ -7,13 +7,13 @@ import { Container, Stack, Box } from '@mui/material';
 import AuthLayout from "layouts/AuthLayout";
 import PropertiesList from "layouts/PropertiesList";
 
-import PropertyCard from "components/PropertyCard";
 import Loader from "components/Loader";
 import TitleBar from "components/TitleBar";
 import useSWR from "swr";
 import axios from "axios";
 
 import HomeWorkIcon from "@mui/icons-material/HomeWork";
+import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import Grid from "@mui/material/Unstable_Grid2";
 
 
@@ -36,7 +36,7 @@ const WorkHistoryPage: NextPage<WorkHistoryPageProps> = () => {
     return(
         <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
             <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '60vh' }}>
-                <TitleBar TitleIcon={HomeWorkIcon} Title={"Your Properties"} />
+                <TitleBar TitleIcon={WorkHistoryIcon} Title={"Work History"} />
                 <PropertiesList validating={pValidating} loading={pLoading} error={pError}
                                 properties={pData?.properties} showTitle={false} />
             </Container>
