@@ -13,6 +13,7 @@ import WorkHistoryPanel from "layouts/Templates/WorkHistoryPanel";
 import PropertyDetails from "components/PropertyDetails";
 import Loader from "components/Loader";
 import TitleBar from "components/TitleBar";
+import DownloadDialog from "components/DownloadDialog"; // FIXME
 import useSWR from "swr";
 import axios, { AxiosError } from "axios";
 
@@ -42,10 +43,14 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
     const AuthUser = useAuthUser();
 
     const [template, setTemplate] = useState<TemplateID>(TemplateID.STATUS_UPDATE);
+    const [form, setForm] = useState<string | null>(null); // FIXME
 
     const changeTemplate = (event: SyntheticEvent, newValue: TemplateID) => {
         setTemplate(newValue);
     }
+
+    const selectForm = (event: SyntheticEvent, formId: string) => { setForm(formId); } // FIXME
+    const closeDialog = () => { setForm(null); } // FIXME
 
     const formsFetcher = useSWR(AuthUser.id && property.id && template ? [historyURL, property.id, template] : null,
         (async ([historyURL, property, template]) => {
@@ -86,18 +91,19 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
                             </TabList>
 
                             <WorkHistoryPanel value={TemplateID.STATUS_UPDATE} pName={property.id} Icon={CircleNotificationsOutlined}
-                                forms={fData?.forms} validating={fValidating} loading={fLoading} error={fError} label='Status Update'
+                                forms={fData?.forms} validating={fValidating} loading={fLoading} error={fError} label='Status Update' action={selectForm} // FIXME
                             />
                             <WorkHistoryPanel value={TemplateID.WEEKLY_REPORT} pName={property.id} Icon={AssignmentTurnedInIcon}
-                                forms={fData?.forms} validating={fValidating} loading={fLoading} error={fError} label='Weekly Report'
+                                forms={fData?.forms} validating={fValidating} loading={fLoading} error={fError} label='Weekly Report' action={selectForm} // FIXME
                             />
                             <WorkHistoryPanel value={TemplateID.WORK_ORDER} forms={fData?.forms} Icon={Build}
-                                pName={property.id} validating={fValidating} loading={fLoading} error={fError} label='Work Order'
+                                pName={property.id} validating={fValidating} loading={fLoading} error={fError} label='Work Order' action={selectForm} // FIXME
                             />
                         </Stack>
                     </TabContext>
 
                 </Stack>
+                <DownloadDialog formId={form} onClose={closeDialog} authUser={AuthUser}/>{/* FIXME */}
             </Container>
         </AuthLayout>
     );

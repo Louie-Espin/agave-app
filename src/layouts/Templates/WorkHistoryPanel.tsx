@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, SyntheticEvent } from 'react';
 
 import {
     Paper,
@@ -28,9 +28,10 @@ interface WorkHistoryPanel extends TabPanelProps {
     pName: string,
     Icon: SvgIconComponent,
     label: string,
+    action: (event: SyntheticEvent, formId: string) => void
 }
 
-const WorkHistoryPanel: FC<WorkHistoryPanel> = ({ forms = [], Icon, validating, loading, error, pName, label, ...props  }: WorkHistoryPanel) => {
+const WorkHistoryPanel: FC<WorkHistoryPanel> = ({ forms = [], Icon, validating, loading, error, pName, label, action, ...props  }: WorkHistoryPanel) => {
 
     if (loading) return(
         <TabPanel {...props} sx={{ minHeight: '40vh' }} >
@@ -50,7 +51,7 @@ const WorkHistoryPanel: FC<WorkHistoryPanel> = ({ forms = [], Icon, validating, 
                 {
                     forms.map((f: Form) =>
                         <ListItem key={f.formId} component={Paper} disablePadding sx={{ mb: 1 }}>
-                            <ListItemButton>
+                            <ListItemButton onClick={(event) => action(event, f.formId)}>
                                 <ListItemIcon>
                                     {<Icon/>}
                                 </ListItemIcon>
