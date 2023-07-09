@@ -5,7 +5,7 @@ import initAuth from "@firebaseUtils/initAuth";
 import initFirebaseAdminSDK from "@firebaseUtils/firebaseAdmin";
 import createHttpError from "http-errors";
 
-type Response = { pdfLink: null | string, name: null | string, lastUpdated: null | string, message: string }
+type Response = { pdfLink: null | string, name: null | string, lastUpdated: null | string, message: string, fields: null | any }
 const ENCODED: string = Buffer.from(`${process.env.GOFORMZ_LOGIN}:${process.env.GOFORMZ_PASS}`).toString('base64');
 const getDownload = async (formId: string, exportId: string) => {
     try {
@@ -45,18 +45,18 @@ const getFormData = async (formId: string ) => {
             },
         });
 
-        return { name: res.data["name"], lastUpdated: res.data["lastUpdateDate"] };
+        return { name: res.data["name"], lastUpdated: res.data["lastUpdateDate"], fields: res.data["fields"] };
 
     } catch (e: any | AxiosError) {
 
         if (isAxiosError(e)) console.error(e);
-        return { name: null, lastUpdated: null };
+        return { name: null, lastUpdated: null, fields: null };
     }
 }
 
 const getForm: NextApiHandler = async (req, res) => {
 
-    const resObj: Response = { pdfLink: null, name: null, lastUpdated: null, message: "" };
+    const resObj: Response = { pdfLink: null, name: null, lastUpdated: null, fields: null, message: "" };
 
     initAuth();
     initFirebaseAdminSDK();
@@ -75,6 +75,7 @@ const getForm: NextApiHandler = async (req, res) => {
         const formData = await getFormData(formId as string);
         resObj.name = formData.name;
         resObj.lastUpdated = formData.lastUpdated;
+        resObj.fields = formData.fields;
 
         return res.status(200).json({ ...resObj });
 

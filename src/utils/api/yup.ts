@@ -77,10 +77,24 @@ export const ProposalSchema = yup.object({
     )
 });
 
+export const PropertySchema = yup.object({
+    id: yup.string().required('ID required. MUST match GoFormz key.'),
+    name: yup.string().required('Name required.'),
+    address: yup.string().required('Address Line 1 required.'),
+    jobNumber: yup.string().required('Job Number required.'),
+    manager: yup.object().shape({
+        name: yup.string().required("Name is required."),
+        email: yup.string().email("invalid Email."),
+    }).required('Manager details are required.'),
+    phone: yup.number(),
+    displayImage: yup.string().defined().strict(true),
+});
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     postUserSchema,
     AnnouncementSchema,
     FolderSchema,
     ProposalSchema,
+    PropertySchema,
 }

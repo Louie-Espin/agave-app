@@ -1,4 +1,3 @@
-import React, { Fragment, useState, useEffect, useRef } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import {AuthAction, useAuthUser, withAuthUser} from "next-firebase-auth";
@@ -6,9 +5,11 @@ import axios from "axios";
 import useSWR from "swr";
 import { format } from 'date-fns';
 
-import { Box, Container, Divider, Grid, Paper, Breadcrumbs, Typography, Button, styled } from "@mui/material"
+import AuthLayout from "layouts/AuthLayout";
+import { Box, Container, Paper, Breadcrumbs, Typography, Button, styled } from "@mui/material"
 import Link from "components/Link";
 import Loader from "components/Loader";
+import TitleBar from "components/TitleBar";
 import { H2, H4, H6 } from "components/Typography";
 
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
@@ -41,61 +42,43 @@ const ViewHistoryPage: NextPage<HistoryIdProps> = ({}) => {
 
     const { data, error, isLoading, isValidating } = fetcher;
 
-    if (isLoading || isValidating) return <Loader/>;
+    if (isLoading) return <Loader/>;
 
     return(
-        <Fragment>
-            <Box height='100%' display='flex' flexDirection='column'>
-                <Container sx={{ mt: "2rem" }}>
-                    <Box display='flex' alignItems='center' my={2}>
-                        <WorkHistoryIcon color="primary"/>
-                        <H2 ml={1.5} my="0px" lineHeight="1" whiteSpace="pre">
-                            History
-                        </H2>
+        <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
+            <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '60vh' }}>
+                <TitleBar TitleIcon={WorkHistoryIcon} Title={'Work History'} />
+
+                <StyledBreadcrumbs separator="›" aria-label="breadcrumb" sx={{ my: "1rem" }}>
+                    <Link href={'/work-history'} color="inherit" underline="hover">Work History</Link>
+                    <Typography color="text.primary" noWrap>{(data?.name) ? data.name : "Current File" }</Typography>
+                </StyledBreadcrumbs>
+
+                <Box component={Paper} >
+                    <Box sx={{ p: 1, display: 'flex', justifyContent: 'space-between'}}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
+                            <FileOpenIcon fontSize={'small'} sx={{ mr: 1 }}/>
+                            <H4 sx={{ whiteSpace: 'nowrap' , textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                                {(data?.name) ? data.name : "File Name Not Found." }
+                            </H4>
+                        </Box>
+
+                        <Button disabled={!(data?.pdfLink)} color="primary" variant="text" sx={{ flexShrink: 1 }}>
+                            <a href={data?.pdfLink} target="_blank" download>DOWNLOAD</a>
+                        </Button>
                     </Box>
-
-                    <Divider sx={{ borderColor: "grey.300" }} />
-                </Container>
-                <Container sx={{ overflow: "auto", pb: 12 }}>
-                    <StyledBreadcrumbs separator="›" aria-label="breadcrumb" sx={{ my: "1rem" }}>
-                        <Link href={'/history'} color="inherit" underline="hover">History</Link>
-                        <Typography color="text.primary" noWrap>{(data?.name) ? data.name : "Current File" }</Typography>
-                    </StyledBreadcrumbs>
-
-                    <Grid container >
-                        <Grid item xs={12}>
-                            <Paper variant="outlined" square sx={{ p: 1, display: 'flex', justifyContent: 'space-between'}}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
-                                    <FileOpenIcon fontSize={'small'} sx={{ mr: 1 }}/>
-                                    <H4 sx={{ whiteSpace: 'nowrap' , textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                                        {(data?.name) ? data.name : "File Name Not Found." }
-                                    </H4>
-                                </Box>
-
-                                <Button disabled={!(data?.pdfLink)} color="primary" variant="text" sx={{ flexShrink: 1 }}>
-                                    <a href={data?.pdfLink} target="_blank" download>
-                                        DOWNLOAD
-                                    </a>
-                                </Button>
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} md={6} sx={{ height: { xs: "60vh", md: "75vh"} }}>
-                            <Paper variant="outlined" square sx={{ height: "100%"}}>
-                                <iframe width={"100%"} height={"100%"} allow="fullscreen" title="PDF Preview"
-                                        src={(data?.pdfLink) ? `${data?.pdfLink}#toolbar=0&navpanes=0` : undefined}
-                                />
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                            <Paper variant="outlined" square sx={{ p: 1, display: 'flex', justifyContent: 'space-between'}}>
-                                <H6>Last Updated</H6>
-                                <H6>{(data?.lastUpdated) ? format(new Date(data.lastUpdated), 'MM/dd/yyyy') : null}</H6>
-                            </Paper>
-                        </Grid>
-                    </Grid>
-                </Container>
-            </Box>
-        </Fragment>
+                    <Box sx={{ p: 1, display: 'flex', justifyContent: 'space-between'}}>
+                        <H6>Last Updated</H6>
+                        <H6>{(data?.lastUpdated) ? format(new Date(data.lastUpdated), 'MM/dd/yyyy') : null}</H6>
+                    </Box>
+                    <Box sx={{ height: { xs: "60vh", md: "75vh"} }}>
+                        <iframe width={"100%"} height={"100%"} allow="fullscreen" title="PDF Preview"
+                                src={(data?.pdfLink) ? `${data?.pdfLink}` : undefined}
+                        />
+                    </Box>
+                </Box>
+            </Container>
+        </AuthLayout>
     );
 };
 

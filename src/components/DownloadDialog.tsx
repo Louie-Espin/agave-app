@@ -6,10 +6,12 @@ import axios from "axios";
 import PauseCircleOutline from "@mui/icons-material/PauseCircleOutline";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { AuthUserContext } from "next-firebase-auth";
 
 type DownloadDialogProps = {
-    formId: string | null; token: string | null;
-    open: boolean; onClose: (value: string | null) => void;
+    formId: string | null;
+    authUser: AuthUserContext;
+    onClose: () => void;
 }
 
 const downloadStatus: Record<'inactive' | 'loading' | 'complete' | 'error', { progress: boolean , message: string, component: any }> = {
@@ -19,7 +21,7 @@ const downloadStatus: Record<'inactive' | 'loading' | 'complete' | 'error', { pr
     error: { progress: false, message: 'Error!', component: <ErrorOutlineIcon color={'primary'} sx={{ fontSize: '3rem' }}/> }
 };
 
-const DownloadDialog: FC<DownloadDialogProps> = ({ formId, token, open, onClose }) => {
+const DownloadDialog: FC<DownloadDialogProps> = ({ formId, authUser, onClose }) => {
 
     const router = useRouter();
     const [status, setStatus] = useState(downloadStatus.inactive);
@@ -27,7 +29,7 @@ const DownloadDialog: FC<DownloadDialogProps> = ({ formId, token, open, onClose 
 
     const handleCancel = () => {
         setStatus(downloadStatus.inactive);
-        onClose(null);
+        onClose();
     };
 
     const sleep = (ms: number) => { return new Promise(resolve => setTimeout(resolve, ms)); }
@@ -36,9 +38,10 @@ const DownloadDialog: FC<DownloadDialogProps> = ({ formId, token, open, onClose 
         const CancelToken = axios.CancelToken;
         const source = CancelToken.source();
 
-        if (formId && token)
+        if (formId && authUser.id)
             (async () => {
                 try {
+                    const token = await authUser.getIdToken();
                     let eId, redirect = null;
                     setStatus(downloadStatus.loading);
 
@@ -70,7 +73,7 @@ const DownloadDialog: FC<DownloadDialogProps> = ({ formId, token, open, onClose 
             })();
 
         return () => { source.cancel(); }
-    }, [formId, token]);
+    }, [formId, authUser]);
 
     useEffect(() => {
         if (download.formId && download.exportId)
@@ -78,7 +81,7 @@ const DownloadDialog: FC<DownloadDialogProps> = ({ formId, token, open, onClose 
     }, [router, download]);
 
     return(
-        <Dialog open={open} fullWidth >
+        <Dialog open={!!(formId)} fullWidth >
             <DialogTitle>{status.message}</DialogTitle>
             <DialogContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {status.component}

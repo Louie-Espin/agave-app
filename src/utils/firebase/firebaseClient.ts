@@ -5,7 +5,7 @@ export const firebaseConfig = {
     authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
     projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-    //storageBucket: process.env.STORAGE_BUCKET_FB_,
+    storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
     //messagingSenderId: process.env.MESSAGING_SENDER_ID_FB_,
     //measurementId: process.env.MEASUREMENT_ID_FB_,
 };

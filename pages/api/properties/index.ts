@@ -1,59 +1,100 @@
-import type { NextApiRequest, NextApiResponse, NextApiHandler } from 'next';
-import axios, {AxiosError, isAxiosError} from "axios";
+import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import { apiHandler } from "utils/api/apiHandler";
 import initAuth from "@firebaseUtils/initAuth";
-import initFirebaseAdminSDK from "@firebaseUtils/firebaseAdmin";
 import createHttpError from "http-errors";
-import {verifyIdToken} from "next-firebase-auth";
+import { verifyIdToken } from "next-firebase-auth";
+import { getFirestore, Firestore, QuerySnapshot, FieldPath } from "firebase-admin/firestore";
+import { AxiosError, isAxiosError } from "axios";
+import { PropertySchema } from "utils/api/yup";
+import * as yup from "yup";
 
-const ENCODED: string = Buffer.from(`${process.env.GOFORMZ_LOGIN}:${process.env.GOFORMZ_PASS}`).toString('base64');
-const DATASOURCE_ID = '52bde75c-2a41-4877-87b7-9622409d7e3c';
+type Property = yup.InferType<typeof PropertySchema>;
+type GetResponse = { properties: Property[]; message: string };
 
-const config = (sourceId: string) => {
-    return {
-        url: `https://api.goformz.com/v2/datasources/${sourceId}/rows`,
-        method: 'GET',
-        headers: {
-            'Host': 'api.goformz.com',
-            'Connection': 'keep-alive',
-            'Accept': '*/*',
-            'Accept-Encoding': 'gzip, deflate, sdch',
-            'Authorization': `Basic ${ENCODED}`,
-        },
-        params: { pageSize: 100, },
-    }
-};
+const USERS_COL_: string = 'users';
+const PROPERTIES_COL_: string = 'properties';
+const ADMIN_FIELD_: string = 'admin';
+const PROPERTIES_FIELD_: string = 'properties';
 
-const getProperties: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse) => {
+/*
+ * GET PROPERTIES: Returns a list of all properties if admin, else all properties for the given user
+ */
+const getProperties: NextApiHandler<GetResponse> = async (req: NextApiRequest, res: NextApiResponse) => {
 
     initAuth();
-    initFirebaseAdminSDK();
+    const db = getFirestore();
+    let properties: Property[] = [];
+
+    let adminStatus = false;
+    let userProperties: string[] = []
 
     const token = req.headers['authorization'];
-    if (!token) return res.status(401).json({ properties: null, message: "GET Properties failed; No token!" });
+
+    if (!token)
+        return res.status(401).json({ properties: properties, message: "GET Properties failed; No token!" });
 
     try {
         // Verifying ID Token
         const authUser = await verifyIdToken(token);
-        if (!authUser.id) return res.status(401).json({ properties: null, message: "GET Properties failed. Unauthorized!" })
 
-        // Fetching Properties Data source from GoFormz
-        const getProperties = await axios(config(DATASOURCE_ID));
-        return res.status(200).json({ properties: getProperties.data, message: "GET Properties success." });
+        if (!authUser.id)
+            return res.status(401).json({ properties: properties, message: "GET Properties failed; Unauthorized!" })
+
+        // Querying authenticated user in DB
+        const authDoc = await db.collection(USERS_COL_).doc(authUser.id).get();
+
+        if (!authDoc.exists)
+            return res.status(500).json({ properties: properties, message: "GET Properties failed. User not found!" })
+
+        //  Checking for admin rights
+        if (authDoc.get(ADMIN_FIELD_)) adminStatus = true;
+        userProperties = authDoc.get(PROPERTIES_FIELD_) as string[];
+
+        properties = await iteratePropertiesCol(db, adminStatus, userProperties);
+
+        return res.status(200).json({ properties: properties, message: `GET Properties success [${adminStatus}]` })
 
     } catch (err: any | AxiosError) {
 
         if (isAxiosError(err)) {
             console.log(err);
-            return res.status(400).json({ properties: null, message: "Couldn't connect to Go Formz!" });
+            return res.status(400).json({ properties: properties, message: "Couldn't connect to Firebase!" });
         }
 
         // eslint-disable-next-line no-console
         console.error(err);
         throw new createHttpError.InternalServerError((err as Error).message ?? "Unknown internal error occurred!");
+
     }
-};
+
+}
 
 export default apiHandler({
     GET: getProperties,
 });
+
+const iteratePropertiesCol = async (db: Firestore, admin: boolean, userProperties: string[] ) => {
+
+    let properties: Property[] = []
+    let snapshot: null | QuerySnapshot = null;
+
+    try {
+        const propertiesRef = db.collection(PROPERTIES_COL_);
+
+        if (admin) snapshot = await propertiesRef.get();
+        else snapshot = await propertiesRef.where(FieldPath.documentId(), 'in', userProperties).get(); // TODO: test
+
+        if (snapshot.empty) return properties;
+
+        for (const doc of snapshot.docs) {
+            const validate = await PropertySchema.validate({...doc.data(), id: doc.id}, { abortEarly: false, strict: true, });
+            properties.push(validate);
+        }
+
+        return properties;
+    } catch (e) {
+
+        console.error(e);
+        return properties;
+    }
+}
