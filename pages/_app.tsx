@@ -25,6 +25,22 @@ const App = ({ Component, pageProps }: AppProps) => {
     return (
         <Fragment>
             <Head>
+
+                <meta name="application-name" content="Agave Communications" />
+                <meta name="apple-mobile-web-app-capable" content="yes" />
+                <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+                <meta name="apple-mobile-web-app-title" content="Agave Communications" />
+                <meta name="description" content="Web Portal - Agave Environmental Contracting Inc." />
+                <meta name="format-detection" content="telephone=no" />
+                <meta name="mobile-web-app-capable" content="yes" />
+                <meta name="msapplication-config" content="/icons/browserconfig.xml" />
+                <meta name="msapplication-TileColor" content="#2B5797" />
+                <meta name="msapplication-tap-highlight" content="no" />
+                <meta name="theme-color" content="#79c37b" />
+                <meta name="background-color" content="#79c37b" />
+                <link rel="manifest" href="/manifest.json" />
+                <link rel="apple-touch-icon" href="/icon-512x512.png" />
+
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
                 <meta charSet="utf-8" />
