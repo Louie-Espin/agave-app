@@ -52,7 +52,6 @@ const SmoothHeader = styled(Box, {
     paddingTop: `env(safe-area-inset-top, ${theme.spacing(2)})`,
     paddingRight: `calc(${theme.spacing(2)} + env(safe-area-inset-right))`,
     paddingLeft: `calc(${theme.spacing(2)} + env(safe-area-inset-left))`,
-    paddingBottom: theme.spacing(2),
 
     display: 'flex',
     flexFlow: 'row nowrap',
