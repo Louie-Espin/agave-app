@@ -36,12 +36,12 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <meta name="msapplication-config" content="/icons/browserconfig.xml" />
                 <meta name="msapplication-TileColor" content="#2B5797" />
                 <meta name="msapplication-tap-highlight" content="no" />
-                <meta name="theme-color" content="#79c37b" />
+                <meta name="theme-color" content="#fff">
                 <meta name="background-color" content="#79c37b" />
                 <link rel="manifest" href="/manifest.json" />
                 <link rel="apple-touch-icon" href="/icon-512x512.png" />
 
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
                 <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
                 <meta charSet="utf-8" />
                 <link href="/favicon.jpg" rel="shortcut icon" type="image/x-icon"/>
