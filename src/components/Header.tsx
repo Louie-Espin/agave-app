@@ -49,7 +49,7 @@ const SmoothHeader = styled(Box, {
     width: '100%',
     backdropFilter: 'blur(5px)',
     top: 0,
-    paddingTop: `calc(${theme.spacing(2)} + env(safe-area-inset-top))`,
+    paddingTop: `env(safe-area-inset-top, ${theme.spacing(2)})`,
     paddingRight: `calc(${theme.spacing(2)} + env(safe-area-inset-right))`,
     paddingLeft: `calc(${theme.spacing(2)} + env(safe-area-inset-left))`,
     paddingBottom: theme.spacing(2),
