@@ -36,7 +36,7 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <meta name="msapplication-config" content="/icons/browserconfig.xml" />
                 <meta name="msapplication-TileColor" content="#2B5797" />
                 <meta name="msapplication-tap-highlight" content="no" />
-                <meta name="theme-color" content="#fff">
+                <meta name="theme-color" content="#fff" />
                 <meta name="background-color" content="#79c37b" />
                 <link rel="manifest" href="/manifest.json" />
                 <link rel="apple-touch-icon" href="/icon-512x512.png" />
