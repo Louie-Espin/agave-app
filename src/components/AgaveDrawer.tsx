@@ -30,9 +30,12 @@ import agaveLogo from "@public/assets/images/logo-agave.png";
 
 const DrawerContent = styled(Box, {})(({ theme }) => ({
     backgroundColor: theme.palette.primary.main,
-    padding: theme.spacing(2),
+    paddingTop: `env(safe-area-inset-top, ${theme.spacing(2)})`,
+    paddingRight: `env(safe-area-inset-right, ${theme.spacing(2)})`,
+    paddingLeft: `env(safe-area-inset-left, ${theme.spacing(2)})`,
+    paddingBottom: `env(safe-area-inset-bottom, ${theme.spacing(2)})`,
     height: '100%',
-    overflow: 'hidden',
+    overflow: 'auto',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between'
