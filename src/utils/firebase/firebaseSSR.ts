@@ -1,6 +1,7 @@
 import initAuth from "@firebaseUtils/initAuth";
 import initFirebaseAdminSDK from "@firebaseUtils/firebaseAdmin";
-import { getFirestore } from "firebase-admin/firestore";
+import { getApp } from "firebase-admin/app"
+import { initializeFirestore } from "firebase-admin/firestore";
 import { verifyIdToken } from "next-firebase-auth";
 import { PropertySchema } from "utils/api/yup";
 
@@ -21,7 +22,7 @@ export const getUserProperties = async (token: string | null) => {
     // Initializing Firebase Admin SDK
     initAuth();
     initFirebaseAdminSDK();
-    const db = getFirestore();
+    const db = initializeFirestore(getApp(), { preferRest: true });
 
     try {
 
@@ -53,7 +54,7 @@ export const getPropertyData = async (token: string | null, propertyId: string |
     // Initializing Firebase Admin SDK
     initAuth();
     initFirebaseAdminSDK();
-    const db = getFirestore();
+    const db = initializeFirestore(getApp(), { preferRest: true });
 
     try {
 
