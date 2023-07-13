@@ -39,7 +39,6 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <meta name="theme-color" content="#7A9F7D" />
                 <meta name="background-color" content="#7A9F7D" />
                 <link rel="manifest" href="/manifest.json" />
-                <link rel="apple-touch-icon" href="/icon-512x512.png" />
 
                 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
                 <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
@@ -47,7 +46,8 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <link href="/favicon.jpg" rel="shortcut icon" type="image/x-icon"/>
                 <title>Client Portal - Agave Environmental Contracting, Inc.</title>
 
-                {/* Splash Screen images for iOS/iPadOS */}
+                {/* Icon & Splash Screen images for iOS/iPadOS */}
+                <link rel="apple-touch-icon" href="/splash_screens/icon.png" />
                 <link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/splash_screens/iPhone_14_Pro_Max_landscape.png" />
                 <link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/splash_screens/iPhone_14_Pro_landscape.png" />
                 <link rel="apple-touch-startup-image" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="/splash_screens/iPhone_14_Plus__iPhone_13_Pro_Max__iPhone_12_Pro_Max_landscape.png" />
