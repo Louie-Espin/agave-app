@@ -3,6 +3,7 @@ import MuiTheme from "theme/MuiTheme";
 import Head from 'next/head';
 import Router from 'next/router';
 import type { AppProps } from 'next/app';
+import { Analytics } from '@vercel/analytics/react';
 
 import nProgress from "nprogress";
 import "nprogress/nprogress.css";
@@ -85,6 +86,7 @@ const App = ({ Component, pageProps }: AppProps) => {
             </Head>
             <MuiTheme>
                 <Component {...pageProps} />
+                <Analytics />
             </MuiTheme>
         </Fragment>
     );
