@@ -45,11 +45,13 @@ const SmoothHeader = styled(Box, {
     backgroundImage: `linear-gradient(to right, ${alpha(theme.palette.grey['500'], .4)}, ${alpha(theme.palette.grey['300'], 1)})`,
 
     position: 'sticky',
-    height: hLarge,
+    height: `calc(${hLarge}px + env(safe-area-inset-top))`,
     width: '100%',
     backdropFilter: 'blur(5px)',
     top: 0,
-    padding: theme.spacing(2),
+    paddingTop: `env(safe-area-inset-top, ${theme.spacing(2)})`,
+    paddingRight: `calc(${theme.spacing(2)} + env(safe-area-inset-right))`,
+    paddingLeft: `calc(${theme.spacing(2)} + env(safe-area-inset-left))`,
 
     display: 'flex',
     flexFlow: 'row nowrap',
@@ -64,7 +66,7 @@ const SmoothHeader = styled(Box, {
     transitionTimingFunction: 'ease',
 
     ...((scrollDir == 'down') && { // the overrides added when the 'scrollDir' prop == 'down'
-        height: hSmall,
+        height: `calc(${hSmall}px + env(safe-area-inset-top))`,
         backgroundColor: alpha(theme.palette.grey['500'], .5),
         backdropFilter: 'blur(7px)',
     })

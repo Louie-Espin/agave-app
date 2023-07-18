@@ -111,7 +111,9 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
 
 export const getServerSideProps: GetServerSideProps<PropertiesPageProps> = withAuthUserTokenSSR({
     whenUnauthed: AuthAction.REDIRECT_TO_LOGIN
-})(async ({ AuthUser, query }) => {
+})(async ({ AuthUser, query, res }) => {
+
+    res.setHeader('Cache-Control', 'public, s-maxage=1800, stale-while-revalidate=86400') // FIXME: sure about this?
 
     const { propertyId } = query;
     // const propertyId = (params && params['propertyId']) ? params['propertyId'].toString() : null
