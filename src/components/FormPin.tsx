@@ -11,7 +11,7 @@ type FormPinProps = {
 const FormPin: FC<FormPinProps> = ({ id, location, radius = 0, open, handleOpen }) => {
 
     if (!location || !id) return null;
-    const windowToggle = () => { open ? handleOpen(null) : handleOpen(id)}
+    const windowToggle = () => { open ? handleOpen(null) : handleOpen(id) }
     const windowClose = () => handleOpen(null);
 
     return(
@@ -25,7 +25,7 @@ const FormPin: FC<FormPinProps> = ({ id, location, radius = 0, open, handleOpen 
                  }}
         >
             <PinWindow open={open} position={location} onCloseClick={windowClose} />
-            <CircleF center={location} radius={radius} onClick={windowToggle} options={{ strokeWeight: 0 }} />
+            <CircleF center={location} radius={radius} onClick={windowToggle} options={{ strokeWeight: 0, fillColor: '#871A78' }} />
         </MarkerF>
     )
 }
