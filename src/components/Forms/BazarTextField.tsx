@@ -34,7 +34,7 @@ const BazarTextField: FC<TextFieldProps & BoxProps> = ({
           ...InputProps,
           style: {
             ...InputProps?.style,
-            height: 44,
+            minHeight: 44,
           },
         }}
         {...textFieldProps}
