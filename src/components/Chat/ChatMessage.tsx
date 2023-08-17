@@ -1,5 +1,8 @@
 import { FC } from "react";
-import { Box, styled } from "@mui/material";
+import { Box, Stack, styled } from "@mui/material";
+import { Small } from "components/Typography";
+import { formatRelative } from 'date-fns'
+import { Timestamp } from "firebase/firestore";
 
 const MessageBox = styled(Box)(({theme}) => ({
 
@@ -30,13 +33,20 @@ const MessageBox = styled(Box)(({theme}) => ({
 
 }));
 
-type ChatMessageProps = { text: string, isSender: boolean };
+type ChatMessageProps = { text: string, isSender: boolean, timestamp: Timestamp | null };
 
-const ChatMessage: FC<ChatMessageProps> = ({ text, isSender }) => {
+const ChatMessage: FC<ChatMessageProps> = ({ text, isSender, timestamp }) => {
     return(
         <MessageBox className={ isSender ? 'sender' : 'recipient'}>
             {/* TODO: add timestamp, sender name, and maybe sender avatar */}
+
             { text }
+
+            <Stack direction='row' justifyContent='flex-end'>
+                <Small color='grey.600' fontSize='smaller'>
+                    {timestamp ? formatRelative(timestamp.toDate(), Date.now()) : 'sending...'}
+                </Small>
+            </Stack>
         </MessageBox>
     )
 }
