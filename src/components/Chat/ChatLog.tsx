@@ -16,11 +16,13 @@ type ChatLogProps = { messages?: Message[], isLoading: boolean, error?: Firestor
 const ChatLog: FC<ChatLogProps> = ({ messages = [], isLoading, error, uid }) => {
 
     return(
-        <Container sx={{ overflow: 'auto', position: 'relative', height: '60vh', py: 2 }}>
+        <Container sx={{ overflow: 'auto', position: 'relative', height: '60vh', py: 2, display: 'flex', flexDirection: 'column-reverse' }}>
             {/* TODO: add UI for loading, empty list, and error states */}
             {/* TODO: maybe move message mapping to parent component, then add children ReactNode prop */}
             <StyledStack>
-                { messages.map((i) => (<ChatMessage key={i.id} text={i.text} isSender={i.sender === uid} />)) }
+                { messages.map((i) =>
+                    <ChatMessage key={i.id} text={i.text} isSender={i.sender === uid} timestamp={i.timestamp} />
+                )}
             </StyledStack>
         </Container>
     );
