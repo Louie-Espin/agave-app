@@ -11,7 +11,7 @@ import {
 export type Message = {
     sender: string,
     text: string,
-    timestamp: Timestamp,
+    timestamp: Timestamp | null,
     id?: string, // FIXME: ?
     ref?: DocumentReference<DocumentData>, // FIXME: ?
 };

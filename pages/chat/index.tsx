@@ -1,8 +1,8 @@
 import { NextPage } from "next";
 
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
-import { getFirestore, collection, addDoc, Timestamp, query, orderBy } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import messageConverter from "@firebaseUtils/client/messageConverter";
 
@@ -27,7 +27,7 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
 
         if (!AuthUser.id) return console.error('No AuthUser found!');
 
-        const messageRef = await addDoc(ref, { sender: AuthUser.id, text: m, timestamp: Timestamp.now() });
+        const messageRef = await addDoc(ref, { sender: AuthUser.id, text: m, timestamp: serverTimestamp() });
 
         return console.log(messageRef);
     }
