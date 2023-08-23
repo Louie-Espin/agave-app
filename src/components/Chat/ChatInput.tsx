@@ -9,7 +9,7 @@ import * as yup from "yup";
 import SendIcon from "@mui/icons-material/Send"
 import NearMe from "@mui/icons-material/NearMe";
 
-type ChatInputProps = { handler: (value: string) => void } // FIXME: temporary
+type ChatInputProps = { handler: (value: string) => void , openDialog: () => void } // FIXME: temporary
 
 // Initial Values for Formik
 const initialValues = { text: "" };
@@ -21,11 +21,12 @@ const messageSchema = yup.object().shape({
         .max(200, "Character limit reached."),
 });
 
-const ChatInput: FC<ChatInputProps & BoxProps> = ({ handler }) => {
+const ChatInput: FC<ChatInputProps & BoxProps> = ({ handler, openDialog }) => {
 
     const handleSend = async (values: { text: string }) => {
-        handler(values.text);
+        await handler(values.text);
 
+        values.text = '';
         return('message sent!');
     }
 
@@ -41,7 +42,7 @@ const ChatInput: FC<ChatInputProps & BoxProps> = ({ handler }) => {
         <form onSubmit={handleSubmit}>
             <Stack direction='row' alignItems='start' sx={{ gap: '1em', my: 1 }}>
                 <Box flex={'0 1 auto'}>
-                    <IconButton aria-label="Send Your Location">
+                    <IconButton aria-label="Send Your Location" onClick={openDialog}>
                         <NearMe/>
                     </IconButton>
                 </Box>
