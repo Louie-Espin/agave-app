@@ -2,7 +2,7 @@ import {
     DocumentData,
     DocumentReference,
     FirestoreDataConverter,
-    WithFieldValue,
+    PartialWithFieldValue,
     QueryDocumentSnapshot,
     SnapshotOptions,
     Timestamp
@@ -19,7 +19,7 @@ export type Message = {
 export type NewMessage = Omit<Message, 'id' | 'ref'>;
 
 const messageConverter: FirestoreDataConverter<Message> = {
-    toFirestore(message: WithFieldValue<NewMessage>): DocumentData {
+    toFirestore(message: PartialWithFieldValue<NewMessage>): DocumentData {
         return { sender: message.sender, text: message.text, timestamp: message.timestamp };
     },
     fromFirestore(
