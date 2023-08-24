@@ -22,12 +22,10 @@ const LocationDialog: FC<LocationDialogProps> = ({ open, handleClose }: Location
 
     return(
         <Dialog open={open}>
-            <DialogTitle>{"Send your current location?"}</DialogTitle>
+            <DialogTitle>Send your current location?</DialogTitle>
             <DialogContent>
-                <DialogContentText mb={2}>
-                    { error ? error : 'This will allow the browser to share your location.' }
-                </DialogContentText>
-                <Alert severity={ (error) ? 'error' : 'info' }>
+                <DialogContentText mb={2}>This will allow the browser to share your location.</DialogContentText>
+                <Alert severity={ (error) ? 'error' : 'info' } color={(latitude && longitude) ? 'success' : undefined}>
                     { !(latitude && longitude) && 'Determining your location...' }
                     { (latitude && longitude) && 'Location found!' }
                     { (error) && 'Error finding location.' }
