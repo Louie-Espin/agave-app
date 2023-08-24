@@ -37,18 +37,23 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
     }
 
     const openDialog = () => { setDialog(true) }
-    const closeDialog = (latitude: number | null, longitude: number | null, accuracy: number | null) => {
+    const closeDialog = async (latitude: number | null, longitude: number | null, accuracy: number | null) => {
 
-        setDialog(false);
+        setDialog(false); // FIXME: Should this be called before anything else?
 
         if (!AuthUser.id) return console.error('No AuthUser found!');
         if (!latitude || !longitude || !accuracy) return console.error('No location data returned.');
 
-        const messageRef = addDoc(ref, {
-            sender: AuthUser.id,
-            text: `lat: ${latitude}, lng: ${longitude}, acc: ${accuracy}`,
-            timestamp: serverTimestamp()
-        } as NewMessage);
+        try {
+            await addDoc(ref, {
+                sender: AuthUser.id,
+                text: `Location sent.`,
+                location: { lat: latitude, lng: longitude, acc: accuracy },
+                timestamp: serverTimestamp()
+            } as NewMessage);
+        } catch (e) {
+            console.error('An Error occurred while sending geo-location!', e);
+        }
     }
 
     /**

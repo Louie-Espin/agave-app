@@ -11,6 +11,7 @@ import {
 export type Message = {
     sender: string,
     text: string,
+    location?: { lat: number, lng: number, acc: number }
     timestamp: Timestamp | null,
     id: string,
     ref: DocumentReference<DocumentData>,
@@ -20,7 +21,7 @@ export type NewMessage = Omit<Message, 'id' | 'ref'>;
 
 const messageConverter: FirestoreDataConverter<Message> = {
     toFirestore(message: PartialWithFieldValue<NewMessage>): DocumentData {
-        return { sender: message.sender, text: message.text, timestamp: message.timestamp };
+        return { sender: message.sender, text: message.text, location: message.location, timestamp: message.timestamp };
     },
     fromFirestore(
         snapshot: QueryDocumentSnapshot,
@@ -30,6 +31,7 @@ const messageConverter: FirestoreDataConverter<Message> = {
         return {
             sender: data.sender,
             text: data.text,
+            location: data.location,
             timestamp: data.timestamp,
             id: snapshot.id,
             ref: snapshot.ref,
