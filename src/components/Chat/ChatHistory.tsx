@@ -8,7 +8,7 @@ import TitleBar from "components/TitleBar";
 import ChatIcon from '@mui/icons-material/Chat';
 import ReplyIcon from '@mui/icons-material/Reply';
 import { Chat } from "@firebaseUtils/client/chatConverter";
-import { FirestoreError } from "firebase/firestore";
+import { FirestoreError, Timestamp } from "firebase/firestore";
 import {formatRelative} from "date-fns";
 
 type ChatHistoryProps = { chats?: Chat[], isLoading: boolean, error?: FirestoreError, uid: string | null };
@@ -44,7 +44,10 @@ const ChatHistoryItem: FC<Partial<Chat> & { sent: boolean }> = ({ lastMessage, s
                     secondary={
                         <Fragment>
                             <Chip size='small' sx={{mr: 1}} icon={sent ? <ReplyIcon/> : <ChatIcon/>}
-                                label={lastMessage?.timestamp && formatRelative(lastMessage.timestamp.toDate(), Date.now())}
+                                label={
+                                    (lastMessage?.timestamp instanceof Timestamp)
+                                    && formatRelative(lastMessage.timestamp.toDate(), Date.now())
+                                }
                             />
                             <Paragraph color='grey.600' sx={{ display: 'inline-block' }}>
                                 {lastMessage?.text}
