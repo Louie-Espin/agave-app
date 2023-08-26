@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Box, Stack, styled } from "@mui/material";
 import { Small } from "components/Typography";
 import { formatRelative } from 'date-fns'
-import { Timestamp } from "firebase/firestore";
+import { Timestamp, FieldValue } from "firebase/firestore";
 
 const MessageBox = styled(Box)(({theme}) => ({
 
@@ -40,7 +40,7 @@ const embed: any = {
     url: 'https://www.google.com/maps/embed/v1/place'
 }
 
-type ChatMessageProps = { text: string, isSender: boolean, timestamp: Timestamp | null, location?: { lat: number, lng: number } };
+type ChatMessageProps = { text: string, isSender: boolean, timestamp: Timestamp | FieldValue, location?: { lat: number, lng: number } | null };
 
 const ChatMessage: FC<ChatMessageProps> = ({ text, isSender, timestamp, location }) => {
 
@@ -51,7 +51,7 @@ const ChatMessage: FC<ChatMessageProps> = ({ text, isSender, timestamp, location
             />
             <Stack direction='row' justifyContent='flex-end'>
                 <Small color='grey.600' fontSize='smaller'>
-                    {timestamp ? formatRelative(timestamp.toDate(), Date.now()) : 'sending...'}
+                    {timestamp instanceof Timestamp ? formatRelative(timestamp.toDate(), Date.now()) : 'sending...'}
                 </Small>
             </Stack>
         </MessageBox>
@@ -62,7 +62,7 @@ const ChatMessage: FC<ChatMessageProps> = ({ text, isSender, timestamp, location
             { text }
             <Stack direction='row' justifyContent='flex-end'>
                 <Small color='grey.600' fontSize='smaller'>
-                    {timestamp ? formatRelative(timestamp.toDate(), Date.now()) : 'sending...'}
+                    {timestamp instanceof Timestamp ? formatRelative(timestamp.toDate(), Date.now()) : 'sending...'}
                 </Small>
             </Stack>
         </MessageBox>

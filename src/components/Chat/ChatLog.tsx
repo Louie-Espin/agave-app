@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { FirestoreError } from "firebase/firestore";
+import { FirestoreError, Timestamp } from "firebase/firestore";
 import { Container, Stack, Box, styled } from '@mui/material';
 import { Message } from "@firebaseUtils/client/messageConverter";
 import ChatMessage from 'components/Chat/ChatMessage';
@@ -21,7 +21,9 @@ const ChatLog: FC<ChatLogProps> = ({ messages = [], isLoading, error, uid }) => 
             {/* TODO: maybe move message mapping to parent component, then add children ReactNode prop */}
             <StyledStack>
                 { messages.map((i) =>
-                    <ChatMessage key={i.id} text={i.text} isSender={i.sender === uid} timestamp={i.timestamp} location={i.location} />
+                    <ChatMessage key={i.id} text={i.text} isSender={i.sender === uid}
+                                 timestamp={i?.timestamp} location={i?.location}
+                    />
                 )}
             </StyledStack>
         </Container>
