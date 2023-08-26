@@ -2,10 +2,10 @@ import { NextPage } from "next";
 
 import { useState } from 'react';
 import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
-import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, where } from 'firebase/firestore';
+import { getFirestore, collection, doc, addDoc, updateDoc, serverTimestamp, Timestamp, query, orderBy, where, CollectionReference, DocumentReference } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import messageConverter, { NewMessage } from "@firebaseUtils/client/messageConverter";
-// import chatConverter from "@firebaseUtils/client/chatConverter"; FIXME
+import chatConverter from "@firebaseUtils/client/chatConverter";
 
 import { Container, Stack, Box } from '@mui/material';
 import AuthLayout from "layouts/AuthLayout";
@@ -13,7 +13,7 @@ import Loader from "components/Loader";
 
 import ChatInput from "components/Chat/ChatInput";
 import ChatLog from "components/Chat/ChatLog";
-// import ChatHistory from "components/Chat/ChatHistory"; FIXME
+import ChatHistory from "components/Chat/ChatHistory";
 import LocationDialog from "components/Chat/LocationDialog";
 
 type ChatIndexProps = {}
@@ -24,35 +24,38 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
     const [dialog, setDialog] = useState(false);
     const [chatId, setChatId] = useState<string | null>('ACpeKw8eFLcKOdlpIQv5'); // FIXME set to null
 
-    // const historyRef = collection(getFirestore(), 'chats').withConverter(chatConverter); FIXME
-    const ref = collection(getFirestore(), `chats/${chatId}/messages`).withConverter(messageConverter);
+    const chatsCol = collection(getFirestore(), 'chats').withConverter(chatConverter);
+    const messagesCol = collection(getFirestore(), `chats/${chatId}/messages`).withConverter(messageConverter);
 
-    const addMessage = async (m: string) => {
+    const toggleConversation = (chatId: string) => { setChatId(chatId) };
+    const toggleDialog = (toggle: boolean) => { setDialog(toggle) };
+    const handleSend = async (text: string, lat?: number, lng?: number, acc?: number) => {
 
         if (!AuthUser.id) return console.error('No AuthUser found!');
+        if (!chatId) return console.error('No Chat has been selected!');
 
-        const messageRef = await addDoc(ref, { sender: AuthUser.id, text: m, timestamp: serverTimestamp() } as NewMessage);
+        const currChatDoc = doc(getFirestore(), 'chats', chatId).withConverter(chatConverter);
 
-        return console.log(messageRef);
+        await addMessage({
+            sender: AuthUser.id,
+            text: text,
+            location: (lat && lng && acc) ? { lat: lat, lng: lng, acc: acc } : null,
+            timestamp: serverTimestamp(),
+        }, messagesCol, currChatDoc);
     }
-
-    const openDialog = () => { setDialog(true) }
-    const closeDialog = async (latitude: number | null, longitude: number | null, accuracy: number | null) => {
-
-        setDialog(false); // FIXME: Should this be called before anything else?
-
-        if (!AuthUser.id) return console.error('No AuthUser found!');
-        if (!latitude || !longitude || !accuracy) return console.error('No location data returned.');
-
+    const addMessage = async (message: NewMessage, msgCol: CollectionReference, chatDoc: DocumentReference) => {
         try {
-            await addDoc(ref, {
-                sender: AuthUser.id,
-                text: `Location sent.`,
-                location: { lat: latitude, lng: longitude, acc: accuracy },
+            const messageRef = await addDoc(msgCol, {
+                ...message,
                 timestamp: serverTimestamp()
             } as NewMessage);
+
+            /* FIXME: This should be a Cloud Function, triggered whenever a new Message doc is added */
+            await updateDoc(chatDoc, {
+                lastMessage: { sender: message.sender, text: message.text, timestamp: Timestamp.now() }
+            });
         } catch (e) {
-            console.error('An Error occurred while sending geo-location!', e);
+            console.error('An Error occurred while sending message!', e);
         }
     }
 
@@ -60,33 +63,36 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
      * queries collection data for the chat history where the current user (AuthUser.id) is a member
      * TODO: Needs Pagination
      **/
-    // const [hisValues, hisLoading, hisError ] = useCollectionData(
-    //     (AuthUser.id)
-    //         ? query(historyRef, where('members', 'array-contains', AuthUser.id))
-    //         : undefined
-    // );
+    const [chatsData, chatsLoading, chatsError] = useCollectionData(
+        (AuthUser.id)
+            ? query(chatsCol, where('members', 'array-contains', AuthUser.id))
+            : undefined
+    );
 
     /**
      * queries collection data for the messages of currently selected chatId
      * TODO: Needs Pagination
      **/
-    const [values, loading, error] = useCollectionData(
+    const [chatMessages, chatMessagesLoading, chatMessagesError] = useCollectionData(
         (AuthUser.id && chatId)
-            ? query(ref, orderBy('timestamp'))
+            ? query(messagesCol, orderBy('timestamp'))
             : undefined
     );
 
     return(
         <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
-            <Stack direction='row' flexWrap='nowrap' justifyContent='center' sx={{ gap: '1em' }}>
-                {/*<ChatHistory chats={hisValues} isLoading={hisLoading} error={hisError} uid={AuthUser.id}/>*/}
-                {/*{ hisValues ? JSON.stringify(hisValues) : null }*/}
-                <Box>
-                    <ChatLog messages={values} isLoading={loading} error={error} uid={AuthUser.id}/>
-                    <ChatInput handler={addMessage} openDialog={openDialog}/>
-                    { dialog ? <LocationDialog open={dialog} handleClose={closeDialog} /> : null }
-                </Box>
-            </Stack>
+            <Container sx={{ my: 2 }}>
+                <Stack direction='row' flexWrap='nowrap' justifyContent='center' sx={{ gap: '1em' }}>
+                    <Box flex={'1 0 auto'}>
+                        <ChatHistory chats={chatsData} isLoading={chatsLoading} error={chatsError} uid={AuthUser.id}/>
+                    </Box>
+                    <Box flex={'1 0 auto'}>
+                        <ChatLog messages={chatMessages} isLoading={chatMessagesLoading} error={chatMessagesError} uid={AuthUser.id}/>
+                        <ChatInput send={handleSend} toggleDialog={toggleDialog} />
+                        { dialog && <LocationDialog send={handleSend} toggleDialog={toggleDialog} open={dialog} /> }
+                    </Box>
+                </Stack>
+            </Container>
         </AuthLayout>
     );
 }
