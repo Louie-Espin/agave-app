@@ -5,14 +5,14 @@ import {
     PartialWithFieldValue,
     QueryDocumentSnapshot,
     SnapshotOptions,
-    Timestamp
+    Timestamp, FieldValue
 } from "firebase/firestore";
 
 export type Message = {
     sender: string,
     text: string,
-    location?: { lat: number, lng: number, acc: number }
-    timestamp: Timestamp | null,
+    location?: { lat: number, lng: number, acc: number } | null,
+    timestamp: Timestamp | FieldValue,
     id: string,
     ref: DocumentReference<DocumentData>,
 };

@@ -8,17 +8,18 @@ import SendIcon from '@mui/icons-material/Send';
 
 type LocationDialogProps = {
     open: boolean,
-    handleClose: (latitude: number | null, longitude: number | null, accuracy: number | null) => void
+    toggleDialog: (toggle: boolean) => void,
+    send: (text: string, lat?: number, lng?: number, acc?: number) => void
 }
-const LocationDialog: FC<LocationDialogProps> = ({ open, handleClose }: LocationDialogProps) => {
+const LocationDialog: FC<LocationDialogProps> = ({ open, toggleDialog, send }: LocationDialogProps) => {
 
     const { latitude, longitude, accuracy, error } = usePosition(false, { enableHighAccuracy: true });
 
-    const handleAccept = () => {
-        if (!error) handleClose(latitude, longitude, accuracy);
-    }
+    const handleSend = () => {
+        if (latitude && longitude && accuracy) send('Location sent.', latitude, longitude, accuracy);
 
-    const handleCancel = () => { handleClose(null, null, null); }
+        toggleDialog(false);
+    }
 
     return(
         <Dialog open={open}>
@@ -32,8 +33,8 @@ const LocationDialog: FC<LocationDialogProps> = ({ open, handleClose }: Location
                 </Alert>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleCancel} variant='outlined'>Cancel</Button>
-                <LoadingButton onClick={handleAccept} endIcon={<SendIcon />} color='primary'
+                <Button onClick={() => toggleDialog(false)} variant='outlined'>Cancel</Button>
+                <LoadingButton onClick={handleSend} endIcon={<SendIcon />} color='primary'
                     loading={!(latitude && longitude)} loadingPosition="end" variant="contained"
                 >
                     <span>Send</span>

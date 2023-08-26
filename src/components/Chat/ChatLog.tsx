@@ -21,7 +21,7 @@ const ChatLog: FC<ChatLogProps> = ({ messages = [], isLoading, error, uid }) => 
             {/* TODO: maybe move message mapping to parent component, then add children ReactNode prop */}
             <StyledStack>
                 { messages.map((i) =>
-                    <ChatMessage key={i.id} text={i.text} isSender={i.sender === uid} timestamp={i.timestamp} />
+                    <ChatMessage key={i.id} text={i.text} isSender={i.sender === uid} timestamp={i.timestamp} location={i.location} />
                 )}
             </StyledStack>
         </Container>

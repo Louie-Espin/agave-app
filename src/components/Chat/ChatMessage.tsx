@@ -33,15 +33,33 @@ const MessageBox = styled(Box)(({theme}) => ({
 
 }));
 
-type ChatMessageProps = { text: string, isSender: boolean, timestamp: Timestamp | null };
+const embed: any = {
+    key: process.env.NEXT_PUBLIC_MAPS_EMBED_API_KEY,
+    width: 215, height: 215,
+    style: { border: 0, borderRadius: 5, minHeight: 100 },
+    url: 'https://www.google.com/maps/embed/v1/place'
+}
 
-const ChatMessage: FC<ChatMessageProps> = ({ text, isSender, timestamp }) => {
+type ChatMessageProps = { text: string, isSender: boolean, timestamp: Timestamp | null, location?: { lat: number, lng: number } };
+
+const ChatMessage: FC<ChatMessageProps> = ({ text, isSender, timestamp, location }) => {
+
+    if (location) return(
+        <MessageBox className={ isSender ? 'sender' : 'recipient'}>
+            <iframe width={embed.width} height={embed.height} style={embed.style} loading="lazy"
+                    src={`${embed.url}?q=${location.lat},${location.lng}&key=${embed.key}`} allowFullScreen
+            />
+            <Stack direction='row' justifyContent='flex-end'>
+                <Small color='grey.600' fontSize='smaller'>
+                    {timestamp ? formatRelative(timestamp.toDate(), Date.now()) : 'sending...'}
+                </Small>
+            </Stack>
+        </MessageBox>
+    )
+
     return(
         <MessageBox className={ isSender ? 'sender' : 'recipient'}>
-            {/* TODO: add timestamp, sender name, and maybe sender avatar */}
-
             { text }
-
             <Stack direction='row' justifyContent='flex-end'>
                 <Small color='grey.600' fontSize='smaller'>
                     {timestamp ? formatRelative(timestamp.toDate(), Date.now()) : 'sending...'}
