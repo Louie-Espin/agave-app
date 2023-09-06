@@ -10,7 +10,7 @@ export const useToggle = (initialValue: boolean): [boolean, (value?: boolean) =>
     const [value, setValue] = useState(initialValue);
 
     const toggleValue = (value?: boolean) => {
-        setValue((prevState) => (value !== undefined) ? value : !prevState)
+        setValue((prevState) => value ?? !prevState)
     }
 
     return [value, toggleValue];
