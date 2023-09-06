@@ -23,13 +23,15 @@ import messageConverter, { NewMessage } from "@firebaseUtils/client/messageConve
 import chatConverter, { NewChat } from "@firebaseUtils/client/chatConverter";
 import profileConverter, { Profile } from "@firebaseUtils/client/profileConverter";
 
-import {Container, Stack, Box, IconButton} from '@mui/material';
+import { useToggle } from "hooks/useToggle";
+import { Container, Stack, Box, IconButton } from '@mui/material';
 import AuthLayout from "layouts/AuthLayout";
 import Loader from "components/Loader";
 
 import ChatInput from "components/Chat/ChatInput";
 import ChatLog from "components/Chat/ChatLog";
-import ChatHistory from "components/Chat/ChatHistory";
+import ChatListContainer from "components/Chat/ChatListContainer";
+import ChatListItem from "components/Chat/ChatListItem";
 import LocationDialog from "components/Chat/LocationDialog";
 import CreateDialog from "components/Chat/CreateDialog";
 
@@ -40,20 +42,22 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
 
     const AuthUser = useAuthUser();
 
+    // State for currently selected chat & it's toggle function
+    const [chatId, setChatId] = useState<string | null>(null);
+    const toggleChat = (cId?: string) => { setChatId(cId ?? null) };
+
+    // Toggle state for Dialog components
+    const [createDialog, toggleCreateDialog] = useToggle(false);
+    const [locationDialog, toggleLocationDialog] = useToggle(false);
+
     // Limit state, for pagination
     const [profLimit, setProfLimit] = useState(true);
-
-    const [createDialog, setCreateDialog] = useState(false);
-    const [locationDialog, setLocationDialog] = useState(false);
-    const [chatId, setChatId] = useState<string | null>('ACpeKw8eFLcKOdlpIQv5'); // FIXME set to null
 
     const chatsCol = collection(getFirestore(), 'chats').withConverter(chatConverter);
     const messagesCol = collection(getFirestore(), `chats/${chatId}/messages`).withConverter(messageConverter);
     const profilesCol = collection(getFirestore(), 'users').withConverter(profileConverter);
 
-    const toggleNewChat = (toggle: boolean) => { setCreateDialog(toggle) };
-    const toggleConversation = (chatId: string) => { setChatId(chatId) };
-    const toggleDialog = (toggle: boolean) => { setLocationDialog(toggle) };
+    /** TODO: maybe move this handle function to Chat Input and Location Dialog */
     const handleSend = async (text: string, lat?: number, lng?: number, acc?: number) => {
 
         if (!AuthUser.id) return console.error('No AuthUser found!');
@@ -116,7 +120,7 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
             const chatRef = await addDoc(chatsCol, chat);
             resObj = { ...resObj, ref: chatRef }
 
-            toggleConversation(chatRef.id);
+            toggleChat(chatRef.id);
 
         } catch (e: any) {
             if (e instanceof Error) resObj = { ...resObj, err: e }
@@ -155,17 +159,28 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
         <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
             <Container sx={{ my: 2 }}>
                 <Stack direction='row' flexWrap='nowrap' justifyContent='center' sx={{ gap: '1em' }}>
-                    <Box flex={'1 0 auto'}>
-                        <IconButton onClick={() => toggleNewChat(true)}><AddIcon /></IconButton>
-                        <ChatHistory chats={chatsData} isLoading={chatsLoading} error={chatsError} uid={AuthUser.id}/>
-                    </Box>
+                    <ChatListContainer flex={'0 0 auto'}
+                                       isLoading={chatsLoading} error={chatsError}
+                                       action={
+                                           <IconButton onClick={() => toggleCreateDialog(true)}>
+                                               <AddIcon />
+                                           </IconButton>
+                                       }
+                    >
+                        {chatsData?.map((chat) =>
+                            <ChatListItem key={chat.id} chat={chat} selected={chatId === chat.id}
+                                          sent={(chat.lastMessage?.sender) === (AuthUser.id)}
+                                          onClick={() => toggleChat(chat.id)}
+                            />
+                        )}
+                    </ChatListContainer>
                     <Box flex={'1 0 auto'}>
                         <ChatLog messages={chatMessages} isLoading={chatMessagesLoading} error={chatMessagesError} uid={AuthUser.id}/>
-                        <ChatInput send={handleSend} toggleDialog={toggleDialog} />
-                        { locationDialog && <LocationDialog send={handleSend} toggleDialog={toggleDialog} open={locationDialog} /> }
+                        <ChatInput send={handleSend} toggleDialog={toggleLocationDialog} />
+                        { locationDialog && <LocationDialog send={handleSend} toggleDialog={toggleLocationDialog} open={locationDialog} /> }
                     </Box>
                 </Stack>
-                <CreateDialog list={profiles} load={pLoading} err={pError} open={createDialog} toggle={toggleNewChat}
+                <CreateDialog list={profiles} load={pLoading} err={pError} open={createDialog} toggle={toggleCreateDialog}
                               handleAdd={addChat} limit={profLimit} handleLimit={() => setProfLimit(false)}
                 />
             </Container>
