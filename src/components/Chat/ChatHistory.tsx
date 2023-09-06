@@ -23,7 +23,7 @@ const ChatHistory: FC<ChatHistoryProps> = ({ chats = [], uid }) => {
             <List>
                 {
                     chats.map(chat =>
-                        <ChatHistoryItem key={chat.id} lastMessage={chat.lastMessage}
+                        <ChatHistoryItem key={chat.id} lastMessage={chat.lastMessage} title={chat.title}
                                          sent={(chat.lastMessage?.sender) === (uid)}
                         />
                     )
@@ -33,14 +33,14 @@ const ChatHistory: FC<ChatHistoryProps> = ({ chats = [], uid }) => {
     );
 }
 
-const ChatHistoryItem: FC<Partial<Chat> & { sent: boolean }> = ({ lastMessage, sent }) => {
+const ChatHistoryItem: FC<Partial<Chat> & { sent: boolean }> = ({ lastMessage, sent, title }) => {
 
     return(
         <ListItem>
             <ListItemButton>
                 <ListItemAvatar><Avatar alt={'user'}/></ListItemAvatar>
                 <ListItemText
-                    primary="Luis Espinoza & Sample Client"
+                    primary={title ? title : 'Untitled Conversation'}
                     secondary={
                         <Fragment>
                             <Chip size='small' sx={{mr: 1}} icon={sent ? <ReplyIcon/> : <ChatIcon/>}
