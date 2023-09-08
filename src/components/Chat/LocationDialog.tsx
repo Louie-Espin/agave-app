@@ -1,12 +1,12 @@
 import { FC } from 'react';
 
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Alert } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Alert, DialogProps } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
 import { usePosition } from "hooks/usePosition";
 
 import SendIcon from '@mui/icons-material/Send';
 
-type LocationDialogProps = {
+interface LocationDialogProps extends DialogProps {
     open: boolean,
     toggleDialog: (toggle: boolean) => void,
     send: (text: string, lat?: number, lng?: number, acc?: number) => void
