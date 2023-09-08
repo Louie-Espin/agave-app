@@ -16,7 +16,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 // FIXME: 'lWidth' seems unnecessary, either remove it or replace hard-coded 'width' value in the media query
 const NavigationRail = styled(Stack, {shouldForwardProp: (prop) => prop !== 'lWidth'})<{ lWidth: number }>
     (({ theme, lWidth }) => ({
-        width: 'auto', height: `calc(20rem + env(safe-area-inset-bottom))`, // FIXME: hard-coded height value
+        width: 'auto', height: `auto`, flexShrink: 0,
         padding: theme.spacing(1),
         display: 'flex', flexDirection: 'row',
         alignItems: 'center', justifyContent: 'center',
