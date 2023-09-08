@@ -5,6 +5,7 @@ import { fontFamily, fontSize } from "./typography";
 export const components: Components = {
     MuiCssBaseline: {
         styleOverrides: {
+            body: { backgroundColor: primary["600"] },
             html: { scrollBehavior: "smooth" },
             p: { lineHeight: 1.75 },
             button: { fontFamily, fontSize },
