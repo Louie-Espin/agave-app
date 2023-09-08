@@ -9,12 +9,9 @@ import enUS from 'date-fns/locale/en-US';
 import TodayIcon from '@mui/icons-material/Today';
 
 import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'next-firebase-auth';
-
-import AgaveLayout from "layouts/AgaveLayout";
 import PropertiesList from "layouts/PropertiesList";
 
 import Loader from "components/Loader";
-import { H2 } from "components/Typography";
 import useSWR from "swr";
 import axios from "axios";
 import Settings from "@mui/icons-material/Settings";
@@ -41,29 +38,25 @@ const DashboardPage: NextPage = () => {
     const { data, error, isLoading, isValidating } = fetcher;
 
     return(
-        <AgaveLayout user={AuthUser}>
-            <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
-                <TitleBar TitleIcon={PersonIcon} Title={(AuthUser?.displayName) ? `Hello, ${AuthUser.displayName}!` : 'Dashboard'}/>
-                <Stack direction='row' flexWrap='wrap' position='relative' width='100%' sx={{ gap: '1em' }}>
+        <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
+            <TitleBar TitleIcon={PersonIcon} Title={(AuthUser?.displayName) ? `Hello, ${AuthUser.displayName}!` : 'Dashboard'}/>
+            <Stack direction='row' flexWrap='wrap' position='relative' width='100%' sx={{ gap: '1em' }}>
 
-                    <Stack direction='row' flexWrap='wrap' position='relative' justifyContent='center' width='100%' sx={{ gap: '1em' }}>
-                        <UserCard displayName={AuthUser?.displayName} phoneNumber={AuthUser?.phoneNumber}
-                                  photoURL={AuthUser?.photoURL} email={AuthUser?.email}
-                                  sx={{ minWidth: { xs: '100%', sm: 'calc(50% - 1em)', md: 'calc(60% - 1em)' } }}
-                        />
+                <Stack direction='row' flexWrap='wrap' position='relative' justifyContent='center' width='100%' sx={{ gap: '1em' }}>
+                    <UserCard displayName={AuthUser?.displayName} phoneNumber={AuthUser?.phoneNumber}
+                              photoURL={AuthUser?.photoURL} email={AuthUser?.email}
+                              sx={{ minWidth: { xs: '100%', sm: 'calc(50% - 1em)', md: 'calc(60% - 1em)' } }}
+                    />
 
-                        <Box minWidth={{ xs: '100%', sm: 'calc(50% - 1em)', md: 'calc(40% - 1em)' }} maxWidth={'100%'} position='relative'>
-                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enUS}>
-                                <DateCalendar />
-                            </LocalizationProvider>
-                        </Box>
-                    </Stack>
-
-                    <PropertiesList validating={isValidating} loading={isLoading} error={error} properties={data?.properties}/>
-
+                    <Box minWidth={{ xs: '100%', sm: 'calc(50% - 1em)', md: 'calc(40% - 1em)' }} maxWidth={'100%'} position='relative'>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enUS}>
+                            <DateCalendar />
+                        </LocalizationProvider>
+                    </Box>
                 </Stack>
-            </Container>
-        </AgaveLayout>
+                <PropertiesList validating={isValidating} loading={isLoading} error={error} properties={data?.properties}/>
+            </Stack>
+        </Container>
     );
 }
 
