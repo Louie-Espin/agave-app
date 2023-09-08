@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import { FirestoreError, Timestamp } from "firebase/firestore";
-import { Container, Stack, Box, styled } from '@mui/material';
+import { FirestoreError } from "firebase/firestore";
+import { Stack, styled } from '@mui/material';
 import { Message } from "@firebaseUtils/client/messageConverter";
 import ChatMessage from 'components/Chat/ChatMessage';
 
@@ -16,7 +16,7 @@ type ChatLogProps = { messages?: Message[], isLoading: boolean, error?: Firestor
 const ChatLog: FC<ChatLogProps> = ({ messages = [], isLoading, error, uid }) => {
 
     return(
-        <Container sx={{ overflow: 'auto', position: 'relative', height: '60vh', py: 2, display: 'flex', flexDirection: 'column-reverse' }}>
+        <Stack overflow='auto' position='relative' flexDirection='column-reverse' flexGrow={1}>
             {/* TODO: add UI for loading, empty list, and error states */}
             {/* TODO: maybe move message mapping to parent component, then add children ReactNode prop */}
             <StyledStack>
@@ -26,7 +26,7 @@ const ChatLog: FC<ChatLogProps> = ({ messages = [], isLoading, error, uid }) => 
                     />
                 )}
             </StyledStack>
-        </Container>
+        </Stack>
     );
 }
 
