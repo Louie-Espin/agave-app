@@ -10,7 +10,7 @@ import TodayIcon from '@mui/icons-material/Today';
 
 import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'next-firebase-auth';
 
-import AuthLayout from "layouts/AuthLayout";
+import AgaveLayout from "layouts/AgaveLayout";
 import PropertiesList from "layouts/PropertiesList";
 
 import Loader from "components/Loader";
@@ -41,7 +41,7 @@ const DashboardPage: NextPage = () => {
     const { data, error, isLoading, isValidating } = fetcher;
 
     return(
-        <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
+        <AgaveLayout user={AuthUser}>
             <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
                 <TitleBar TitleIcon={PersonIcon} Title={(AuthUser?.displayName) ? `Hello, ${AuthUser.displayName}!` : 'Dashboard'}/>
                 <Stack direction='row' flexWrap='wrap' position='relative' width='100%' sx={{ gap: '1em' }}>
@@ -63,7 +63,7 @@ const DashboardPage: NextPage = () => {
 
                 </Stack>
             </Container>
-        </AuthLayout>
+        </AgaveLayout>
     );
 }
 
