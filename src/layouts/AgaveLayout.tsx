@@ -60,8 +60,7 @@ const AgaveNavigations: { key: number, title: string, NavIcon: any, href: string
     { key: 5, title: 'Contact', NavIcon: PhoneOutlinedIcon, href: '/contact' },
 ]
 
-interface AgaveLayoutProps { user?: AuthUser, children?: ReactNode, bgMain?: BoxProps['bgcolor'],
-    signedIn?: boolean, displayName?: string | null } // FIXME
+interface AgaveLayoutProps { user?: AuthUser, children?: ReactNode, bgMain?: BoxProps['bgcolor'] }
 const AgaveLayout: FC<AgaveLayoutProps> = ({ bgMain = 'grey.300', user, children }: AgaveLayoutProps) => {
 
     const pathname = usePathname();
@@ -87,7 +86,7 @@ const AgaveLayout: FC<AgaveLayoutProps> = ({ bgMain = 'grey.300', user, children
                        sx={{ gap: (theme) => theme.spacing(1) }}
                 >
                     <NavButton icon={<AccountCircleOutlinedIcon fontSize='large'/>} label={'Dashboard'}
-                               curr={'dashboard' === pathname} href={"/dashboard"} />
+                               curr={'/dashboard' === pathname} href={"/dashboard"} />
                 </Stack>
             </NavigationRail>
 

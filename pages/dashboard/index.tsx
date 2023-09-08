@@ -41,7 +41,7 @@ const DashboardPage: NextPage = () => {
     const { data, error, isLoading, isValidating } = fetcher;
 
     return(
-        <AgaveLayout user={AuthUser} signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
+        <AgaveLayout user={AuthUser}>
             <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
                 <TitleBar TitleIcon={PersonIcon} Title={(AuthUser?.displayName) ? `Hello, ${AuthUser.displayName}!` : 'Dashboard'}/>
                 <Stack direction='row' flexWrap='wrap' position='relative' width='100%' sx={{ gap: '1em' }}>

@@ -11,7 +11,11 @@ import "react-quill/dist/quill.snow.css";
 import "simplebar-react/dist/simplebar.min.css";
 
 import initAuth from '@firebaseUtils/initAuth'
+import firebaseClient from "@firebaseUtils/firebaseClient";
 
+firebaseClient;
+
+console.log(firebaseClient.name)
 initAuth();
 
 //Binding events.
