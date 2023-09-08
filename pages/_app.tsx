@@ -13,6 +13,8 @@ import "simplebar-react/dist/simplebar.min.css";
 import initAuth from '@firebaseUtils/initAuth'
 import firebaseClient from "@firebaseUtils/firebaseClient";
 
+import AgaveLayout from "layouts/AgaveLayout";
+
 firebaseClient;
 
 console.log(firebaseClient.name)
@@ -89,8 +91,10 @@ const App = ({ Component, pageProps }: AppProps) => {
 
             </Head>
             <MuiTheme>
-                <Component {...pageProps} />
-                <Analytics />
+                <AgaveLayout>
+                    <Component {...pageProps} />
+                    <Analytics />
+                </AgaveLayout>
             </MuiTheme>
         </Fragment>
     );
