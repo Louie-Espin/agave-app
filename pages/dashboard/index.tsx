@@ -8,6 +8,7 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import enUS from 'date-fns/locale/en-US';
 import TodayIcon from '@mui/icons-material/Today';
 
+import AuthLayout from "layouts/AuthLayout";
 import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'next-firebase-auth';
 import PropertiesList from "layouts/PropertiesList";
 
@@ -38,25 +39,27 @@ const DashboardPage: NextPage = () => {
     const { data, error, isLoading, isValidating } = fetcher;
 
     return(
-        <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
-            <TitleBar TitleIcon={PersonIcon} Title={(AuthUser?.displayName) ? `Hello, ${AuthUser.displayName}!` : 'Dashboard'}/>
-            <Stack direction='row' flexWrap='wrap' position='relative' width='100%' sx={{ gap: '1em' }}>
+        <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
+            <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
+                <TitleBar TitleIcon={PersonIcon} Title={(AuthUser?.displayName) ? `Hello, ${AuthUser.displayName}!` : 'Dashboard'}/>
+                <Stack direction='row' flexWrap='wrap' position='relative' width='100%' sx={{ gap: '1em' }}>
 
-                <Stack direction='row' flexWrap='wrap' position='relative' justifyContent='center' width='100%' sx={{ gap: '1em' }}>
-                    <UserCard displayName={AuthUser?.displayName} phoneNumber={AuthUser?.phoneNumber}
-                              photoURL={AuthUser?.photoURL} email={AuthUser?.email}
-                              sx={{ minWidth: { xs: '100%', sm: 'calc(50% - 1em)', md: 'calc(60% - 1em)' } }}
-                    />
+                    <Stack direction='row' flexWrap='wrap' position='relative' justifyContent='center' width='100%' sx={{ gap: '1em' }}>
+                        <UserCard displayName={AuthUser?.displayName} phoneNumber={AuthUser?.phoneNumber}
+                                  photoURL={AuthUser?.photoURL} email={AuthUser?.email}
+                                  sx={{ minWidth: { xs: '100%', sm: 'calc(50% - 1em)', md: 'calc(60% - 1em)' } }}
+                        />
 
-                    <Box minWidth={{ xs: '100%', sm: 'calc(50% - 1em)', md: 'calc(40% - 1em)' }} maxWidth={'100%'} position='relative'>
-                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enUS}>
-                            <DateCalendar />
-                        </LocalizationProvider>
-                    </Box>
+                        <Box minWidth={{ xs: '100%', sm: 'calc(50% - 1em)', md: 'calc(40% - 1em)' }} maxWidth={'100%'} position='relative'>
+                            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enUS}>
+                                <DateCalendar />
+                            </LocalizationProvider>
+                        </Box>
+                    </Stack>
+                    <PropertiesList validating={isValidating} loading={isLoading} error={error} properties={data?.properties}/>
                 </Stack>
-                <PropertiesList validating={isValidating} loading={isLoading} error={error} properties={data?.properties}/>
-            </Stack>
-        </Container>
+            </Container>
+        </AuthLayout>
     );
 }
 
