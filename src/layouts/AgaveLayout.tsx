@@ -2,7 +2,7 @@ import { FC, ReactNode } from 'react';
 import { usePathname } from 'next/navigation'
 
 import { AuthUser } from "next-firebase-auth";
-import { Box, Stack, Button, ButtonProps, styled } from '@mui/material';
+import { Box, BoxProps, Stack, Button, ButtonProps, styled } from '@mui/material';
 import { Span } from 'components/Typography';
 import { NextLinkComposed } from "components/Link";
 
@@ -24,7 +24,8 @@ const NavigationRail = styled(Stack, {shouldForwardProp: (prop) => prop !== 'lWi
         overflowX: 'auto', overflowY: 'hidden',
 
         [theme.breakpoints.up('md')]: {
-            height: '100%', width: 80, marginLeft: theme.spacing(1),
+            height: '100%', width: 80, // FIXME: hard-coded value
+            paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2), paddingLeft: theme.spacing(2),
             flexDirection: 'column', justifyContent: 'space-between',
             overflowX: 'hidden', overflowY: 'auto',
             '&:hover': { width: lWidth, },
@@ -59,8 +60,8 @@ const AgaveNavigations: { key: number, title: string, NavIcon: any, href: string
     { key: 5, title: 'Contact', NavIcon: PhoneOutlinedIcon, href: '/contact' },
 ]
 
-interface AgaveLayoutProps { user?: AuthUser, children?: ReactNode }
-const AgaveLayout: FC<AgaveLayoutProps> = ({ user, children }: AgaveLayoutProps) => {
+interface AgaveLayoutProps { user?: AuthUser, children?: ReactNode, bgMain?: BoxProps['bgcolor'] }
+const AgaveLayout: FC<AgaveLayoutProps> = ({ bgMain = 'grey.300', user, children }: AgaveLayoutProps) => {
 
     const pathname = usePathname();
     const drawerWidth = 80, lWidth = 100;
@@ -89,7 +90,7 @@ const AgaveLayout: FC<AgaveLayoutProps> = ({ user, children }: AgaveLayoutProps)
                 </Stack>
             </NavigationRail>
 
-            <MainBox component='main' p={2} bgcolor={'primary.main'}>
+            <MainBox component='main' p={2} bgcolor={bgMain}>
                 { children }
             </MainBox>
         </Stack>
