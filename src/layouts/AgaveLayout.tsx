@@ -60,7 +60,8 @@ const AgaveNavigations: { key: number, title: string, NavIcon: any, href: string
     { key: 5, title: 'Contact', NavIcon: PhoneOutlinedIcon, href: '/contact' },
 ]
 
-interface AgaveLayoutProps { user?: AuthUser, children?: ReactNode, bgMain?: BoxProps['bgcolor'] }
+interface AgaveLayoutProps { user?: AuthUser, children?: ReactNode, bgMain?: BoxProps['bgcolor'],
+    signedIn?: boolean, displayName?: string | null } // FIXME
 const AgaveLayout: FC<AgaveLayoutProps> = ({ bgMain = 'grey.300', user, children }: AgaveLayoutProps) => {
 
     const pathname = usePathname();
