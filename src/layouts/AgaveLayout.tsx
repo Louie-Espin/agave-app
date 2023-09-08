@@ -11,32 +11,45 @@ import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import MailOutlineOutlinedIcon from '@mui/icons-material/MailOutlineOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
-
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 
+// FIXME: 'lWidth' seems unnecessary, either remove it or replace hard-coded 'width' value in the media query
 const NavigationRail = styled(Stack, {shouldForwardProp: (prop) => prop !== 'lWidth'})<{ lWidth: number }>
     (({ theme, lWidth }) => ({
-        height: '100%', padding: theme.spacing(1),
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'space-between',
+        width: 'auto', height: 'auto',
+        padding: theme.spacing(1),
+        display: 'flex', flexDirection: 'row',
+        alignItems: 'center', justifyContent: 'center',
         transitionProperty: 'width', transitionDuration: '200ms', transitionTimingFunction: 'ease',
-        '&:hover': { width: lWidth, }
+        overflowX: 'auto', overflowY: 'hidden',
+
+        [theme.breakpoints.up('md')]: {
+            height: '100%', width: 80, marginLeft: theme.spacing(1),
+            flexDirection: 'column', justifyContent: 'space-between',
+            overflowX: 'hidden', overflowY: 'auto',
+            '&:hover': { width: lWidth, },
+        }
     })
 );
 
 const RailButton = styled(Button, {shouldForwardProp: (prop) => prop !== 'emphasis'})<{ emphasis: boolean }>
     (({ theme, emphasis }) => ({
         display: 'inline-flex', flexDirection: 'column', justifyContent: 'center', px: 2,
-
         ...((emphasis) && { // the overrides added when 'emphasis' == true
             color: '#871a78',
-            '& svg': {
-                color: '#871a78',
-                // fontSize: '1.9rem',
-            },
+            '& svg': { color: '#871a78', /* fontSize: '1.9rem' */ },
         })
     })
 );
+
+const MainBox = styled(Box, {})(({theme}) => ({
+    position: 'relative', flexGrow: 1, overflow: 'auto',
+    borderRadius: `0 0 ${theme.spacing(3)} ${theme.spacing(3)}`,
+
+    [theme.breakpoints.up('md')]: {
+        borderRadius: `${theme.spacing(3)} 0 0 ${theme.spacing(3)}`,
+    }
+}))
 
 const AgaveNavigations: { key: number, title: string, NavIcon: any, href: string }[] = [
     { key: 1, title: 'Home', NavIcon: Home, href: '/' },
@@ -53,11 +66,11 @@ const AgaveLayout: FC<AgaveLayoutProps> = ({ user, children }: AgaveLayoutProps)
     const drawerWidth = 80, lWidth = 100;
 
     return(
-        <Stack height='100dvh' flexDirection='row' bgcolor={'primary.600'} pl={1} sx={{ gap: (theme) => theme.spacing(1) }}>
-
-            {/* FIXME: must add mobile nav */}
+        <Stack height='100dvh' flexDirection={{xs: 'column-reverse', md: 'row'}}
+               bgcolor={'primary.600'} sx={{ gap: (theme) => theme.spacing(1) }}
+        >
             <NavigationRail width={drawerWidth} lWidth={lWidth}>
-                <Stack flexDirection='column' alignItems='center' justifyContent='flex-start'
+                <Stack flexDirection={{xs: 'row', md: 'column'}} alignItems='center' justifyContent='flex-start'
                        sx={{ gap: (theme) => theme.spacing(1) }}
                 >
                     {
@@ -76,11 +89,9 @@ const AgaveLayout: FC<AgaveLayoutProps> = ({ user, children }: AgaveLayoutProps)
                 </Stack>
             </NavigationRail>
 
-            <Box component='main' flexGrow={1} position='relative' p={3} bgcolor={'primary.main'}
-                 borderRadius={(theme) => `${theme.spacing(3)} 0 0 ${theme.spacing(3)}`}
-            >
+            <MainBox component='main' p={2} bgcolor={'primary.main'}>
                 { children }
-            </Box>
+            </MainBox>
         </Stack>
     );
 };
@@ -91,7 +102,7 @@ const NavButton: FC<{ icon: any, label: string, curr: boolean, href: string } & 
         <NextLinkComposed to={href} style={{ width: '100%' }}>
             <RailButton emphasis={curr} fullWidth {...props}>
                     { icon }
-                    <Span fontWeight={400}>{label}</Span>
+                    <Span fontWeight={400} fontSize={'0.7rem'} >{label}</Span>
             </RailButton>
         </NextLinkComposed>
     );
