@@ -17,6 +17,8 @@ import {
     DocumentReference,
     getDocs
 } from 'firebase/firestore';
+import { getApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth'
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import messageConverter, { NewMessage } from "@firebaseUtils/client/messageConverter";
 import chatConverter, { NewChat } from "@firebaseUtils/client/chatConverter";
@@ -24,7 +26,6 @@ import profileConverter, { Profile } from "@firebaseUtils/client/profileConverte
 
 import { useToggle } from "hooks/useToggle";
 import { Stack, IconButton } from '@mui/material';
-import AgaveLayout from "layouts/AgaveLayout";
 import Loader from "components/Loader";
 
 import ChatInput from "components/Chat/ChatInput";
@@ -40,7 +41,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 type ChatIndexProps = {}
 const ChatIndexPage: NextPage<ChatIndexProps> = () => {
 
+    const app = getApp()
     const db = getFirestore();
+    const auth = getAuth();
     const AuthUser = useAuthUser();
 
     // State for currently selected chat & it's toggle function
