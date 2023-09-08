@@ -40,6 +40,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 type ChatIndexProps = {}
 const ChatIndexPage: NextPage<ChatIndexProps> = () => {
 
+    const db = getFirestore();
     const AuthUser = useAuthUser();
 
     // State for currently selected chat & it's toggle function
@@ -53,9 +54,9 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
     // Limit state, for pagination
     const [profLimit, setProfLimit] = useState(true);
 
-    const chatsCol = collection(getFirestore(), 'chats').withConverter(chatConverter);
-    const messagesCol = collection(getFirestore(), `chats/${chatId}/messages`).withConverter(messageConverter);
-    const profilesCol = collection(getFirestore(), 'users').withConverter(profileConverter);
+    const chatsCol = collection(db, 'chats').withConverter(chatConverter);
+    const messagesCol = collection(db, `chats/${chatId}/messages`).withConverter(messageConverter);
+    const profilesCol = collection(db, 'users').withConverter(profileConverter);
 
     /** TODO: maybe move this handle function to Chat Input and Location Dialog */
     const handleSend = async (text: string, lat?: number, lng?: number, acc?: number) => {
@@ -63,7 +64,7 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
         if (!AuthUser.id) return console.error('No AuthUser found!');
         if (!chatId) return console.error('No Chat has been selected!');
 
-        const currChatDoc = doc(getFirestore(), 'chats', chatId).withConverter(chatConverter);
+        const currChatDoc = doc(db, 'chats', chatId).withConverter(chatConverter);
 
         await addMessage({
             sender: AuthUser.id,
@@ -156,7 +157,7 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
     );
 
     return(
-        <AgaveLayout user={AuthUser}>
+        <>
             <Stack direction='row' height={'100%'} flexWrap='nowrap' justifyContent='center' sx={{ gap: '1em' }}>
                 <ChatListContainer flex={'1 0'} sx={{ minWidth: { xs: '100%', md: '30%' }, maxWidth: { md: 300 } }}
                                    display={{ xs: chatId ? 'none' : 'block', md: 'block' }}
@@ -188,7 +189,7 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
             <CreateDialog list={profiles} load={pLoading} err={pError} open={createDialog} toggle={toggleCreateDialog}
                           handleAdd={addChat} limit={profLimit} handleLimit={() => setProfLimit(false)}
             />
-        </AgaveLayout>
+        </>
     );
 }
 
