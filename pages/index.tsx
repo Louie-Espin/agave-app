@@ -19,7 +19,9 @@ const HomePage: NextPage<HomePageProps> = () => {
 
     return(
         <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
-            <Box display='block' position='relative' height="75vh" overflow="hidden" >
+            <Box display='block' position='relative' height="75vh" overflow="hidden" mt={1}
+                 borderRadius={(theme) => `${theme.spacing(3)} ${theme.spacing(3)} 0 0`}
+            >
                 <video src={"/assets/videos/homepage-video.mp4"} autoPlay playsInline loop muted
                        style={{ height: '90vh',maxWidth: '100%', objectFit: "cover", zIndex: -1 }}
                 />
