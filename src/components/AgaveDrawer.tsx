@@ -27,6 +27,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import Logout from "@mui/icons-material/Logout";
 import clientLogOut from "@firebaseUtils/client/logOut";
 import agaveLogo from "@public/assets/images/logo-agave.png";
+import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 
 const DrawerContent = styled(Box, {})(({ theme }) => ({
     backgroundColor: theme.palette.primary.main,
@@ -145,6 +146,7 @@ const AgaveNavigations: { key: number, title: string, NavIcon: any, href: string
     { key: 2, title: 'Work History', NavIcon: WorkHistoryIcon, href: '/work-history' },
     { key: 3, title: 'Settings', NavIcon: Settings, href: '/settings' },
     { key: 4, title: 'Contact', NavIcon: PhoneIcon, href: '/contact' },
+    { key: 5, title: 'Chat', NavIcon: PhoneOutlinedIcon, href: '/chat' },
 ]
 
 export default AgaveDrawer;
