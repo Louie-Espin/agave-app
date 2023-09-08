@@ -21,44 +21,42 @@ const ContactPage: NextPage<ContactPageProps> = () => {
     const AuthUser = useAuthUser();
 
     return(
-        <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
-            <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
-                <TitleBar TitleIcon={Phone} Title={'Contact Us'}/>
-                <Stack direction='row' flexWrap='wrap' position='relative' width='100%' sx={{ gap: '1em' }}>
-                    <Stack direction='column' spacing={2} flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(50% - 1em)' }}>
-                        <Box component={Paper} p={3}>
-                            <H2 fontWeight={400}>Get In Touch</H2>
-                            <Divider sx={{ mb: 2 }}/>
-                            <Box sx={{ mb: 2 }}>
-                                <H3 fontWeight={300}>Email</H3>
-                                <Paragraph>info@agave-inc.com</Paragraph>
-                            </Box>
-                            <Box sx={{ mb: 2 }}>
-                                <H3 fontWeight={300}>Phone</H3>
-                                <Paragraph>602-254-1464</Paragraph>
-                            </Box>
-                            <Box sx={{ mb: 2 }}>
-                                <H3 fontWeight={300}>Corporate Office</H3>
-                                <Paragraph>1634 N. 19th Ave.</Paragraph>
-                                <Paragraph> Phoenix, AZ 85009</Paragraph>
-                            </Box>
+        <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
+            <TitleBar TitleIcon={Phone} Title={'Contact Us'}/>
+            <Stack direction='row' flexWrap='wrap' position='relative' width='100%' sx={{ gap: '1em' }}>
+                <Stack direction='column' spacing={2} flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(50% - 1em)' }}>
+                    <Box component={Paper} p={3}>
+                        <H2 fontWeight={400}>Get In Touch</H2>
+                        <Divider sx={{ mb: 2 }}/>
+                        <Box sx={{ mb: 2 }}>
+                            <H3 fontWeight={300}>Email</H3>
+                            <Paragraph>info@agave-inc.com</Paragraph>
                         </Box>
+                        <Box sx={{ mb: 2 }}>
+                            <H3 fontWeight={300}>Phone</H3>
+                            <Paragraph>602-254-1464</Paragraph>
+                        </Box>
+                        <Box sx={{ mb: 2 }}>
+                            <H3 fontWeight={300}>Corporate Office</H3>
+                            <Paragraph>1634 N. 19th Ave.</Paragraph>
+                            <Paragraph> Phoenix, AZ 85009</Paragraph>
+                        </Box>
+                    </Box>
 
-                        <Box component={Paper} p={3}>
-                            <H2 fontWeight={400}>How Are We Doing?</H2>
-                            <Divider sx={{ mb: 2 }}/>
-                            <Paragraph>Sign up or Log In to give us feedback!</Paragraph>
-                        </Box>
-                    </Stack>
-                    <Stack direction='column' spacing={2} flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(50% - 1em)' }}>
-                        <iframe width={embed.width} height={embed.height} style={embed.style} loading="lazy"
-                            src={`${embed.url}${embed.key}`} allowFullScreen
-                        >
-                        </iframe>
-                    </Stack>
+                    <Box component={Paper} p={3}>
+                        <H2 fontWeight={400}>How Are We Doing?</H2>
+                        <Divider sx={{ mb: 2 }}/>
+                        <Paragraph>Sign up or Log In to give us feedback!</Paragraph>
+                    </Box>
                 </Stack>
-            </Container>
-        </AuthLayout>
+                <Stack direction='column' spacing={2} flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(50% - 1em)' }}>
+                    <iframe width={embed.width} height={embed.height} style={embed.style} loading="lazy"
+                            src={`${embed.url}${embed.key}`} allowFullScreen
+                    >
+                    </iframe>
+                </Stack>
+            </Stack>
+        </Container>
     );
 }
 
