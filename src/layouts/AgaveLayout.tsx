@@ -76,8 +76,8 @@ const AgaveLayout: FC<AgaveLayoutProps> = ({ user, children }: AgaveLayoutProps)
                 </Stack>
             </NavigationRail>
 
-            <Box component='main' flexGrow={1} position='relative' p={3}
-                 bgcolor={'primary.main'} borderRadius={(theme) => theme.spacing(3)}
+            <Box component='main' flexGrow={1} position='relative' p={3} bgcolor={'primary.main'}
+                 borderRadius={(theme) => `${theme.spacing(3)} 0 0 ${theme.spacing(3)}`}
             >
                 { children }
             </Box>
