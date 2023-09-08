@@ -1,27 +1,18 @@
-import React, { FC, ReactNode, useState } from 'react';
-
+import React, { FC, ReactNode } from 'react';
 import { Box, BoxProps } from '@mui/material';
-
 import Header from 'components/Header';
 import Footer from 'components/Footer';
-import AgaveDrawer from "components/AgaveDrawer";
+import AuthedButton from "components/AuthedButton";
 
-interface AuthLayoutProps extends BoxProps {
-    signedIn?: boolean,
-    displayName?: string | null,
-    children?: ReactNode,
-}
+interface AuthLayoutProps extends BoxProps { signedIn?: boolean, displayName?: string | null, children?: ReactNode, };
 
 const AuthLayout: FC<AuthLayoutProps> = ({ signedIn = false, displayName = null, children, ...props }) => {
 
-    const [drawer, setDrawer] = useState(false);
-    const openDrawer = () => { setDrawer(true); }
-    const closeDrawer = () => { setDrawer(false); }
-
     return(
         <Box position={'relative'} {...props}>
-            <Header hLarge={90} hSmall={75} zIndex={100} action={openDrawer}/>
-            <AgaveDrawer open={drawer} closeCallback={closeDrawer} signedIn={signedIn} displayName={displayName}/>
+            <Header setHeight={90} zIndex={100}>
+                <Box><AuthedButton signedIn={signedIn} name={displayName}/></Box>
+            </Header>
             {children}
             <Footer/>
         </Box>
