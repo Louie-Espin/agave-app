@@ -10,7 +10,7 @@ const AuthLayout: FC<AuthLayoutProps> = ({ signedIn = false, displayName = null,
 
     return(
         <Box position={'relative'} {...props}>
-            <Header setHeight={90} zIndex={100}>
+            <Header setHeight={90} zIndex={100} overflow='hidden'> {/* FIXME: remove overflow prop */}
                 <Box><AuthedButton signedIn={signedIn} name={displayName}/></Box>
             </Header>
             {children}
