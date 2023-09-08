@@ -1,5 +1,4 @@
 import { NextPage } from "next";
-
 import { useState } from 'react';
 import { useAuthUser, withAuthUser, AuthAction } from "next-firebase-auth";
 import {
@@ -24,8 +23,8 @@ import chatConverter, { NewChat } from "@firebaseUtils/client/chatConverter";
 import profileConverter, { Profile } from "@firebaseUtils/client/profileConverter";
 
 import { useToggle } from "hooks/useToggle";
-import { Container, Stack, Box, IconButton } from '@mui/material';
-import AuthLayout from "layouts/AuthLayout";
+import { Stack, IconButton } from '@mui/material';
+import AgaveLayout from "layouts/AgaveLayout";
 import Loader from "components/Loader";
 
 import ChatInput from "components/Chat/ChatInput";
@@ -36,6 +35,7 @@ import LocationDialog from "components/Chat/LocationDialog";
 import CreateDialog from "components/Chat/CreateDialog";
 
 import AddIcon from '@mui/icons-material/Add';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 type ChatIndexProps = {}
 const ChatIndexPage: NextPage<ChatIndexProps> = () => {
@@ -156,35 +156,39 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
     );
 
     return(
-        <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
-            <Container sx={{ my: 2 }}>
-                <Stack direction='row' flexWrap='nowrap' justifyContent='center' sx={{ gap: '1em' }}>
-                    <ChatListContainer flex={'0 0 auto'}
-                                       isLoading={chatsLoading} error={chatsError}
-                                       action={
-                                           <IconButton onClick={() => toggleCreateDialog(true)}>
-                                               <AddIcon />
-                                           </IconButton>
-                                       }
-                    >
-                        {chatsData?.map((chat) =>
-                            <ChatListItem key={chat.id} chat={chat} selected={chatId === chat.id}
-                                          sent={(chat.lastMessage?.sender) === (AuthUser.id)}
-                                          onClick={() => toggleChat(chat.id)}
-                            />
-                        )}
-                    </ChatListContainer>
-                    <Box flex={'1 0 auto'}>
-                        <ChatLog messages={chatMessages} isLoading={chatMessagesLoading} error={chatMessagesError} uid={AuthUser.id}/>
-                        <ChatInput send={handleSend} toggleDialog={toggleLocationDialog} />
-                        { locationDialog && <LocationDialog send={handleSend} toggleDialog={toggleLocationDialog} open={locationDialog} /> }
-                    </Box>
+        <AgaveLayout user={AuthUser}>
+            <Stack direction='row' height={'100%'} flexWrap='nowrap' justifyContent='center' sx={{ gap: '1em' }}>
+                <ChatListContainer flex={'1 0'} sx={{ minWidth: { xs: '100%', md: '30%' }, maxWidth: { md: 300 } }}
+                                   display={{ xs: chatId ? 'none' : 'block', md: 'block' }}
+                                   isLoading={chatsLoading} error={chatsError}
+                                   action={
+                                       <IconButton onClick={() => toggleCreateDialog(true)}>
+                                           <AddIcon />
+                                       </IconButton>
+                                   }
+                >
+                    {chatsData?.map((chat) =>
+                        <ChatListItem key={chat.id} chat={chat} selected={chatId === chat.id}
+                                      sent={(chat.lastMessage?.sender) === (AuthUser.id)}
+                                      onClick={() => toggleChat(chat.id)}
+                        />
+                    )}
+                </ChatListContainer>
+                <Stack flex='1 0' sx={{ minWidth: { xs: '100%', md: '30%' } }} bgcolor={'grey.200'} px={3} pt={2} borderRadius={(theme) => theme.spacing(3)}
+                       flexDirection='column' alignItems={'stretch'} justifyContent={'space-between'} display={{ xs: chatId ? 'flex' : 'none', md: 'flex' }}
+                >
+                    <Stack direction='row' justifyContent='flex-start' alignItems='center' py={1}>
+                        <IconButton onClick={() => toggleChat()}><ArrowBackIcon/></IconButton>
+                    </Stack>
+                    <ChatLog messages={chatMessages} isLoading={chatMessagesLoading} error={chatMessagesError} uid={AuthUser.id}/>
+                    <ChatInput send={handleSend} toggleDialog={toggleLocationDialog} />
+                    { locationDialog && <LocationDialog send={handleSend} toggleDialog={toggleLocationDialog} open={locationDialog} /> }
                 </Stack>
-                <CreateDialog list={profiles} load={pLoading} err={pError} open={createDialog} toggle={toggleCreateDialog}
-                              handleAdd={addChat} limit={profLimit} handleLimit={() => setProfLimit(false)}
-                />
-            </Container>
-        </AuthLayout>
+            </Stack>
+            <CreateDialog list={profiles} load={pLoading} err={pError} open={createDialog} toggle={toggleCreateDialog}
+                          handleAdd={addChat} limit={profLimit} handleLimit={() => setProfLimit(false)}
+            />
+        </AgaveLayout>
     );
 }
 
