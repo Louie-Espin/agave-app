@@ -1,7 +1,7 @@
 import { FC, ReactNode } from 'react';
 import { Box, BoxProps, Stack, Divider, List, CircularProgress } from '@mui/material';
 import TitleBar from "components/TitleBar";
-import ChatIcon from '@mui/icons-material/Chat';
+import MailOutlineOutlinedIcon from '@mui/icons-material/MailOutlineOutlined';
 import { FirestoreError } from "firebase/firestore";
 
 interface ChatHistoryProps extends BoxProps {
@@ -17,7 +17,7 @@ const ChatListContainer: FC<ChatHistoryProps> = ({ isLoading, action, children, 
         <Box {...props}>
             <Stack direction='column' flexWrap='nowrap' height={'100%'}>
                 <Stack direction='row' justifyContent='space-between' alignItems='center' px={2}>
-                    <TitleBar TitleIcon={ChatIcon} Title={'Chats'} flexGrow={0}/>
+                    <TitleBar TitleIcon={MailOutlineOutlinedIcon} Title={'Chats'} flexGrow={0}/>
                     { action }
                 </Stack>
                 <Divider />
