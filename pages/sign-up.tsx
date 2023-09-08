@@ -77,7 +77,7 @@ const SignUpPage: NextPage<SignUpPageProps> = () => {
 
     return(
         <AuthLayout>
-            <Box position='relative' py={4} bgcolor={'beige.main'}>
+            <Box position='relative' py={4}>
                 <Container maxWidth='sm'>
                     <Wrapper elevation={0} passwordVisibility={passwordVisibility}>
                         <form onSubmit={handleSubmit}>
