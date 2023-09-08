@@ -14,7 +14,8 @@ const FooterWrapper = styled(Box, {})
     display: 'flex',
     flexFlow: 'row wrap',
     alignItems: 'center',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
+    borderRadius: theme.spacing(3),
 }));
 
 const FooterTypography = styled(Typography, {})(({ theme }) => ({
