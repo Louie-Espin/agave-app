@@ -18,6 +18,7 @@ const NavigationRail = styled(Stack, {shouldForwardProp: (prop) => prop !== 'lWi
     (({ theme, lWidth }) => ({
         width: 'auto', height: `auto`, flexShrink: 0,
         padding: theme.spacing(1),
+        paddingBottom: `max(safe-area-inset-bottom, ${theme.spacing(1)})`,
         display: 'flex', flexDirection: 'row',
         alignItems: 'center', justifyContent: 'center',
         transitionProperty: 'width', transitionDuration: '200ms', transitionTimingFunction: 'ease',
