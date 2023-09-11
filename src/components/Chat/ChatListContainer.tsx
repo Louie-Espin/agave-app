@@ -14,18 +14,18 @@ interface ChatHistoryProps extends BoxProps {
 const ChatListContainer: FC<ChatHistoryProps> = ({ isLoading, action, children, ...props }: ChatHistoryProps) => {
 
     return(
-        <Box {...props}>
-            <Stack direction='column' flexWrap='nowrap' height={'100%'}>
+        <Box position='relative' height='100%' {...props}>
+            <Stack direction='column' flexWrap='nowrap' height='100%'>
                 <Stack direction='row' justifyContent='space-between' alignItems='center' px={2}>
                     <TitleBar TitleIcon={MailOutlineOutlinedIcon} Title={'Chats'} flexGrow={0}/>
-                    { action }
                 </Stack>
                 <Divider />
-                <List sx={{ flexGrow: 1 }}>
+                <List sx={{ overflow: 'auto', flexGrow: 1 }} >
                     { children }
                     { isLoading && <Stack alignItems='center'><CircularProgress/></Stack> }
                 </List>
             </Stack>
+            { action }
         </Box>
     );
 }
