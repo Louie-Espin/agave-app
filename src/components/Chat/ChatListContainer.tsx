@@ -7,7 +7,7 @@ import { FirestoreError } from "firebase/firestore";
 interface ChatHistoryProps extends BoxProps {
     isLoading: boolean,
     error?: FirestoreError,
-    action: ReactNode,
+    action?: ReactNode,
     children?: ReactNode,
 }
 

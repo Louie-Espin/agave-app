@@ -25,7 +25,7 @@ import chatConverter, { NewChat } from "@firebaseUtils/client/chatConverter";
 import profileConverter, { Profile } from "@firebaseUtils/client/profileConverter";
 
 import { useToggle } from "hooks/useToggle";
-import { Stack, IconButton } from '@mui/material';
+import { Stack, IconButton, Fab } from '@mui/material';
 import Loader from "components/Loader";
 
 import ChatInput from "components/Chat/ChatInput";
@@ -35,7 +35,7 @@ import ChatListItem from "components/Chat/ChatListItem";
 import LocationDialog from "components/Chat/LocationDialog";
 import CreateDialog from "components/Chat/CreateDialog";
 
-import AddIcon from '@mui/icons-material/Add';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 type ChatIndexProps = {}
@@ -165,11 +165,6 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
                 <ChatListContainer flex={'1 0'} sx={{ minWidth: { xs: '100%', md: '30%' }, maxWidth: { md: 300 } }}
                                    display={{ xs: chatId ? 'none' : 'block', md: 'block' }}
                                    isLoading={chatsLoading} error={chatsError}
-                                   action={
-                                       <IconButton onClick={() => toggleCreateDialog(true)}>
-                                           <AddIcon />
-                                       </IconButton>
-                                   }
                 >
                     {chatsData?.map((chat) =>
                         <ChatListItem key={chat.id} chat={chat} selected={chatId === chat.id}
@@ -177,6 +172,11 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
                                       onClick={() => toggleChat(chat.id)}
                         />
                     )}
+                    <Fab color='primary' onClick={() => toggleCreateDialog(true)}
+                         sx={{ position: 'absolute', bottom: 16, right: 16}}
+                    >
+                        <CreateOutlinedIcon />
+                    </Fab>
                 </ChatListContainer>
                 <Stack flex='1 0' sx={{ minWidth: { xs: '100%', md: '30%' } }} bgcolor={'grey.200'} px={3} pt={2} borderRadius={(theme) => theme.spacing(3)}
                        flexDirection='column' alignItems={'stretch'} justifyContent={'space-between'} display={{ xs: chatId ? 'flex' : 'none', md: 'flex' }}
