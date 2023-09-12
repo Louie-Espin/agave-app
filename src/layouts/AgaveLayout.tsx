@@ -6,7 +6,7 @@ import { Box, BoxProps, Stack, Button, ButtonProps, styled } from '@mui/material
 import { Span } from 'components/Typography';
 import { NextLinkComposed } from "components/Link";
 
-import Home from "@mui/icons-material/Home";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import MailOutlineOutlinedIcon from '@mui/icons-material/MailOutlineOutlined';
@@ -54,7 +54,7 @@ const MainBox = styled(Box, {})(({theme}) => ({
 }))
 
 const AgaveNavigations: { key: number, title: string, NavIcon: any, href: string }[] = [
-    { key: 1, title: 'Home', NavIcon: Home, href: '/' },
+    { key: 1, title: 'Home', NavIcon: HomeOutlinedIcon, href: '/' },
     { key: 2, title: 'History', NavIcon: WorkHistoryOutlinedIcon, href: '/work-history' },
     { key: 3, title: 'Chat', NavIcon: MailOutlineOutlinedIcon, href: '/chat' },
     { key: 4, title: 'Settings', NavIcon: SettingsOutlinedIcon, href: '/settings' },
