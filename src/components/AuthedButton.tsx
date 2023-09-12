@@ -1,9 +1,9 @@
 'use client'
 
 import { FC } from 'react'
-import { Avatar, ListItem, ListItemButton, ListItemAvatar, ListItemText, IconButton } from "@mui/material";
+import { Avatar, Button } from "@mui/material";
 import { NextLinkComposed } from "components/Link";
-import Logout from "@mui/icons-material/Logout";
+
 import clientLogOut from "@firebaseUtils/client/logOut";
 import PersonOutline from "@mui/icons-material/PersonOutline";
 
@@ -18,37 +18,23 @@ const handleLogOut = async () => {
 
 const AuthedButton: FC<AuthedButtonProps> = ({ signedIn, name }) => {
 
-    if (!signedIn) return(
-        <ListItem key={'log-in-button'} disableGutters sx={{ borderRadius: '10px', my: 2 }}>
-            <ListItemButton component={NextLinkComposed} to={'/log-in'} sx={{ borderRadius: '10px', bgcolor: 'primary.main' }}>
-                <ListItemAvatar>
-                    <Avatar><PersonOutline color='primary'/></Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                    primary={'Your Account'}
-                    secondary={'Log In'}
-                    primaryTypographyProps={{sx: {color: 'rgba(0, 0, 0, 0.54)', fontSize: '1rem', fontWeight: 600} }}
-                />
-            </ListItemButton>
-        </ListItem>
+    if (signedIn) return(
+        <Button startIcon={<Avatar>{(name) ? name.charAt(0) : <PersonOutline color='primary'/> }</Avatar>}
+                variant='contained' color='primary' sx={{ borderRadius: '24px', pl: '10px', pr: '16px' }}
+                onClick={handleLogOut}
+        >
+            { 'Log Out' }
+        </Button>
     );
 
-    return(
-        <ListItem key={'account-button'} disableGutters sx={{ borderRadius: '10px', my: 2 }}
-                  secondaryAction={<IconButton onClick={handleLogOut}><Logout/></IconButton>}
+    else return(
+        <Button endIcon={<Avatar><PersonOutline color='secondary'/></Avatar>}
+                variant='contained' color='secondary' sx={{ borderRadius: '24px', pr: '10px', pl: '16px' }}
+                component={NextLinkComposed} to={'/log-in'}
         >
-            <ListItemButton component={NextLinkComposed} to={'/dashboard'} sx={{ borderRadius: '10px', bgcolor: 'primary.main' }}>
-                <ListItemAvatar>
-                    <Avatar src={undefined}>{ (name) ? name.charAt(0) : undefined }</Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                    primary={name ? name : 'Your account'}
-                    secondary={'View Dashboard'}
-                    primaryTypographyProps={{sx: {color: 'rgba(0, 0, 0, 0.54)', fontSize: '1rem', fontWeight: 600} }}
-                />
-            </ListItemButton>
-        </ListItem>
-    )
+            { 'Log In' }
+        </Button>
+    );
 }
 
 export default AuthedButton;
