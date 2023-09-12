@@ -4,7 +4,7 @@
  * - modified for use with Typescript
 **/
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 const defaultSettings = {
     enableHighAccuracy: false,
@@ -21,9 +21,11 @@ type Position = {
         timestamp: number | null
 }
 
-export const usePosition = (watch = false, userSettings = {}) => {
+export const usePosition = (active: boolean, watch: boolean = false, userSettings = {}) => {
 
-    const settings = { ...defaultSettings, ...userSettings, };
+    const settings = useMemo(() => {
+        return { ...defaultSettings, ...userSettings, }
+    }, [userSettings]);
 
     const [position, setPosition] = useState<Position>({
         latitude: null, longitude: null, accuracy: null, speed: null, heading: null, timestamp: null
@@ -46,6 +48,8 @@ export const usePosition = (watch = false, userSettings = {}) => {
     };
 
     useEffect(() => {
+        if (!active) return;
+
         if (!navigator || !navigator.geolocation) {
             setError('Geolocation is not supported');
             return;
@@ -58,7 +62,7 @@ export const usePosition = (watch = false, userSettings = {}) => {
         }
 
         navigator.geolocation.getCurrentPosition(onChange, onError, settings);
-    }, [ settings.enableHighAccuracy, settings.timeout, settings.maximumAge, watch ]);
+    }, [ active, watch, settings ]);
 
     return {...position, error};
 };

@@ -13,7 +13,7 @@ interface LocationDialogProps extends DialogProps {
 }
 const LocationDialog: FC<LocationDialogProps> = ({ open, toggleDialog, send }: LocationDialogProps) => {
 
-    const { latitude, longitude, accuracy, error } = usePosition(false, { enableHighAccuracy: true });
+    const { latitude, longitude, accuracy, error } = usePosition(open, false, { enableHighAccuracy: true });
 
     const handleSend = () => {
         if (latitude && longitude && accuracy) send('Location sent.', latitude, longitude, accuracy);

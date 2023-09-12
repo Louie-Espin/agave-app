@@ -186,9 +186,9 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
                     </Stack>
                     <ChatLog messages={chatMessages} isLoading={chatMessagesLoading} error={chatMessagesError} uid={AuthUser.id}/>
                     <ChatInput send={handleSend} toggleDialog={toggleLocationDialog} />
-                    { locationDialog && <LocationDialog send={handleSend} toggleDialog={toggleLocationDialog} open={locationDialog} /> }
                 </Stack>
             </Stack>
+            <LocationDialog send={handleSend} toggleDialog={toggleLocationDialog} open={locationDialog} />
             <CreateDialog list={profiles} load={pLoading} err={pError} open={createDialog} toggle={toggleCreateDialog}
                           handleAdd={addChat} limit={profLimit} handleLimit={() => setProfLimit(false)}
             />
