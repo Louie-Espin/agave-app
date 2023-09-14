@@ -60,7 +60,7 @@ const PropertyFormPage: NextPage<PropertyFormProps> = () => {
 
     return(
         <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
-            <Box p={1}>
+            <Box m={1} mb={3}>
                 <Stack direction='row' flexWrap='wrap' justifyContent='center' sx={{ gap: '1em' }}>
                     <Box flex='1 0' maxWidth={{ xs: '100%', md: 'calc(50% - 1em)' }}>
                         <Stack direction='row' justifyContent='space-between' alignItems='center' px={2}>
@@ -89,7 +89,7 @@ const PropertyFormPage: NextPage<PropertyFormProps> = () => {
                             </ImageList>
                         </Box>
                     </Box>
-                    <WorkOrderMap component={Paper} flex='1 0' position='relative' minWidth={300} minHeight='60vh' locations={locations} my={2}>
+                    <WorkOrderMap component={Paper} flex='1 0' position='relative' minWidth={300} minHeight='60vh' locations={locations} m={2}>
                         <Box position='absolute' p={1}>
                             <TechnicianNotes completedBy={completedBy} description={description} variant='outlined' />
                         </Box>
