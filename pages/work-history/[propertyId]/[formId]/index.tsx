@@ -2,12 +2,11 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import axios from "axios";
-import { format } from "date-fns";
 
-import { useWorkOrder } from "hooks/useWorkOrder";
+import { useWorkOrder, useFormParser } from "hooks/useWorkOrder";
 import { useAuthUser, withAuthUser, AuthAction } from 'next-firebase-auth';
 
-import {Container, Chip, Stack, Box, styled, ImageList, Divider, Button, useTheme, useMediaQuery } from "@mui/material";
+import { Chip, Stack, Box, ImageList, Divider, Button, useTheme, useMediaQuery } from "@mui/material";
 
 import AuthLayout from "layouts/AuthLayout";
 import Loader from "components/Loader";
@@ -22,17 +21,8 @@ import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
 import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
 
 import SignpostOutlinedIcon from '@mui/icons-material/SignpostOutlined';
-import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
-import NumbersOutlinedIcon from '@mui/icons-material/NumbersOutlined';
-
-const PreStyled = styled('pre')({
-    outline: '1px solid #ccc', padding: '5px', margin: '5px',
-    '& .string': { color: 'green' },
-    '& .number': { color: 'darkorange' },
-    '& .boolean': { color: 'blue' },
-    '& .null': { color: 'magenta' },
-    '& .key': { color: 'red' }
-})
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 
 /** FIXME: THIS IS ALL BAD!!! REFACTOR TO CORRECTLY USE SWR LOADING STATE **/
 
@@ -56,7 +46,15 @@ const PropertyFormPage: NextPage<PropertyFormProps> = () => {
 
     const { data: formData, error, isLoading, isValidating } = fetcher;
 
-    const { description, completedBy, crossStreets, completionDate, jobNumber, locations, images } = useWorkOrder(formData?.fields);
+    const { description, locations, images } = useWorkOrder(formData?.fields);
+    const { value: crossStreets } = useFormParser<string>('Cross Streets', 'text', formData?.fields);
+    const { value: jobNumber } = useFormParser<string>('Job Number', 'text', formData?.fields);
+    const { value: completedBy } = useFormParser<string>('Completed by', 'value', formData?.fields);
+    const { value: completionDate } = useFormParser<string>('Completion Date', 'value', formData?.fields);
+
+    const { value: materials } = useFormParser<string>('Materials Total', 'value', formData?.fields);
+    const { value: labor } = useFormParser<string>('Labor Total', 'value', formData?.fields);
+    const { value: total } = useFormParser<string>('Grand Total', 'value', formData?.fields);
 
     if (!formData) return(<div>Loading!</div>); // TODO: handle loading state within inner components!!!
 
@@ -73,25 +71,30 @@ const PropertyFormPage: NextPage<PropertyFormProps> = () => {
                         </Stack>
                         <Divider />
                         <Stack direction='row' justifyContent='flex-start' p={2} sx={{ gap: '1em' }}>
-                            { crossStreets && <Chip icon={<SignpostOutlinedIcon />} label={crossStreets} variant="outlined"  /> }
-                            { completionDate && <Chip icon={<EventAvailableOutlinedIcon />} label={format(new Date(completionDate), 'MM/dd/yyyy')} variant="outlined" /> }
-                            { jobNumber && <Chip icon={<NumbersOutlinedIcon />} label={jobNumber} variant="outlined"  /> }
+                            <Chip icon={<SignpostOutlinedIcon />} variant="outlined"
+                                  label={crossStreets ?? 'Property'} />
+                            <Chip icon={<LocationOnOutlinedIcon />} variant="outlined"
+                                  label={`${locations.length} Location${locations.length == 1 ? '' : 's'}`} />
+                            <Chip icon={<ImageOutlinedIcon />} variant="outlined"
+                                  label={`${images.length} Image${images.length == 1 ? '' : 's'}`} />
                         </Stack>
-                        <WorkOrderTable fields={formData?.fields}/>
+                        <WorkOrderTable materials={materials} labor={labor} total={total}
+                                        technician={completedBy} date={completionDate} jobNum={jobNumber}
+                        />
+                        <Box m={2} borderRadius='10px' overflow='hidden'>
+                            <ImageList cols={isMobile ? 3 : 3} >
+                                {images.map(({ id, imageFile }) =>
+                                    imageFile && <WorkOrderImage imgId={id} key={id} imageFile={imageFile} user={AuthUser}/>
+                                )}
+                            </ImageList>
+                        </Box>
                     </Box>
-                    <WorkOrderMap flex='1 0' position='relative' minHeight={'50vh'} locations={locations}>
+                    <WorkOrderMap flex='1 0' position='relative' minHeight={'50vh'} locations={locations} py={2}>
                         <Box position='absolute' p={1}>
                             <TechnicianNotes completedBy={completedBy} description={description} variant='outlined' />
                         </Box>
                     </WorkOrderMap>
                 </Stack>
-                <Box p={2}>
-                    <ImageList cols={isMobile ? 3 : 6} >
-                        {images.map(({ id, imageFile }) =>
-                            imageFile && <WorkOrderImage imgId={id} key={id} imageFile={imageFile} user={AuthUser}/>
-                        )}
-                    </ImageList>
-                </Box>
             </Box>
         </AuthLayout>
     );
