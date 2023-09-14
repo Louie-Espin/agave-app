@@ -2,10 +2,6 @@ import { useMemo } from 'react';
 
 export type WorkOrderData = {
     description: string | null,
-    completedBy: string | null,
-    crossStreets: string | null,
-    completionDate: string | null,
-    jobNumber: string | null,
     locations: {
         "id": string, "name": string, "type": string,
         "mapImage"?: { "id": string, "link"?: string | null } | null,
@@ -23,26 +19,6 @@ export const useWorkOrder = (formFields?: any): WorkOrderData => {
     const description = useMemo(() => {
         if (!(formFields)) return null;
         return (formFields["Description"]?.text) ? (formFields?.["Description"]?.text) : null;
-    }, [formFields]);
-
-    const completedBy = useMemo(() => {
-        if (!(formFields)) return null;
-        return (formFields["Completed by"]?.value) ? (formFields["Completed by"].value) as string : null;
-    }, [formFields]);
-
-    const crossStreets = useMemo(() => {
-        if (!(formFields)) return null;
-        return (formFields["Cross Streets"]?.text) ? (formFields["Cross Streets"].text) as string : null;
-    }, [formFields]);
-
-    const completionDate = useMemo(() => {
-        if (!(formFields)) return null;
-        return (formFields["Completion Date"]?.value) ? (formFields["Completion Date"].value) as string : null;
-    }, [formFields]);
-
-    const jobNumber = useMemo(() => {
-        if (!(formFields)) return null;
-        return (formFields["Job Number"]?.text) ? (formFields["Job Number"].text) as string : null;
     }, [formFields]);
 
     const locations = useMemo(() => {
@@ -78,5 +54,14 @@ export const useWorkOrder = (formFields?: any): WorkOrderData => {
     }, [formFields]);
 
 
-    return { description, completedBy, crossStreets, completionDate, jobNumber, locations, images };
+    return { description, locations, images };
+}
+
+export const useFormParser = <T>(field: string, parse: 'text' | 'value', formFields?: any): { value: T | null } => {
+    const value: T | null = useMemo(() => {
+        if (!(formFields)) return null;
+        return (formFields?.[field]?.[parse]) ? (formFields[field][parse]) : null;
+    }, [field, parse, formFields]);
+
+    return { value };
 }
