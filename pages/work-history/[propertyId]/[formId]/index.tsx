@@ -6,7 +6,7 @@ import axios from "axios";
 import { useWorkOrder, useFormParser } from "hooks/useWorkOrder";
 import { useAuthUser, withAuthUser, AuthAction } from 'next-firebase-auth';
 
-import { Chip, Stack, Box, ImageList, Divider, Button, useTheme, useMediaQuery } from "@mui/material";
+import { Chip, Stack, Box, Paper, ImageList, Divider, Button, useTheme, useMediaQuery } from "@mui/material";
 
 import AuthLayout from "layouts/AuthLayout";
 import Loader from "components/Loader";
@@ -70,7 +70,7 @@ const PropertyFormPage: NextPage<PropertyFormProps> = () => {
                             </Button>
                         </Stack>
                         <Divider />
-                        <Stack direction='row' justifyContent='flex-start' p={2} sx={{ gap: '1em' }}>
+                        <Stack direction='row' flexWrap='wrap' justifyContent='flex-start' p={2} sx={{ gap: '1em' }}>
                             <Chip icon={<SignpostOutlinedIcon />} variant="outlined"
                                   label={crossStreets ?? 'Property'} />
                             <Chip icon={<LocationOnOutlinedIcon />} variant="outlined"
@@ -89,7 +89,7 @@ const PropertyFormPage: NextPage<PropertyFormProps> = () => {
                             </ImageList>
                         </Box>
                     </Box>
-                    <WorkOrderMap flex='1 0' position='relative' minHeight={'50vh'} locations={locations} py={2}>
+                    <WorkOrderMap component={Paper} flex='1 0' position='relative' minWidth={300} minHeight='60vh' locations={locations} my={2}>
                         <Box position='absolute' p={1}>
                             <TechnicianNotes completedBy={completedBy} description={description} variant='outlined' />
                         </Box>
