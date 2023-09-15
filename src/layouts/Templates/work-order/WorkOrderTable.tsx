@@ -29,7 +29,7 @@ const WorkOrderTable: FC<WorkOrderProps> = ({ materials, labor, total, technicia
                 <WorkOrderItem label={'Completed'} icon={<EventAvailableOutlinedIcon color={'disabled'} />}
                                value={date ? format(new Date(date), 'MM/dd/yyyy') : null}
                 />
-                <WorkOrderItem label={'Job Number'} value={jobNum} icon={<NumbersOutlinedIcon color={'disabled'} />} />
+                <WorkOrderItem label={'Job ID'} value={jobNum} icon={<NumbersOutlinedIcon color={'disabled'} />} />
             </Stack>
         </Stack>
     )
