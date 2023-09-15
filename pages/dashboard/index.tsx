@@ -8,13 +8,11 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import enUS from 'date-fns/locale/en-US';
 import TodayIcon from '@mui/icons-material/Today';
 
-import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'next-firebase-auth';
-
 import AuthLayout from "layouts/AuthLayout";
+import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'next-firebase-auth';
 import PropertiesList from "layouts/PropertiesList";
 
 import Loader from "components/Loader";
-import { H2 } from "components/Typography";
 import useSWR from "swr";
 import axios from "axios";
 import Settings from "@mui/icons-material/Settings";
@@ -58,9 +56,7 @@ const DashboardPage: NextPage = () => {
                             </LocalizationProvider>
                         </Box>
                     </Stack>
-
                     <PropertiesList validating={isValidating} loading={isLoading} error={error} properties={data?.properties}/>
-
                 </Stack>
             </Container>
         </AuthLayout>

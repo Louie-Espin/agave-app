@@ -21,6 +21,9 @@ import TabContext from '@mui/lab/TabContext';
 import Tab from '@mui/material/Tab';
 import TabList from '@mui/lab/TabList';
 
+import { useRouter } from "next/router"; // FIXME: ROLL THIS BACK!
+import { useEffect } from "react"; // FIXME: ROLL THIS BACK!
+
 // Icons
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import CircleNotificationsOutlined from "@mui/icons-material/CircleNotificationsOutlined";
@@ -51,6 +54,12 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
 
     const selectForm = (event: SyntheticEvent, formId: string) => { setForm(formId); } // FIXME
     const closeDialog = () => { setForm(null); } // FIXME
+
+    const router = useRouter(); // FIXME: ROLL THIS BACK!
+    useEffect(() => { // FIXME: ROLL THIS ALL BACK!
+        if (property && form && template == TemplateID.WORK_ORDER)
+            router.push(`/work-history/${property.id}/${form}`);
+    }, [router, property, form, template])
 
     const formsFetcher = useSWR(AuthUser.id && property.id && template ? [historyURL, property.id, template] : null,
         (async ([historyURL, property, template]) => {

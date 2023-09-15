@@ -12,7 +12,7 @@ const StatItem: FC<{ stat: number, title: string }> = ({ stat, title }) => {
         const controls = animate(count, stat, { duration: 5 })
 
         return controls.stop
-    }, []);
+    }, [count, stat]);
 
     return(
         <Box textAlign='center' display='flex' flexDirection='column' alignItems='center' justifyContent='center' mt={2}>
@@ -25,7 +25,9 @@ const StatItem: FC<{ stat: number, title: string }> = ({ stat, title }) => {
 const Statistics: FC = () => {
 
     return(
-        <Box overflow='hidden' sx={{ bgcolor: 'beige.50' }} py={5}>
+        <Box overflow='hidden' sx={{ bgcolor: 'beige.50' }} py={5}
+             borderRadius={(theme) => `0 0 ${theme.spacing(3)} ${theme.spacing(3)}`}
+        >
             <Container disableGutters maxWidth='md'>
                 <Grid container spacing={2} sx={{ maxWidth: '100%' }}>
                     <Grid xs={6} sm={3}>

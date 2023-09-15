@@ -52,7 +52,7 @@ const ContactPage: NextPage<ContactPageProps> = () => {
                     </Stack>
                     <Stack direction='column' spacing={2} flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(50% - 1em)' }}>
                         <iframe width={embed.width} height={embed.height} style={embed.style} loading="lazy"
-                            src={`${embed.url}${embed.key}`} allowFullScreen
+                                src={`${embed.url}${embed.key}`} allowFullScreen
                         >
                         </iframe>
                     </Stack>
