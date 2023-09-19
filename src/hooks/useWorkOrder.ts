@@ -49,7 +49,7 @@ export const useWorkOrder = (formFields?: any): WorkOrderData => {
                 imageFile: {...i[1]['imageFile']},
                 imgLink: null, expires: null // set new properties
             }))
-            .filter(({imageFile}) => imageFile['link'] && imageFile['id']); // filters non-empty imageFile
+            .filter(({imageFile}) => imageFile['id']); // filters non-empty imageFile
 
     }, [formFields]);
 
