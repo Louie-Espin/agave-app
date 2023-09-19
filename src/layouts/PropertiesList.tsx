@@ -27,7 +27,7 @@ const PropertiesList: FC<PropertiesListProps> = ({ properties = [], validating, 
             <Box display={ showTitle ? 'flex' : 'none' } alignItems='center' my={2}>
                 <HomeWorkIcon color="primary"/>
                 <H2 ml={1.5} my="0px" lineHeight="1" whiteSpace="pre">
-                    Your Properties
+                    Your Agave Properties
                 </H2>
                 <CircularProgress size='1rem' sx={{ ml: 2, display: (validating ? 'flex' : 'none') }}/>
             </Box>
