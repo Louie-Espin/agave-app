@@ -1,5 +1,6 @@
-import { FC, useState, useEffect } from 'react';
+import { FC } from 'react';
 import { ImageListItem } from '@mui/material';
+import useSWR from "swr";
 import axios from "axios";
 
 import { AuthUserContext } from "next-firebase-auth";
@@ -16,31 +17,28 @@ type WorkOrderImageProps = {
 const WorkOrderImage: FC<WorkOrderImageProps> = ({ imgId, imageFile, user }) => {
 
     const url = `api/history/image`;
-    const [imgUrl, setImgUrl] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (imgUrl || !user.id) return;
+    const swrOptions = {
+        revalidateOnFocus: false,
+        revalidateOnMount: true, // https://swr.vercel.app/docs/api
+        revalidateOnReconnect: false,
+        refreshWhenOffline: false,
+        refreshWhenHidden: false,
+        refreshInterval: 3600000, // one hour in milliseconds
+    }
 
-        const fetchLink = async () => {
-            try {
-                const token = await user.getIdToken();
-                const { data: res } = await axios.get(url, {
-                    baseURL: '/', headers: { Authorization: token }, params: { imgId: imageFile.id }
-                });
-                console.log(res);
-                setImgUrl(res['imgLink'] as string ?? '');
-            } catch (error) {
-                console.error(error)
-            }
-        };
+    const fetcher = useSWR(user.id ? [url, imageFile.id] : null, (async () => {
+        const token = await user.getIdToken();
+        return await axios.get(url, { baseURL: '/', headers: { Authorization: token }, params: { imgId: imageFile.id } } )
+            .then(res => res.data['imgLink'])
+            .catch(e => { console.error(e); throw e });
+    }), swrOptions);
 
-        if (!imgUrl) fetchLink();
-
-    }, [url, user, imgUrl, imageFile]);
+    const { data, error, isLoading, isValidating } = fetcher;
 
     return(
         <ImageListItem>
-            <img src={imgUrl ? imgUrl : Loading.src} alt={`Work Order Image ID: ${imgId}`} />
+            <img src={data ? data : Loading.src} alt={`Work Order Image ID: ${imgId}`} />
         </ImageListItem>
     );
 }
