@@ -50,14 +50,15 @@ const AgaveContacts: FC<AgaveContactsProps> = ({ ...rest }) => {
     return(
         <Box overflow='hidden' {...rest}>
             <H3 fontWeight={400} mb={2}>Agave Contacts</H3>
-            <Box borderRadius={(theme) => (theme.spacing(3))} mb={2}
+            <Box borderRadius={(theme) => (theme.spacing(3))}
                 sx={{
                     display: 'flex', overflow: 'auto', width: '100%', gap: 1,
-                    scrollSnapType: 'x mandatory',
-                    '& > *': { scrollSnapAlign: 'center', cursor: 'ew-resize' },
+                    height: { xs: 'auto', md: '40vh' }, flexDirection: {xs: 'row', md: 'column'},
+                    scrollSnapType: {xs: 'x mandatory', md: 'y mandatory' },
+                    '& > *': { scrollSnapAlign: 'center', cursor: { xs: 'ew-resize', md: 'ns-resize' } },
                     '::-webkit-scrollbar': { display: 'none' }, /* Hide scrollbar for Chrome, Safari and Opera */
-                    '-ms-overflow-style': 'none',  /* IE and Edge */
-                    'scrollbar-width': 'none',  /* Firefox */
+                    msOverflowStyle: 'none',  /* IE and Edge */
+                    scrollbarWidth: 'none',  /* Firefox */
                 }}
             >
                 {contactsList.map(({name, title, email, tel, img}) =>
