@@ -74,8 +74,8 @@ const WorkHistoryCard: FC<WorkHistoryCardProps> = ({ formId, propertyId, lastUpd
                 <CardContent>
                     <Box maxWidth='70ch'>
                         { /* FIXME: refactor to better display loading state */
-                            highlights ? highlights.map((sub, i) =>
-                             <Span bgcolor={(sub.toLowerCase() === searchStr.toLowerCase()) ? 'warning.main' : 'inherit'}
+                            (description && highlights) ? highlights.map((sub, i) =>
+                             <Span bgcolor={(sub?.toLowerCase() === searchStr?.toLowerCase()) ? 'warning.main' : 'inherit'}
                                    key={i} >
                                  { sub }
                              </Span>) : 'loading'
