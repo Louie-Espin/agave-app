@@ -1,20 +1,13 @@
 import { FC } from 'react';
 
-import { useToggle } from "hooks/useToggle";
-import { Box, BoxProps, Divider, Paper, List } from '@mui/material';
-import { Chip, ListItemButton, ListItemAvatar, Avatar, ListItemText, ListItemIcon, Collapse, Stack } from '@mui/material';
-
-import { IconButton } from '@mui/material';
-
+import { Box, BoxProps, Avatar, Paper, Stack, IconButton } from '@mui/material';
 import { H3, Span, Small } from 'components/Typography';
 
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+// MUI ICONS
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 
-interface AgaveContactsProps extends BoxProps {
-
-}
+interface AgaveContactsProps extends BoxProps { }
 
 const contactsList = [
     {
@@ -47,9 +40,6 @@ const AgaveContacts: FC<AgaveContactsProps> = ({ ...rest }) => {
 
     return(
         <Box overflow='hidden' {...rest}>
-            <H3 fontWeight={400} mb={2}>Get In Touch</H3>
-            <ContactBox name={'Henry Hall'} title={'Account Manager'} email={'henry.hall@agave-inc.com'} phone={6029193353} />
-            <Divider sx={{ mt: 3, mb: 2 }}/>
             <H3 fontWeight={400} mb={2}>Agave Contacts</H3>
             <Box borderRadius={(theme) => (theme.spacing(3))} mb={2}
                 sx={{
