@@ -1,34 +1,43 @@
 import { GetServerSideProps, NextPage } from "next";
-import { useState, SyntheticEvent } from "react";
+import React, { useState, SyntheticEvent } from "react";
 import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'next-firebase-auth';
+
+import { getStorage, ref } from "firebase/storage";
+import { useDownloadURL } from 'react-firebase-hooks/storage';
+import loadingGif from "@public/assets/images/loading.gif";
 
 import { getPropertyData } from "@firebaseUtils/firebaseSSR";
 import { PropertySchema } from "utils/api/yup";
 import * as yup from "yup";
 
-import { Container, Stack, Box } from "@mui/material";
+import { Divider, Stack, Box, List} from "@mui/material";
 
 import AuthLayout from "layouts/AuthLayout";
-import WorkHistoryPanel from "layouts/Templates/WorkHistoryPanel";
-import PropertyDetails from "components/PropertyDetails";
 import Loader from "components/Loader";
 import TitleBar from "components/TitleBar";
 import DownloadDialog from "components/DownloadDialog"; // FIXME
+import { H2, H3 } from 'components/Typography';
+import WorkHistoryCard from "components/WorkHistoryCard";
+
+import AgaveContacts from "components/AgaveContacts";
+import AgaveDetails from "components/AgaveDetails";
+import ImageWithFallback from "components/ImageFallback";
+
 import useSWR from "swr";
 import axios, { AxiosError } from "axios";
-
-import TabContext from '@mui/lab/TabContext';
-import Tab from '@mui/material/Tab';
-import TabList from '@mui/lab/TabList';
 
 import { useRouter } from "next/router"; // FIXME: ROLL THIS BACK!
 import { useEffect } from "react"; // FIXME: ROLL THIS BACK!
 
 // Icons
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-import CircleNotificationsOutlined from "@mui/icons-material/CircleNotificationsOutlined";
-import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
-import Build from "@mui/icons-material/Build";
+// import CircleNotificationsOutlined from "@mui/icons-material/CircleNotificationsOutlined";
+// import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+// import Build from "@mui/icons-material/Build";
+
+import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import NumbersOutlinedIcon from "@mui/icons-material/NumbersOutlined";
 
 type PropertiesPageProps = { property: yup.InferType<typeof PropertySchema> }
 
@@ -42,10 +51,13 @@ enum TemplateID {
 const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
 
     const historyURL = 'api/history';
+    const storage = getStorage();
+    const imgRef = ref(storage, property.displayImage);
 
     const AuthUser = useAuthUser();
 
-    const [template, setTemplate] = useState<TemplateID>(TemplateID.STATUS_UPDATE);
+    const [downloadUrl, downloadLoading, downloadError] = useDownloadURL(imgRef);
+    const [template, setTemplate] = useState<TemplateID>(TemplateID.WORK_ORDER);
     const [form, setForm] = useState<string | null>(null); // FIXME
 
     const changeTemplate = (event: SyntheticEvent, newValue: TemplateID) => {
@@ -78,42 +90,47 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
 
     return(
         <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
-            <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
+            <Box px={2} mb={4}>
+                <TitleBar TitleIcon={WorkHistoryIcon} Title={`${property.name ?? 'Property'} - Work History`} />
+                <Stack direction='row' flexWrap='wrap' sx={{ gap: '2em' }}>
+                    <Stack flex='3 0' sx={{ gap: '2em' }}>
+                        <Box bgcolor={'grey.400'} minHeight={400} borderRadius={4} position='relative' overflow='hidden'>
+                            <ImageWithFallback src={downloadUrl ?? loadingGif.src} fill imgObjectFit={"cover"}
+                                               alt={`Image for ${property.name}`}/>
+                        </Box>
+                        <Box>
+                            <H2 fontWeight={500} mb={2}>{'Work History'}</H2>
 
-                <TitleBar TitleIcon={WorkHistoryIcon} Title={'Work History'} />
-
-                <Stack direction='row' flexWrap='wrap' position='relative' width='100%' sx={{ gap: '1em' }}>
-
-                    <Box flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(40% - 1em)' }}>
-                        <PropertyDetails pName={property.name} pAddress={property.address} mName={property.manager.name}
-                                         imageUrl={property.displayImage}
-                        />
-                    </Box>
-
-                    <TabContext value={template}>
-                        <Stack direction='column' spacing={2} flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(60% - 1em)' }}>
-
-                            <TabList variant='fullWidth' indicatorColor='secondary' aria-label="History Tabs" onChange={changeTemplate} >
-                                <Tab label="Status Updates" value={TemplateID.STATUS_UPDATE}/>
-                                <Tab label="Weekly Reports" value={TemplateID.WEEKLY_REPORT}/>
-                                <Tab label="Work Orders" value={TemplateID.WORK_ORDER}/>
-                            </TabList>
-
-                            <WorkHistoryPanel value={TemplateID.STATUS_UPDATE} pName={property.id} Icon={CircleNotificationsOutlined}
-                                forms={fData?.forms} validating={fValidating} loading={fLoading} error={fError} label='Status Update' action={selectForm} // FIXME
-                            />
-                            <WorkHistoryPanel value={TemplateID.WEEKLY_REPORT} pName={property.id} Icon={AssignmentTurnedInIcon}
-                                forms={fData?.forms} validating={fValidating} loading={fLoading} error={fError} label='Weekly Report' action={selectForm} // FIXME
-                            />
-                            <WorkHistoryPanel value={TemplateID.WORK_ORDER} forms={fData?.forms} Icon={Build}
-                                pName={property.id} validating={fValidating} loading={fLoading} error={fError} label='Work Order' action={selectForm} // FIXME
-                            />
-                        </Stack>
-                    </TabContext>
-
+                            <Stack direction='row' flexWrap='wrap' sx={{ gap: '0.5em'}}>
+                                {fData?.forms.map((i: any) =>
+                                    <WorkHistoryCard key={i?.formId} user={AuthUser} propertyId={property.id}
+                                                     templateId={i?.templateId} formId={i?.formId} lastUpdateDate={i?.lastUpdateDate}
+                                                     action={() => {}} />
+                                )}
+                            </Stack>
+                        </Box>
+                    </Stack>
+                    <Stack flex='2 0' position='relative' maxWidth={'100%'}
+                           minWidth={{ xs: '100%', md: 'calc(25% - 1em)' }} >
+                        <Box position='sticky' top={0}>
+                            <Box overflow='hidden'>
+                                <H3 fontWeight={400} mb={1}>{`${property.name ?? 'Property'} Details`}</H3>
+                                <List disablePadding>
+                                    <AgaveDetails Icon={BadgeOutlinedIcon} primary={'Account Manager'}
+                                                  secondary={'Henry Hall'} />
+                                    <AgaveDetails Icon={PersonOutlineOutlinedIcon} primary={'Property Manager'}
+                                                  secondary={property.manager?.name ?? 'Unassigned'}
+                                                  email={property.manager?.email}/>
+                                    <AgaveDetails Icon={NumbersOutlinedIcon} primary={'Job Number'}
+                                                  secondary={property.jobNumber ?? 'Not Found'} />
+                                </List>
+                            </Box>
+                            <Divider sx={{ mt: 3, mb: 2 }}/>
+                            <AgaveContacts />
+                        </Box>
+                    </Stack>
                 </Stack>
-                <DownloadDialog formId={form} onClose={closeDialog} authUser={AuthUser}/>{/* FIXME */}
-            </Container>
+            </Box>
         </AuthLayout>
     );
 }
