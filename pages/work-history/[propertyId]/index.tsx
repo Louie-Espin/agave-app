@@ -1,5 +1,5 @@
 import { GetServerSideProps, NextPage } from "next";
-import React, { useState, SyntheticEvent } from "react";
+import React, { useState, SyntheticEvent, ChangeEvent } from "react";
 import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'next-firebase-auth';
 
 import { getStorage, ref } from "firebase/storage";
@@ -18,6 +18,7 @@ import TitleBar from "components/TitleBar";
 import DownloadDialog from "components/DownloadDialog"; // FIXME
 import { H2, H3 } from 'components/Typography';
 import WorkHistoryCard from "components/WorkHistoryCard";
+import WorkHistorySettings from "components/NavBar/WorkHistorySettings";
 
 import AgaveContacts from "components/AgaveContacts";
 import AgaveDetails from "components/AgaveDetails";
@@ -34,7 +35,6 @@ import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 // import CircleNotificationsOutlined from "@mui/icons-material/CircleNotificationsOutlined";
 // import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 // import Build from "@mui/icons-material/Build";
-
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import NumbersOutlinedIcon from "@mui/icons-material/NumbersOutlined";
@@ -63,6 +63,9 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
     const changeTemplate = (event: SyntheticEvent, newValue: TemplateID) => {
         setTemplate(newValue);
     }
+
+    const [search, setSearch] = useState<string>('');
+    const searchControl = (event: ChangeEvent<HTMLInputElement>) => { setSearch(event.target.value) };
 
     const selectForm = (event: SyntheticEvent, formId: string) => { setForm(formId); } // FIXME
     const closeDialog = () => { setForm(null); } // FIXME
@@ -100,12 +103,12 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
                         </Box>
                         <Box>
                             <H2 fontWeight={500} mb={2}>{'Work History'}</H2>
-
-                            <Stack direction='row' flexWrap='wrap' sx={{ gap: '0.5em'}}>
+                            <WorkHistorySettings search={search} searchControl={searchControl}/>
+                            <Stack direction='row' flexWrap='wrap' sx={{ gap: '1em'}}>
                                 {fData?.forms.map((i: any) =>
                                     <WorkHistoryCard key={i?.formId} user={AuthUser} propertyId={property.id}
                                                      templateId={i?.templateId} formId={i?.formId} lastUpdateDate={i?.lastUpdateDate}
-                                                     action={() => {}} />
+                                                     action={() => {}} searchStr={search}/>
                                 )}
                             </Stack>
                         </Box>

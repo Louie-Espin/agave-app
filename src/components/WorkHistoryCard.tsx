@@ -25,10 +25,11 @@ const swrOptions = {
 interface WorkHistoryCardProps {
     formId: string, propertyId: string, templateId: string, lastUpdateDate: string,
     action: (event: SyntheticEvent, formId: string) => void,
-    user: AuthUserContext
+    user: AuthUserContext,
+    searchStr: string,
 }
 
-const WorkHistoryCard: FC<WorkHistoryCardProps> = ({ formId, propertyId, lastUpdateDate, action, user }: WorkHistoryCardProps) => {
+const WorkHistoryCard: FC<WorkHistoryCardProps> = ({ formId, propertyId, lastUpdateDate, action, user, searchStr }: WorkHistoryCardProps) => {
 
     const url: string = `api/history/${formId}`; // TODO: This does not fetch a PDF, consider decoupling
 
@@ -43,8 +44,25 @@ const WorkHistoryCard: FC<WorkHistoryCardProps> = ({ formId, propertyId, lastUpd
 
     const { description, locations, images } = useWorkOrder(data?.fields);
 
+    /* FIXME: This search code is awful, refactor
+     *
+     * searchMatch: returns true if both a search string is given AND the description includes it
+     * highlights: if searchMatch, returns the description as substrings split with matching regex, else entire description
+     *
+     * FIXME [highlights bug] returns single-character substrings when searchStr is empty ''. Added conditional as a Band-Aid fix
+     */
+    const searchMatch = ((searchStr.length > 0) && (description?.toLowerCase().includes(searchStr.toLowerCase())));
+    const highlights = searchMatch ? description?.split(new RegExp(`(${searchStr})`, 'gi')) : [description as string];
+
     return(
-        <Card sx={{ borderRadius: (theme) => (theme.spacing(3)), flex: '1 1 auto', width: {xs: '100%', md: '100%'} }}>
+        <Card sx={{
+                    borderRadius: (theme) => (theme.spacing(3)),
+                    flex: '1 1 auto',
+                    width: {xs: '100%', md: '100%'},
+                    order: `${(searchMatch) ? -1 : 0}`
+                }}
+              raised={searchMatch}
+        >
             <CardActionArea onClick={(event) => action(event, formId)} sx={{ height: '100%' }}
                             component={NextLinkComposed} to={`/work-history/${propertyId}/${formId}`}
             >
@@ -54,7 +72,15 @@ const WorkHistoryCard: FC<WorkHistoryCardProps> = ({ formId, propertyId, lastUpd
                 </Stack>
                 <Divider sx={{ mx: 2 }}/>
                 <CardContent>
-                    <Box maxWidth='70ch'>{description ?? 'loading'}</Box>
+                    <Box maxWidth='70ch'>
+                        { /* FIXME: refactor to better display loading state */
+                            highlights ? highlights.map((sub, i) =>
+                             <Span bgcolor={(sub.toLowerCase() === searchStr.toLowerCase()) ? 'warning.main' : 'inherit'}
+                                   key={i} >
+                                 { sub }
+                             </Span>) : 'loading'
+                        }
+                    </Box>
                 </CardContent>
                 <Stack direction='row' flexWrap='wrap' justifyContent='flex-end' p={2} pt={0} sx={{ gap: '1em' }}>
                     <Chip icon={<LocationOnOutlinedIcon />} variant="outlined"
