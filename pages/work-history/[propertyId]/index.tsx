@@ -119,13 +119,13 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
                             <Box overflow='hidden'>
                                 <H3 fontWeight={400} mb={1}>{`${property.name ?? 'Property'} Details`}</H3>
                                 <List disablePadding>
-                                    <AgaveDetails Icon={BadgeOutlinedIcon} primary={'Account Manager'}
-                                                  secondary={'Henry Hall'} />
                                     <AgaveDetails Icon={PersonOutlineOutlinedIcon} primary={'Property Manager'}
                                                   secondary={property.manager?.name ?? 'Unassigned'}
-                                                  email={property.manager?.email}/>
+                                                  email={property.manager?.email} />
+                                    <AgaveDetails Icon={BadgeOutlinedIcon} primary={'Account Operator(s)'}
+                                                  secondary={property.operator ?? 'Unassigned'} />
                                     <AgaveDetails Icon={NumbersOutlinedIcon} primary={'Job Number'}
-                                                  secondary={property.jobNumber ?? 'Not Found'} />
+                                                  secondary={property.jobNumber ?? 'Unassigned'} />
                                 </List>
                             </Box>
                             <Divider sx={{ mt: 3, mb: 2 }}/>
