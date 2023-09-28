@@ -5,8 +5,8 @@ import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'nex
 import { getStorage, ref } from "firebase/storage";
 import { useDownloadURL } from 'react-firebase-hooks/storage';
 import loadingGif from "@public/assets/images/loading.gif";
-
 import { getPropertyData } from "@firebaseUtils/firebaseSSR";
+import { subDays, formatISO } from "date-fns";
 import { PropertySchema } from "utils/api/yup";
 import * as yup from "yup";
 
@@ -18,7 +18,7 @@ import TitleBar from "components/TitleBar";
 import DownloadDialog from "components/DownloadDialog"; // FIXME
 import { H2, H3 } from 'components/Typography';
 import WorkHistoryCard from "components/WorkHistoryCard";
-import WorkHistorySettings from "components/NavBar/WorkHistorySettings";
+import WorkHistoryFilters from "components/WorkHistoryFilters";
 
 import AgaveContacts from "components/AgaveContacts";
 import AgaveDetails from "components/AgaveDetails";
@@ -26,9 +26,8 @@ import ImageWithFallback from "components/ImageFallback";
 
 import useSWR from "swr";
 import axios, { AxiosError } from "axios";
-
-import { useRouter } from "next/router"; // FIXME: ROLL THIS BACK!
-import { useEffect } from "react"; // FIXME: ROLL THIS BACK!
+import { useToggle } from "hooks/useToggle";
+import Calendar from "components/Calendar";
 
 // Icons
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
@@ -40,6 +39,7 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import NumbersOutlinedIcon from "@mui/icons-material/NumbersOutlined";
 
 type PropertiesPageProps = { property: yup.InferType<typeof PropertySchema> }
+type DateRange = { start: Date, end: Date }
 
 /** FIXME: this should not be static **/
 enum TemplateID {
@@ -57,32 +57,31 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
     const AuthUser = useAuthUser();
 
     const [downloadUrl, downloadLoading, downloadError] = useDownloadURL(imgRef);
-    const [template, setTemplate] = useState<TemplateID>(TemplateID.WORK_ORDER);
-    const [form, setForm] = useState<string | null>(null); // FIXME
+    const [template, setTemplate] = useState<TemplateID>(TemplateID.WORK_ORDER); // FIXME & REMOVE
 
-    const changeTemplate = (event: SyntheticEvent, newValue: TemplateID) => {
-        setTemplate(newValue);
-    }
-
+    const [dateRange, setRange] = useState<DateRange>({ start: subDays(new Date(), 30), end: new Date() });
     const [search, setSearch] = useState<string>('');
+    const [calendar, toggleCalendar] = useToggle(false);
+
     const searchControl = (event: ChangeEvent<HTMLInputElement>) => { setSearch(event.target.value) };
+    const rangeControl = (nRange: DateRange) => {
+        setRange({ start: nRange.start, end: nRange.end });
+        toggleCalendar(false);
+    };
 
-    const selectForm = (event: SyntheticEvent, formId: string) => { setForm(formId); } // FIXME
-    const closeDialog = () => { setForm(null); } // FIXME
-
-    const router = useRouter(); // FIXME: ROLL THIS BACK!
-    useEffect(() => { // FIXME: ROLL THIS ALL BACK!
-        if (property && form && template == TemplateID.WORK_ORDER)
-            router.push(`/work-history/${property.id}/${form}`);
-    }, [router, property, form, template])
-
-    const formsFetcher = useSWR(AuthUser.id && property.id && template ? [historyURL, property.id, template] : null,
-        (async ([historyURL, property, template]) => {
+    const formsFetcher = useSWR(AuthUser.id && property.id && template && dateRange.start && dateRange.end ?
+            [
+                historyURL, property.id, template,
+                formatISO(dateRange.start, {representation: 'date'}),
+                formatISO(dateRange.end, { representation: 'date' })
+            ] : null,
+        (async ([historyURL, property, template, startDate, endDate]) => {
+            const filterStr = `lastupdateddate gt ${startDate} and lastupdateddate lt ${endDate}`;
             const token = await AuthUser.getIdToken();
             return await axios.get(historyURL, {
                 baseURL: '/',
                 headers: { Authorization: token, },
-                params: { templateId: template, propertyName: property }, // TODO: API does not recognize propertyName param yet
+                params: { templateId: template, propertyName: property, filter: filterStr },
             })
                 .then(res => res.data)
                 .catch(e => { console.error(e); throw e })
@@ -102,8 +101,9 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
                                                alt={`Image for ${property.name}`}/>
                         </Box>
                         <Box>
-                            <H2 fontWeight={500} mb={2}>{'Work History'}</H2>
-                            <WorkHistorySettings search={search} searchControl={searchControl}/>
+                            <WorkHistoryFilters search={search} searchControl={searchControl}
+                                                from={dateRange.start} to={dateRange.end}  calendarControl={toggleCalendar}
+                            />
                             <Stack direction='row' flexWrap='wrap' sx={{ gap: '1em'}}>
                                 {fData?.forms.map((i: any) =>
                                     <WorkHistoryCard key={i?.formId} user={AuthUser} propertyId={property.id}
@@ -133,6 +133,7 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
                         </Box>
                     </Stack>
                 </Stack>
+                <Calendar open={calendar} onClose={() => toggleCalendar(false)} range={dateRange} onConfirm={rangeControl}/>
             </Box>
         </AuthLayout>
     );
