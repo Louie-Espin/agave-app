@@ -1,36 +1,45 @@
 import { GetServerSideProps, NextPage } from "next";
-import { useState, SyntheticEvent } from "react";
+import React, { useState, SyntheticEvent, ChangeEvent } from "react";
 import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'next-firebase-auth';
 
+import { getStorage, ref } from "firebase/storage";
+import { useDownloadURL } from 'react-firebase-hooks/storage';
+import loadingGif from "@public/assets/images/loading.gif";
 import { getPropertyData } from "@firebaseUtils/firebaseSSR";
+import { subDays, formatISO } from "date-fns";
 import { PropertySchema } from "utils/api/yup";
 import * as yup from "yup";
 
-import { Container, Stack, Box } from "@mui/material";
+import { Divider, Stack, Box, List} from "@mui/material";
 
 import AuthLayout from "layouts/AuthLayout";
-import WorkHistoryPanel from "layouts/Templates/WorkHistoryPanel";
-import PropertyDetails from "components/PropertyDetails";
 import Loader from "components/Loader";
 import TitleBar from "components/TitleBar";
 import DownloadDialog from "components/DownloadDialog"; // FIXME
+import { H2, H3 } from 'components/Typography';
+import WorkHistoryCard from "components/WorkHistoryCard";
+import WorkHistoryFilters from "components/WorkHistoryFilters";
+
+import AgaveContacts from "components/AgaveContacts";
+import AgaveDetails from "components/AgaveDetails";
+import ImageWithFallback from "components/ImageFallback";
+
 import useSWR from "swr";
 import axios, { AxiosError } from "axios";
-
-import TabContext from '@mui/lab/TabContext';
-import Tab from '@mui/material/Tab';
-import TabList from '@mui/lab/TabList';
-
-import { useRouter } from "next/router"; // FIXME: ROLL THIS BACK!
-import { useEffect } from "react"; // FIXME: ROLL THIS BACK!
+import { useToggle } from "hooks/useToggle";
+import Calendar from "components/Calendar";
 
 // Icons
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-import CircleNotificationsOutlined from "@mui/icons-material/CircleNotificationsOutlined";
-import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
-import Build from "@mui/icons-material/Build";
+// import CircleNotificationsOutlined from "@mui/icons-material/CircleNotificationsOutlined";
+// import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+// import Build from "@mui/icons-material/Build";
+import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import NumbersOutlinedIcon from "@mui/icons-material/NumbersOutlined";
 
 type PropertiesPageProps = { property: yup.InferType<typeof PropertySchema> }
+type DateRange = { start: Date, end: Date }
 
 /** FIXME: this should not be static **/
 enum TemplateID {
@@ -42,32 +51,37 @@ enum TemplateID {
 const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
 
     const historyURL = 'api/history';
+    const storage = getStorage();
+    const imgRef = ref(storage, property.displayImage);
 
     const AuthUser = useAuthUser();
 
-    const [template, setTemplate] = useState<TemplateID>(TemplateID.STATUS_UPDATE);
-    const [form, setForm] = useState<string | null>(null); // FIXME
+    const [downloadUrl, downloadLoading, downloadError] = useDownloadURL(imgRef);
+    const [template, setTemplate] = useState<TemplateID>(TemplateID.WORK_ORDER); // FIXME & REMOVE
 
-    const changeTemplate = (event: SyntheticEvent, newValue: TemplateID) => {
-        setTemplate(newValue);
-    }
+    const [dateRange, setRange] = useState<DateRange>({ start: subDays(new Date(), 30), end: new Date() });
+    const [search, setSearch] = useState<string>('');
+    const [calendar, toggleCalendar] = useToggle(false);
 
-    const selectForm = (event: SyntheticEvent, formId: string) => { setForm(formId); } // FIXME
-    const closeDialog = () => { setForm(null); } // FIXME
+    const searchControl = (event: ChangeEvent<HTMLInputElement>) => { setSearch(event.target.value) };
+    const rangeControl = (nRange: DateRange) => {
+        setRange({ start: nRange.start, end: nRange.end });
+        toggleCalendar(false);
+    };
 
-    const router = useRouter(); // FIXME: ROLL THIS BACK!
-    useEffect(() => { // FIXME: ROLL THIS ALL BACK!
-        if (property && form && template == TemplateID.WORK_ORDER)
-            router.push(`/work-history/${property.id}/${form}`);
-    }, [router, property, form, template])
-
-    const formsFetcher = useSWR(AuthUser.id && property.id && template ? [historyURL, property.id, template] : null,
-        (async ([historyURL, property, template]) => {
+    const formsFetcher = useSWR(AuthUser.id && property.id && template && dateRange.start && dateRange.end ?
+            [
+                historyURL, property.id, template,
+                formatISO(dateRange.start, {representation: 'date'}),
+                formatISO(dateRange.end, { representation: 'date' })
+            ] : null,
+        (async ([historyURL, property, template, startDate, endDate]) => {
+            const filterStr = `lastupdateddate gt ${startDate} and lastupdateddate lt ${endDate}`;
             const token = await AuthUser.getIdToken();
             return await axios.get(historyURL, {
                 baseURL: '/',
                 headers: { Authorization: token, },
-                params: { templateId: template, propertyName: property }, // TODO: API does not recognize propertyName param yet
+                params: { templateId: template, propertyName: property, filter: filterStr },
             })
                 .then(res => res.data)
                 .catch(e => { console.error(e); throw e })
@@ -78,42 +92,49 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
 
     return(
         <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
-            <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
-
-                <TitleBar TitleIcon={WorkHistoryIcon} Title={'Work History'} />
-
-                <Stack direction='row' flexWrap='wrap' position='relative' width='100%' sx={{ gap: '1em' }}>
-
-                    <Box flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(40% - 1em)' }}>
-                        <PropertyDetails pName={property.name} pAddress={property.address} mName={property.manager.name}
-                                         imageUrl={property.displayImage}
-                        />
-                    </Box>
-
-                    <TabContext value={template}>
-                        <Stack direction='column' spacing={2} flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(60% - 1em)' }}>
-
-                            <TabList variant='fullWidth' indicatorColor='secondary' aria-label="History Tabs" onChange={changeTemplate} >
-                                <Tab label="Status Updates" value={TemplateID.STATUS_UPDATE}/>
-                                <Tab label="Weekly Reports" value={TemplateID.WEEKLY_REPORT}/>
-                                <Tab label="Work Orders" value={TemplateID.WORK_ORDER}/>
-                            </TabList>
-
-                            <WorkHistoryPanel value={TemplateID.STATUS_UPDATE} pName={property.id} Icon={CircleNotificationsOutlined}
-                                forms={fData?.forms} validating={fValidating} loading={fLoading} error={fError} label='Status Update' action={selectForm} // FIXME
+            <Box px={2} mb={4}>
+                <TitleBar TitleIcon={WorkHistoryIcon} Title={`${property.name ?? 'Property'} - Work History`} />
+                <Stack direction='row' flexWrap='wrap' sx={{ gap: '2em' }}>
+                    <Stack flex='3 0' sx={{ gap: '2em' }}>
+                        <Box bgcolor={'grey.400'} minHeight={400} borderRadius={4} position='relative' overflow='hidden'>
+                            <ImageWithFallback src={downloadUrl ?? loadingGif.src} fill imgObjectFit={"cover"}
+                                               alt={`Image for ${property.name}`}/>
+                        </Box>
+                        <Box>
+                            <WorkHistoryFilters search={search} searchControl={searchControl}
+                                                from={dateRange.start} to={dateRange.end}  calendarControl={toggleCalendar}
                             />
-                            <WorkHistoryPanel value={TemplateID.WEEKLY_REPORT} pName={property.id} Icon={AssignmentTurnedInIcon}
-                                forms={fData?.forms} validating={fValidating} loading={fLoading} error={fError} label='Weekly Report' action={selectForm} // FIXME
-                            />
-                            <WorkHistoryPanel value={TemplateID.WORK_ORDER} forms={fData?.forms} Icon={Build}
-                                pName={property.id} validating={fValidating} loading={fLoading} error={fError} label='Work Order' action={selectForm} // FIXME
-                            />
-                        </Stack>
-                    </TabContext>
-
+                            <Stack direction='row' flexWrap='wrap' sx={{ gap: '1em'}}>
+                                {fData?.forms.map((i: any) =>
+                                    <WorkHistoryCard key={i?.formId} user={AuthUser} propertyId={property.id}
+                                                     templateId={i?.templateId} formId={i?.formId} lastUpdateDate={i?.lastUpdateDate}
+                                                     action={() => {}} searchStr={search}/>
+                                )}
+                            </Stack>
+                        </Box>
+                    </Stack>
+                    <Stack flex='2 0' position='relative' maxWidth={'100%'}
+                           minWidth={{ xs: '100%', md: 'calc(25% - 1em)' }} >
+                        <Box position='sticky' top={0}>
+                            <Box overflow='hidden'>
+                                <H3 fontWeight={400} mb={1}>{`${property.name ?? 'Property'} Details`}</H3>
+                                <List disablePadding>
+                                    <AgaveDetails Icon={PersonOutlineOutlinedIcon} primary={'Property Manager'}
+                                                  secondary={property.manager?.name ?? 'Unassigned'}
+                                                  email={property.manager?.email} />
+                                    <AgaveDetails Icon={BadgeOutlinedIcon} primary={'Account Operator(s)'}
+                                                  secondary={property.operator ?? 'Unassigned'} />
+                                    <AgaveDetails Icon={NumbersOutlinedIcon} primary={'Job Number'}
+                                                  secondary={property.jobNumber ?? 'Unassigned'} />
+                                </List>
+                            </Box>
+                            <Divider sx={{ mt: 3, mb: 2 }}/>
+                            <AgaveContacts />
+                        </Box>
+                    </Stack>
                 </Stack>
-                <DownloadDialog formId={form} onClose={closeDialog} authUser={AuthUser}/>{/* FIXME */}
-            </Container>
+                <Calendar open={calendar} onClose={() => toggleCalendar(false)} range={dateRange} onConfirm={rangeControl}/>
+            </Box>
         </AuthLayout>
     );
 }
