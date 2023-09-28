@@ -14,20 +14,11 @@ const PROPERTIES_F: string = 'properties';
 
 const ENCODED: string = Buffer.from(`${process.env.GOFORMZ_LOGIN}:${process.env.GOFORMZ_PASS}`).toString('base64');
 
-const config = (templateId: string, nameParam?: string) => {
+const config = (templateId: string, nameParam?: string, filter?: string) => {
 
-    if (nameParam) return {
-        url: `https://api.goformz.com/v2/templates/${templateId}/formz`,
-        method: 'GET',
-        headers: {
-            'Host': 'api.goformz.com',
-            'Connection': 'keep-alive',
-            'Accept': '*/*',
-            'Accept-Encoding': 'gzip, deflate, sdch',
-            'Authorization': `Basic ${ENCODED}`,
-        },
-        params: { status: 'complete', name: nameParam },
-    }
+    let params: { status: string, name?: string, filter?: string } = { status: 'complete' };
+    if (nameParam) params = { ...params, name: nameParam };
+    if (filter) params = { ...params, filter: filter };
 
     return {
         url: `https://api.goformz.com/v2/templates/${templateId}/formz`,
@@ -39,7 +30,7 @@ const config = (templateId: string, nameParam?: string) => {
             'Accept-Encoding': 'gzip, deflate, sdch',
             'Authorization': `Basic ${ENCODED}`,
         },
-        params: { status: 'complete', },
+        params: { ...params },
     }
 };
 
@@ -52,7 +43,7 @@ const getForms: NextApiHandler = async (req: NextApiRequest, res: NextApiRespons
     const token = req.headers['authorization'];
     if (!token) return res.status(401).json({ forms: null, message: "GET forms failed; No token!" });
 
-    const { templateId, propertyName } = req.query;
+    const { templateId, propertyName, filter } = req.query;
     if (!templateId) return res.status(400).json({ forms: null, message: "GET forms failed; No templateId!" });
 
     try {
@@ -78,7 +69,9 @@ const getForms: NextApiHandler = async (req: NextApiRequest, res: NextApiRespons
         //     clientForms = clientForms.concat(getClientForms.data);
         // }
 
-        const getForms = await axios(config(templateId as string, (propertyName ? propertyName as string : undefined) ));
+        const getForms = await axios(config
+            (templateId as string, propertyName as string ?? undefined, filter as string ?? undefined)
+        );
 
         return res.status(200).json({ forms: getForms.data, message: "GET forms success. (Client)" });
 
