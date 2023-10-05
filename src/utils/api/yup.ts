@@ -87,7 +87,11 @@ export const PropertySchema = yup.object({
         email: yup.string().email("invalid Email."),
     }).required('Manager details are required.'),
     phone: yup.number(),
-    operator: yup.string().required('Account Operator required.'),
+    accountMgr: yup.object().shape({
+        name: yup.string().required("Account Manager Name is required."),
+        phone: yup.number(),
+        image: yup.string().defined().strict(true),
+    }),
     displayImage: yup.string().defined().strict(true),
 });
 
