@@ -32,6 +32,7 @@ import ChatInput from "components/Chat/ChatInput";
 import ChatLog from "components/Chat/ChatLog";
 import ChatListContainer from "components/Chat/ChatListContainer";
 import ChatListItem from "components/Chat/ChatListItem";
+import NoChat from "components/Chat/NoChat";
 import LocationDialog from "components/Chat/LocationDialog";
 import CreateDialog from "components/Chat/CreateDialog";
 
@@ -184,6 +185,7 @@ const ChatIndexPage: NextPage<ChatIndexProps> = () => {
                     <Stack direction='row' justifyContent='flex-start' alignItems='center' py={1}>
                         <IconButton onClick={() => toggleChat()}><ArrowBackIcon/></IconButton>
                     </Stack>
+                    <NoChat display={chatId ? 'none' : 'block'} />
                     <ChatLog messages={chatMessages} isLoading={chatMessagesLoading} error={chatMessagesError} uid={AuthUser.id}/>
                     <ChatInput send={handleSend} toggleDialog={toggleLocationDialog} />
                 </Stack>
