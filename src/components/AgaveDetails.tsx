@@ -1,12 +1,12 @@
 import { FC } from 'react';
 
-import { IconButton, ListItem, ListItemIcon, ListItemText, Stack } from '@mui/material';
+import { Avatar, IconButton, ListItem, ListItemAvatar, ListItemText, Stack } from '@mui/material';
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 
-interface AgaveDetailsProps { Icon: any, primary: string, secondary: string, email?: string, phone?: string }
+interface AgaveDetailsProps { Icon: any, primary: string, secondary: string, email?: string, phone?: string, url?: string }
 
-const AgaveDetails: FC<AgaveDetailsProps> = ({Icon, primary, secondary, email, phone}: AgaveDetailsProps) => {
+const AgaveDetails: FC<AgaveDetailsProps> = ({Icon, primary, secondary, email, phone, url}: AgaveDetailsProps) => {
 
     return(
         <ListItem secondaryAction={
@@ -23,9 +23,11 @@ const AgaveDetails: FC<AgaveDetailsProps> = ({Icon, primary, secondary, email, p
                 }
             </Stack>
         }>
-            <ListItemIcon>
-                <Icon />
-            </ListItemIcon>
+            <ListItemAvatar>
+                <Avatar alt={'Account Manager Image'} src={url} sx={{ bgcolor: 'primary.main' }}>
+                    <Icon />
+                </Avatar>
+            </ListItemAvatar>
             <ListItemText
                 primary={primary}
                 secondary={secondary}
