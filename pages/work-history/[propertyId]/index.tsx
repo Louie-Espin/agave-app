@@ -52,11 +52,13 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
 
     const historyURL = 'api/history';
     const storage = getStorage();
-    const imgRef = ref(storage, property.displayImage);
+    const refImage = ref(storage, property.displayImage);
+    const refAM = ref(storage, property.accountMgr.image);
 
     const AuthUser = useAuthUser();
 
-    const [downloadUrl, downloadLoading, downloadError] = useDownloadURL(imgRef);
+    const [urlImage, loadingImage, errorImage] = useDownloadURL(refImage);
+    const [urlAM, loadingAM, errorAM] = useDownloadURL(refAM);
     const [template, setTemplate] = useState<TemplateID>(TemplateID.WORK_ORDER); // FIXME & REMOVE
 
     const [dateRange, setRange] = useState<DateRange>({ start: subDays(new Date(), 30), end: new Date() });
@@ -97,7 +99,7 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
                 <Stack direction='row' flexWrap='wrap' sx={{ gap: '2em' }}>
                     <Stack flex='3 0' sx={{ gap: '2em' }}>
                         <Box bgcolor={'grey.400'} minHeight={400} borderRadius={4} position='relative' overflow='hidden'>
-                            <ImageWithFallback src={downloadUrl ?? loadingGif.src} fill imgObjectFit={"cover"}
+                            <ImageWithFallback src={urlImage ?? loadingGif.src} fill imgObjectFit={"cover"}
                                                alt={`Image for ${property.name}`}/>
                         </Box>
                         <Box>
@@ -119,11 +121,13 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
                             <Box overflow='hidden'>
                                 <H3 fontWeight={400} mb={1}>{`${property.name ?? 'Property'} Details`}</H3>
                                 <List disablePadding>
-                                    <AgaveDetails Icon={PersonOutlineOutlinedIcon} primary={'Property Manager'}
+                                    <AgaveDetails Icon={BadgeOutlinedIcon} url={urlAM ?? undefined} primary={'Account Manager'}
+                                                  secondary={property.accountMgr?.name ?? 'Unassigned'}
+                                                  email={property.accountMgr?.email}
+                                                  phone={property.accountMgr?.phone?.toString() ?? undefined} />
+                                    <AgaveDetails Icon={PersonOutlineOutlinedIcon} primary={'Community Manager'}
                                                   secondary={property.manager?.name ?? 'Unassigned'}
                                                   email={property.manager?.email} />
-                                    <AgaveDetails Icon={BadgeOutlinedIcon} primary={'Account Operator(s)'}
-                                                  secondary={property.operator ?? 'Unassigned'} />
                                     <AgaveDetails Icon={NumbersOutlinedIcon} primary={'Job Number'}
                                                   secondary={property.jobNumber ?? 'Unassigned'} />
                                 </List>
