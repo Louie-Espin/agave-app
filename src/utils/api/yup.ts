@@ -90,6 +90,7 @@ export const PropertySchema = yup.object({
     accountMgr: yup.object().shape({
         name: yup.string().required("Account Manager Name is required."),
         phone: yup.number(),
+        email: yup.string().email("invalid Email."),
         image: yup.string().defined().strict(true),
     }),
     displayImage: yup.string().defined().strict(true),
