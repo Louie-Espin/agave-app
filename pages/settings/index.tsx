@@ -86,7 +86,7 @@ const SettingsPage: NextPage<SettingsPageProps> = () => {
                               open={updateName} toggle={toggleName} />
             <EmailVerificationDialog  user={AuthUser.firebaseUser} toggle={toggleEmailVerify} open={emailVerify} />
             <PasswordResetDialog auth={auth} email={AuthUser.email} toggle={toggleResetPass} open={resetPass} />
-            <PushNotificationsDialog toggle={togglePushNotifs} open={pushNotifs} uid={AuthUser.id} />
+            <PushNotificationsDialog toggle={togglePushNotifs} open={pushNotifs} uid={AuthUser.id} togglePwa={togglePwa}/>
             <InstallAppDialog toggle={togglePwa} open={pwa} />
         </AuthLayout>
     )

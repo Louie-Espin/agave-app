@@ -1,14 +1,15 @@
 import { FC } from 'react';
-import { Button, DialogActions, DialogContentText, DialogProps } from "@mui/material";
+import { Button, Link, DialogContentText } from "@mui/material";
 import { usePushNotifications } from "hooks/usePushNotifications";
 import SettingsDialog, { SettingsDialogProps } from "./SettingsDialog";
 
 
 interface PushNotificationsProps extends SettingsDialogProps {
     uid: string | null;
+    togglePwa: (value?: boolean) => void;
 }
 
-const PushNotificationsDialog: FC<PushNotificationsProps> = ({ toggle, uid, ...rest }) => {
+const PushNotificationsDialog: FC<PushNotificationsProps> = ({ toggle, togglePwa, uid, ...rest }) => {
 
     const { allow, supported, message, handleSubscribe, handleUnsubscribe } = usePushNotifications(uid);
 
@@ -24,12 +25,17 @@ const PushNotificationsDialog: FC<PushNotificationsProps> = ({ toggle, uid, ...r
             .catch(() => console.log('SUB ERROR!'));
     }
 
+    const handleLearnMore = () => {
+        toggle(false);
+        togglePwa(true);
+    }
+
     return(
         <SettingsDialog toggle={toggle} title={'Push Notifications'} alert={message}
-                        actions={<DialogActions>
+                        actions={<>
                                     <Button color='primary' onClick={denyHandler}>DENY</Button>
                                     <Button color='primary' onClick={allowHandler}>ALLOW</Button>
-                                </DialogActions>} {...rest}
+                                </>} {...rest}
         >
             <DialogContentText sx={{ color: 'grey.600', fontSize: '1rem', mb: 1 }}>
                 Enable Push Notifications to be notified when:
@@ -42,6 +48,10 @@ const PushNotificationsDialog: FC<PushNotificationsProps> = ({ toggle, uid, ...r
             </DialogContentText>
             <DialogContentText sx={{ color: 'grey.600', fontSize: '.9rem', mb: 1 }}>
                 • New Messages are received.
+            </DialogContentText>
+            <DialogContentText sx={{ color: 'grey.600', fontSize: '.9rem', mb: 1 }}>
+                Please Note: for iOS devices, Agave must be installed to enable notifications.
+                <Link onClick={handleLearnMore} sx={{textDecoration: 'none', cursor: 'pointer'}}> Learn More</Link>
             </DialogContentText>
         </SettingsDialog>
     )
