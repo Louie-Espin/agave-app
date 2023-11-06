@@ -1,5 +1,5 @@
 import { FC, ReactNode } from 'react';
-import { Dialog, DialogProps, DialogTitle, IconButton, DialogContent, DialogActions } from "@mui/material";
+import { Dialog, DialogProps, DialogTitle, IconButton, DialogContent, DialogActions, Alert, Box } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
 export interface SettingsDialogProps extends DialogProps {
@@ -7,9 +7,10 @@ export interface SettingsDialogProps extends DialogProps {
     title?: string;
     children?: ReactNode;
     actions?: ReactNode;
+    alert?: string;
 }
 
-const SettingsDialog: FC<SettingsDialogProps> = ({ toggle, title, children, actions, ...rest }) => {
+const SettingsDialog: FC<SettingsDialogProps> = ({toggle, title, children, actions, alert, ...rest}: SettingsDialogProps) => {
 
     const handleClose = () => toggle(false);
 
@@ -24,6 +25,11 @@ const SettingsDialog: FC<SettingsDialogProps> = ({ toggle, title, children, acti
             <DialogContent>
                 {children}
             </DialogContent>
+            <Box px={3} minHeight={(theme) => theme.spacing(4)}>
+                <Alert severity={'info'} sx={{ py: 0, pl: 1 }}>
+                    {alert ?? 'Got questions? Contact Agave for more information.'}
+                </Alert>
+            </Box>
             <DialogActions>
                 {actions}
             </DialogActions>
