@@ -48,6 +48,7 @@ export const usePushNotifications = (uid: string | null): PushNotification => {
 
     const handleSubscribe = async () => {
         try {
+            setMessage('Enabling Push Notifications...');
             if (!await notificationPermissions()) return setMessage('Notifications Permission Denied');
 
             await setTokenFCM(uid);
@@ -61,6 +62,7 @@ export const usePushNotifications = (uid: string | null): PushNotification => {
     }
     const handleUnsubscribe = async () => {
         try {
+            setMessage('Disabling Push Notifications...');
             await unsetTokenFCM();
             setAllow(false);
             setMessage('Disabled Push Notifications!')
