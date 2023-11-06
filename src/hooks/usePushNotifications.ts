@@ -43,7 +43,7 @@ type PushNotification = {
 
 export const usePushNotifications = (uid: string | null): PushNotification => {
     const [allow, setAllow] = useState(false);
-    const [message, setMessage] = useState<string>("Push Notifications are only available in supported browsers.");
+    const [message, setMessage] = useState<string>("You can change your notification settings at any time.");
     const supported = async () => await isSupported();
 
     const handleSubscribe = async () => {
