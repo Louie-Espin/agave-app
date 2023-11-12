@@ -10,7 +10,7 @@ import { subDays, formatISO } from "date-fns";
 import { PropertySchema } from "utils/api/yup";
 import * as yup from "yup";
 
-import { Divider, Stack, Box, List} from "@mui/material";
+import { Divider, Stack, Box, List, Tabs, Tab } from "@mui/material";
 
 import AuthLayout from "layouts/AuthLayout";
 import Loader from "components/Loader";
@@ -31,9 +31,8 @@ import Calendar from "components/Calendar";
 
 // Icons
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-// import CircleNotificationsOutlined from "@mui/icons-material/CircleNotificationsOutlined";
-// import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
-// import Build from "@mui/icons-material/Build";
+// import CircleNotificationsOutlinedIcon from '@mui/icons-material/CircleNotificationsOutlined';
+// import BuildCircleOutlinedIcon from '@mui/icons-material/BuildCircleOutlined';
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import NumbersOutlinedIcon from "@mui/icons-material/NumbersOutlined";
@@ -43,8 +42,8 @@ type DateRange = { start: Date, end: Date }
 
 /** FIXME: this should not be static **/
 enum TemplateID {
-    STATUS_UPDATE = 'f9b58d1a-0101-400c-ab2c-f4f2b1532bb2',
-    WEEKLY_REPORT = '6efc08b0-8942-42f0-a7d0-2c19981e1684',
+    WEEKLY_REPORT = 'f9b58d1a-0101-400c-ab2c-f4f2b1532bb2',
+    UNUSED = '6efc08b0-8942-42f0-a7d0-2c19981e1684',
     WORK_ORDER = '68dac9d2-20d9-4ca8-9156-c7158bd85fbe',
 }
 
@@ -59,7 +58,8 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
 
     const [urlImage, loadingImage, errorImage] = useDownloadURL(refImage);
     const [urlAM, loadingAM, errorAM] = useDownloadURL(refAM);
-    const [template, setTemplate] = useState<TemplateID>(TemplateID.WORK_ORDER); // FIXME & REMOVE
+    const [template, setTemplate] = useState<TemplateID>(TemplateID.WORK_ORDER);
+    const handleTemplate = (e: SyntheticEvent, value: TemplateID) => { setTemplate(value) }
 
     const [dateRange, setRange] = useState<DateRange>({ start: subDays(new Date(), 30), end: new Date() });
     const [search, setSearch] = useState<string>('');
@@ -103,10 +103,18 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
                                                alt={`Image for ${property.name}`}/>
                         </Box>
                         <Box>
+                            <Box mb={3} sx={{ borderBottom: 1, borderColor: 'grey.500' }}>
+                                <Tabs value={template} onChange={handleTemplate} >
+                                    <Tab label="Work Orders" value={TemplateID.WORK_ORDER}/>
+                                    <Tab label="Weekly Reports" value={TemplateID.WEEKLY_REPORT}/>
+                                </Tabs>
+                            </Box>
                             <WorkHistoryFilters search={search} searchControl={searchControl}
                                                 from={dateRange.start} to={dateRange.end}  calendarControl={toggleCalendar}
                             />
-                            <Stack direction='row' flexWrap='wrap' sx={{ gap: '1em'}}>
+                            <Stack direction='row' flexWrap='wrap' sx={{ gap: '1em'}} minHeight='50vh' alignItems='flex-start'>
+                                {fLoading && 'Loading Work History...'}
+                                {fData?.forms.length == 0 && 'No Work History Available.'}
                                 {fData?.forms.map((i: any) =>
                                     <WorkHistoryCard key={i?.formId} user={AuthUser} propertyId={property.id}
                                                      templateId={i?.templateId} formId={i?.formId} lastUpdateDate={i?.lastUpdateDate}
