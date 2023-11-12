@@ -41,7 +41,7 @@ type PropertiesPageProps = { property: yup.InferType<typeof PropertySchema> }
 type DateRange = { start: Date, end: Date }
 
 /** FIXME: this should not be static **/
-enum TemplateID {
+export enum TemplateID {
     WEEKLY_REPORT = 'f9b58d1a-0101-400c-ab2c-f4f2b1532bb2',
     UNUSED = '6efc08b0-8942-42f0-a7d0-2c19981e1684',
     WORK_ORDER = '68dac9d2-20d9-4ca8-9156-c7158bd85fbe',
@@ -116,9 +116,9 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
                                 {fLoading && 'Loading Work History...'}
                                 {fData?.forms.length == 0 && 'No Work History Available.'}
                                 {fData?.forms.map((i: any) =>
-                                    <WorkHistoryCard key={i?.formId} user={AuthUser} propertyId={property.id}
-                                                     templateId={i?.templateId} formId={i?.formId} lastUpdateDate={i?.lastUpdateDate}
-                                                     action={() => {}} searchStr={search}/>
+                                    <WorkHistoryCard key={i?.formId} user={AuthUser} propertyId={property.id} searchStr={search}
+                                                     templateId={i?.templateId} formId={i?.formId} lastUpdated={i?.lastUpdateDate}
+                                    />
                                 )}
                             </Stack>
                         </Box>
