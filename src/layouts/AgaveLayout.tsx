@@ -58,7 +58,6 @@ const AgaveNavigations: { key: number, title: string, NavIcon: any, href: string
     { key: 2, title: 'History', NavIcon: WorkHistoryOutlinedIcon, href: '/work-history' },
     { key: 3, title: 'Chat', NavIcon: MailOutlineOutlinedIcon, href: '/chat' },
     { key: 4, title: 'Settings', NavIcon: SettingsOutlinedIcon, href: '/settings' },
-    { key: 5, title: 'Contact', NavIcon: PhoneOutlinedIcon, href: '/contact' },
 ]
 
 interface AgaveLayoutProps { user?: AuthUser, children?: ReactNode, bgMain?: BoxProps['bgcolor'] }

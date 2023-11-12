@@ -57,7 +57,7 @@ export const useWorkOrder = (formFields?: any): WorkOrderData => {
     return { description, locations, images };
 }
 
-export const useFormParser = <T>(field: string, parse: 'text' | 'value', formFields?: any): { value: T | null } => {
+export const useFormParser = <T>(field: string, parse: 'text' | 'value' | string, formFields?: any): { value: T | null } => {
     const value: T | null = useMemo(() => {
         if (!(formFields)) return null;
         return (formFields?.[field]?.[parse]) ? (formFields[field][parse]) : null;

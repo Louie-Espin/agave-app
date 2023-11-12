@@ -1,97 +1,93 @@
+import React from "react";
 import { NextPage } from 'next';
+import { getAuth } from "firebase/auth";
 import AuthLayout from "layouts/AuthLayout";
-import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'next-firebase-auth';
+import { useAuthUser, withAuthUser, AuthAction } from 'next-firebase-auth';
+import { useToggle } from "hooks/useToggle";
+import { Box, Stack, List, Button } from "@mui/material";
 
-import {Container, Box, Stack, Paper, Grid, Card, IconButton, Button} from "@mui/material";
-import Grid2 from "@mui/material/Unstable_Grid2";
-
-import {H1, H2, H6} from "components/Typography";
+import TitleBar from "components/TitleBar";
 import Loader from "components/Loader";
-import UserCard from "components/UserCard";
+import UserProfile, { UserProfileItem } from "components/UserProfile";
+import UserSettingsItem from "components/UserSettingsItem";
 import { NextLinkComposed } from "components/Link";
 
-import Settings from "@mui/icons-material/Settings";
-import React from "react";
-import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos";
+/* SETTINGS DIALOG BOXES */
+import UpdateNameDialog from "components/SettingsDialogs/UpdateNameDialog";
+import EmailVerificationDialog from "components/SettingsDialogs/EmailVerificationDialog";
+import PasswordResetDialog from "components/SettingsDialogs/PasswordResetDialog";
+import PushNotificationsDialog from "components/SettingsDialogs/PushNotificationsDialog";
+import InstallAppDialog from "components/SettingsDialogs/InstallAppDialog";
 
-import clientLogOut from "@firebaseUtils/client/logOut";
-import TitleBar from "components/TitleBar";
+/* MUI ICONS */
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import PortraitOutlinedIcon from "@mui/icons-material/PortraitOutlined";
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
+import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
+import MarkEmailReadOutlinedIcon from "@mui/icons-material/MarkEmailReadOutlined";
+import PasswordIcon from '@mui/icons-material/Password';
+import AddToHomeScreenOutlinedIcon from "@mui/icons-material/AddToHomeScreenOutlined";
+import SecurityUpdateWarningOutlinedIcon from "@mui/icons-material/SecurityUpdateWarningOutlined";
 
+const auth = getAuth();
 type SettingsPageProps = { }
 const SettingsPage: NextPage<SettingsPageProps> = () => {
 
     const AuthUser = useAuthUser();
 
-    // handling log out onClick
-    const handleLogOut = async () => {
-        const { result, error } = await clientLogOut();
-        if (error) { return console.error(error); }
-        // else successful
-        return console.log(result);
-    };
+    const [updateName, toggleName] = useToggle(false);
+    const [updateEmail, toggleEmail] = useToggle(false);
+    const [updatePhone, togglePhone] = useToggle(false);
+
+    const [emailVerify, toggleEmailVerify] = useToggle(false);
+    const [resetPass, toggleResetPass] = useToggle(false);
+    const [pushNotifs, togglePushNotifs] = useToggle(false);
+    const [pwa, togglePwa] = useToggle(false);
 
     return(
         <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName} >
-            <Container maxWidth='md' sx={{ mt: 3, mb: 6, minHeight: '50vh' }}>
-                <TitleBar TitleIcon={Settings} Title={'Settings'}/>
-                <Stack direction='row' flexWrap='wrap' position='relative' width='100%' sx={{ gap: '1em' }}>
-                    <Stack direction='column' spacing={2} flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(50% - 1em)' }}>
-                        <UserCard displayName={AuthUser?.displayName} phoneNumber={AuthUser?.phoneNumber}
-                                  photoURL={AuthUser?.photoURL} email={AuthUser?.email}
-                        />
-                    </Stack>
-                    <Stack direction='column' spacing={2} flex={'1 1 100%'} maxWidth={{ xs: '100%', sm: 'calc(50% - 1em)' }}>
-                        {/* TODO: refactor */}
-                        <Grid container spacing={1}>
-                            <Grid item xs={12}>
-                                <Card sx={{ display: "flex", p: "14px 14px", height: "100%", alignItems: "center",}}>
-                                    <Box ml={1.5} flex="1 1 0">
-                                        <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
-                                            <H6 my="0px" color="grey.700">ACCOUNT SETTINGS</H6>
-                                            <IconButton aria-label="Manage Account Settings" color="primary">
-                                                <ArrowForwardIos />
-                                            </IconButton>
-                                        </Box>
-                                    </Box>
-                                </Card>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Card  component={NextLinkComposed} to={'/settings/verify-email'}
-                                       sx={{ display: "flex", p: "14px 14px", height: "100%", alignItems: "center",}}
-                                >
-                                    <Box ml={1.5} flex="1 1 0">
-                                        <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
-                                            <H6 my="0px" color="grey.700">VERIFY E-MAIL</H6>
-                                            <IconButton aria-label="Verify your E-mail" color="primary">
-                                                <ArrowForwardIos />
-                                            </IconButton>
-                                        </Box>
-                                    </Box>
-                                </Card>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Card component={NextLinkComposed} to={'/settings/admin-dashboard'}
-                                      sx={{ display: "flex", p: "14px 14px", height: "100%", alignItems: "center",}}
-                                >
-                                    <Box ml={1.5} flex="1 1 0">
-                                        <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
-                                            <H6 my="0px" color="grey.700">MANAGE USERS</H6>
-                                            <IconButton aria-label="Manage app users" color="primary">
-                                                <ArrowForwardIos />
-                                            </IconButton>
-                                        </Box>
-                                    </Box>
-                                </Card>
-                            </Grid>
-                        </Grid>
+            <Box m={1} mb={3}>
+                <TitleBar TitleIcon={SettingsOutlinedIcon} Title={'Settings'} sx={{ mx: 1 }}/>
 
-                        <Button fullWidth color="secondary" variant="contained" sx={{ mb: "1.65rem", height: 44 }} onClick={handleLogOut}
-                        >
-                            SIGN OUT
-                        </Button>
-                    </Stack>
+                <Stack direction='row' flexWrap='wrap' justifyContent='center' sx={{ gap: '1em' }}>
+                    <UserProfile displayName={AuthUser.displayName} photoURL={AuthUser.photoURL}
+                        flex='1 0' maxWidth={{ xs: '100%', md: 'calc(50% - 1em)' }} minWidth={300}
+                    >
+                        <UserProfileItem primary={'Display Name'} secondary={ (AuthUser.displayName) ?? 'Add a display name.' }
+                                         Icon={PortraitOutlinedIcon} action={toggleName} />
+                        <UserProfileItem primary={'Email'} secondary={ (AuthUser.email) ?? 'Add an email.' }
+                                         Icon={EmailOutlinedIcon} action={toggleEmail} />
+                        <UserProfileItem primary={'Phone'} secondary={(AuthUser.phoneNumber) ?? 'Add a phone number.'}
+                                         Icon={LocalPhoneOutlinedIcon} action={togglePhone}/>
+                    </UserProfile>
+
+                    <Box flex='1 0' minWidth={300} maxWidth={{ xs: '100%', md: 'calc(50% - 1em)' }}>
+                        <List disablePadding sx={{ '& .MuiListItemButton-root:not(:last-child)': { mb: '1em' } }}>
+                            <UserSettingsItem primary={'Email Verification'} secondary={'Verify your email address.'}
+                                              Icon={<MarkEmailReadOutlinedIcon/>} onClick={() => toggleEmailVerify(true)}
+                            />
+                            <UserSettingsItem primary={'Password Reset'} secondary={'Change your password.'}
+                                              Icon={<PasswordIcon/>} onClick={() => toggleResetPass(true)}
+                            />
+                            <UserSettingsItem primary={'Push Notifications'} secondary={'Receive notifications in compatible devices.'}
+                                              Icon={<SecurityUpdateWarningOutlinedIcon/>} onClick={() => togglePushNotifs(true)}
+                            />
+                            <UserSettingsItem primary={'Add To Home Screen'} secondary={'Add Agave to your home screen!'}
+                                              Icon={<AddToHomeScreenOutlinedIcon/>} onClick={() => togglePwa(true)}
+                            />
+                            <Box component='li' display='flex' justifyContent='center' color='grey.600'>
+                                <a href='#'>View our privacy policy.</a>
+                            </Box>
+                        </List>
+                    </Box>
                 </Stack>
-            </Container>
+            </Box>
+            <UpdateNameDialog auth={auth} prev={AuthUser.displayName ?? ''} user={AuthUser.firebaseUser}
+                              open={updateName} toggle={toggleName} />
+            <EmailVerificationDialog  user={AuthUser.firebaseUser} toggle={toggleEmailVerify} open={emailVerify} />
+            <PasswordResetDialog auth={auth} email={AuthUser.email} toggle={toggleResetPass} open={resetPass} />
+            <PushNotificationsDialog toggle={togglePushNotifs} open={pushNotifs} uid={AuthUser.id} togglePwa={togglePwa}/>
+            <InstallAppDialog toggle={togglePwa} open={pwa} />
         </AuthLayout>
     )
 }
