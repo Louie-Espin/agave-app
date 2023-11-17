@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import Image, { StaticImageData } from "next/image";
 
-import { Box, BoxProps, Avatar, Paper, Stack, IconButton } from '@mui/material';
+import { Box, BoxProps, Avatar, Paper, Stack, IconButton, styled, Button } from '@mui/material';
 import { H3, Span, Small } from 'components/Typography';
 
 // MUI ICONS
@@ -13,39 +13,55 @@ import scottImage from '@public/assets/images/contacts/scottCosgrove.jpeg'
 import justinImage from '@public/assets/images/contacts/justinOrdonez.jpeg'
 import jasonImage from '@public/assets/images/contacts/jasonRichard.jpg'
 import johnImage from '@public/assets/images/contacts/johnNesteruck.jpeg'
+import daveImage from '@public/assets/images/contacts/daveGraves.jpeg'
 import alexImage from '@public/assets/images/contacts/alexRosales.jpeg'
 import kendraImage from '@public/assets/images/contacts/kendraGray.jpg'
+
+const ContactNav = styled(Button)(({theme}) => ({
+    display: 'inline-block',
+    width: '1em', height: '1em', padding: 0,
+    borderRadius: '50%',
+    backgroundColor: 'white',
+    ':hover': { backgroundColor: theme.palette.primary.main },
+}));
 
 interface AgaveContactsProps extends BoxProps { }
 
 const contactsList = [
     {
-        name: 'Scott Cosgrove', title: 'Director Of Maintenance, East',
+        name: 'Scott Cosgrove', title: 'Director Of Maintenance, East', id: 'scott-contact',
         email: 'scott.cosgrove@agave-inc.com', tel: 6029193353, img: scottImage,
     },
     {
-        name: 'Justin Ordonez', title: 'Director Of Maintenance, West',
+        name: 'Justin Ordonez', title: 'Director Of Maintenance, West', id: 'justin-contact',
         email: 'justin.ordonez@agave-inc.com', tel: 6025500293, img: justinImage,
     },
     {
-        name: 'Jason Richard', title: 'Director of Arbor',
+        name: 'Jason Richard', title: 'Director of Arbor', id: 'jason-contact',
         email: 'jason.richard@agave-inc.com', tel: 6025508076, img: jasonImage,
     },
     {
-        name: 'John Nesteruck', title: 'Director of Enhancements',
+        name: 'John Nesteruck', title: 'Director of Enhancements', id: 'john-contact',
         email: 'john.nesteruck@agave-inc.com', tel: 6028097482, img: johnImage,
     },
     {
-        name: 'Alexandra Rosales', title: 'Accounts Payable/Billing',
+        name: 'Dave Graves', title: 'Director of Water Management', id: 'dave-contact',
+        email: 'david.graves@agave-inc.com', tel: 6023507092, img: daveImage,
+    },
+    {
+        name: 'Alexandra Rosales', title: 'Accounts Payable/Billing', id: 'alexandra-contact',
         email: 'Alexandra.rosales@agave-inc.com', tel: 6022541464, img: alexImage,
     },
     {
-        name: 'Kendra Gray', title: 'Director of Business Development',
+        name: 'Kendra Gray', title: 'Director of Business Development', id: 'kendra-contact',
         email: 'kendra.gray@agave-inc.com', tel: 6027392126, img: kendraImage,
     },
 ]
 
 const AgaveContacts: FC<AgaveContactsProps> = ({ ...rest }) => {
+    const handleClick = (value: string) => {
+        document.getElementById(value)?.scrollIntoView({ behavior: 'smooth', block: "nearest", inline: "center" });
+    }
 
     return(
         <Box overflow='hidden' {...rest}>
@@ -61,18 +77,24 @@ const AgaveContacts: FC<AgaveContactsProps> = ({ ...rest }) => {
                     scrollbarWidth: 'none',  /* Firefox */
                 }}
             >
-                {contactsList.map(({name, title, email, tel, img}) =>
-                    <ContactBox key={name} name={name} title={title} email={email} phone={tel} img={img} />
+                {contactsList.map(({id, name, title, email, tel, img}) =>
+                    <ContactBox key={id} id={id} name={name} title={title} email={email} phone={tel} img={img} />
                 )}
             </Box>
+            <Stack direction='row' gap='1em' alignItems='center' justifyContent='center' my={1}>
+                {contactsList.map(({id, name}) =>
+                    <ContactNav key={`${id}-nav`} onClick={() => handleClick(id)}/>
+                )}
+            </Stack>
         </Box>
     );
 };
 
-const ContactBox: FC<{name: string, title: string, phone?: number, email?: string, img: StaticImageData}> = (props) => {
+const ContactBox: FC<{name: string, title: string, phone?: number, email?: string, img: StaticImageData, id: string}> = (props) => {
 
     return(
-        <Stack direction='column' component={Paper} variant='outlined' borderRadius={(theme) => (theme.spacing(3))} sx={{ p: 2, gap: '1em' }}>
+        <Stack direction='column' component={Paper} variant='outlined' id={props.id}
+               borderRadius={(theme) => (theme.spacing(3))} sx={{ p: 2, gap: '1em' }}>
             <Stack direction='row' sx={{ gap: '1em' }} minWidth={'38ch'}>
                 <Avatar sx={{ bgcolor: 'primary.main', width: '50px', height: '50px' }}>
                     <Image src={props.img} alt={props.name} fill placeholder='blur' sizes='100px' style={{objectFit: 'cover', objectPosition: 'top'}}/>
