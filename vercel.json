@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/properties/*.ts": {
+    "src/pages/**/*": {
       "maxDuration": 60
     }
   }
