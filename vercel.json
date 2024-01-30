@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/properties/*.ts": {
+      "maxDuration": 60
+    }
+  }
+}
