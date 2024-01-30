@@ -87,8 +87,13 @@ const iteratePropertiesCol = async (db: Firestore, admin: boolean, userPropertie
         if (snapshot.empty) return properties;
 
         for (const doc of snapshot.docs) {
-            const validate = await PropertySchema.validate({...doc.data(), id: doc.id}, { abortEarly: false, strict: true, });
-            properties.push(validate);
+            const valid = await PropertySchema.isValid(
+                { ...doc.data(), id: doc.id }, { abortEarly: false, strict: true, }
+            );
+
+            if (valid) properties.push(await PropertySchema.validate(
+                { ...doc.data(), id: doc.id }, { abortEarly: true, strict: true }
+            ));
         }
 
         return properties;
