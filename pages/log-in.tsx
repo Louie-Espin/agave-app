@@ -2,11 +2,11 @@ import { NextPage } from "next";
 import React, { useCallback, useState } from "react";
 import clientLogIn from '@firebaseUtils/client/logIn';
 import { AuthAction, withAuthUser } from 'next-firebase-auth'
-import {useFormik} from "formik";
+import { useFormik } from "formik";
 import * as yup from "yup";
 
-import {Button, Alert, AlertColor, Collapse, Box, Container} from "@mui/material";
-import {H2, Small} from "components/Typography";
+import { Button, Alert, AlertColor, Collapse, Box, Container } from "@mui/material";
+import { H2, Small } from "components/Typography";
 import Wrapper from "components/Forms/Wrapper";
 import BazarTextField from "components/Forms/BazarTextField";
 import EyeToggleButton from "components/Forms/EyeToggleButton";
@@ -87,7 +87,13 @@ const LogIn: NextPage = () => {
                             <Button fullWidth type="submit" color="primary" variant="contained" sx={{ mb: "1.65rem", height: 44 }}>
                                 Sign In
                             </Button>
-
+                            <Small mb={1} display="block" fontSize="12px" fontWeight="600" color="grey.800" textAlign="center">
+                                Forgot your password?
+                                {/* TODO: [CODE SMELL] hard-coded value */}
+                                <Link href="/reset-password" color="secondary" sx={{ textDecoration: 'none' }}>
+                                    &nbsp;Reset Your Password.
+                                </Link>
+                            </Small>
                             <Small mb={4.5} display="block" fontSize="12px" fontWeight="600" color="grey.800" textAlign="center">
                                 Dont have an account?
                                 {/* TODO: [CODE SMELL] hard-coded value */}
