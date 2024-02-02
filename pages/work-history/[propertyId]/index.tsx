@@ -1,44 +1,45 @@
-import { GetServerSideProps, NextPage } from "next";
-import React, { useState, SyntheticEvent, ChangeEvent } from "react";
-import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'next-firebase-auth';
+import { NextPage } from "next";
+import { useRouter } from "next/router";
+import React, { useState, SyntheticEvent, ChangeEvent, createContext, useContext } from "react";
+import { useAuthUser, withAuthUser, AuthAction, AuthUserContext } from 'next-firebase-auth';
 
-import { getStorage, ref } from "firebase/storage";
-import { useDownloadURL } from 'react-firebase-hooks/storage';
-import loadingGif from "@public/assets/images/loading.gif";
-import { getPropertyData } from "@firebaseUtils/firebaseSSR";
+import { getStorage } from "firebase/storage";
 import { subDays, formatISO } from "date-fns";
 import { PropertySchema } from "utils/api/yup";
 import * as yup from "yup";
 
-import { Divider, Stack, Box, List, Tabs, Tab } from "@mui/material";
+import { Divider, Stack, Box, List, Tabs, Tab, Skeleton, CircularProgress } from "@mui/material";
 
 import AuthLayout from "layouts/AuthLayout";
 import Loader from "components/Loader";
 import TitleBar from "components/TitleBar";
-import DownloadDialog from "components/DownloadDialog"; // FIXME
 import { H2, H3 } from 'components/Typography';
 import WorkHistoryCard from "components/WorkHistoryCard";
 import WorkHistoryFilters from "components/WorkHistoryFilters";
 
 import AgaveContacts from "components/AgaveContacts";
 import AgaveDetails from "components/AgaveDetails";
-import ImageWithFallback from "components/ImageFallback";
+import FirebaseImage from "components/FirebaseImage";
 
 import useSWR from "swr";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useToggle } from "hooks/useToggle";
 import Calendar from "components/Calendar";
 
-// Icons
+import { swrOnceOptions } from "utils/client/fetcher";
+
+/** ICONS **/
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 // import CircleNotificationsOutlinedIcon from '@mui/icons-material/CircleNotificationsOutlined';
 // import BuildCircleOutlinedIcon from '@mui/icons-material/BuildCircleOutlined';
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import NumbersOutlinedIcon from "@mui/icons-material/NumbersOutlined";
+import ErrorIcon from '@mui/icons-material/Error';
 
-type PropertiesPageProps = { property: yup.InferType<typeof PropertySchema> }
-type DateRange = { start: Date, end: Date }
+type PropertyPageProps = { };
+type DateRange = { start: Date, end: Date };
+type WorkHistoryListProps = { propertyId?: string, AuthUser: AuthUserContext };
 
 /** FIXME: this should not be static **/
 export enum TemplateID {
@@ -47,33 +48,116 @@ export enum TemplateID {
     WORK_ORDER = '68dac9d2-20d9-4ca8-9156-c7158bd85fbe',
 }
 
-const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
+export type Filters = { template: TemplateID, dateRange: DateRange, search: string }
 
-    const historyURL = 'api/history';
+export const FilterContext = createContext<Filters>({
+    template: TemplateID.WORK_ORDER,
+    dateRange: { start: subDays(new Date(), 30), end: new Date() },
+    search: '',
+});
+
+const PropertiesPage: NextPage<PropertyPageProps> = () => {
+
     const storage = getStorage();
-    const refImage = ref(storage, property.displayImage);
-    const refAM = ref(storage, property.accountMgr.image);
 
+    const router = useRouter();
     const AuthUser = useAuthUser();
+    const propertyId = router.query.propertyId;
+    const url: string = `api/properties/${propertyId}`;
 
-    const [urlImage, loadingImage, errorImage] = useDownloadURL(refImage);
-    const [urlAM, loadingAM, errorAM] = useDownloadURL(refAM);
+    if (!propertyId) router.push('/work-history'); // FIXME: this might be unnecessary
+
     const [template, setTemplate] = useState<TemplateID>(TemplateID.WORK_ORDER);
-    const handleTemplate = (e: SyntheticEvent, value: TemplateID) => { setTemplate(value) }
-
     const [dateRange, setRange] = useState<DateRange>({ start: subDays(new Date(), 30), end: new Date() });
     const [search, setSearch] = useState<string>('');
     const [calendar, toggleCalendar] = useToggle(false);
 
+    // FIXME: MOVE TO CONTEXT
+    const handleTemplate = (e: SyntheticEvent, value: TemplateID) => { setTemplate(value) }
     const searchControl = (event: ChangeEvent<HTMLInputElement>) => { setSearch(event.target.value) };
     const rangeControl = (nRange: DateRange) => {
         setRange({ start: nRange.start, end: nRange.end });
         toggleCalendar(false);
     };
+    // FIXME: MOVE TO CONTEXT ^
 
-    const formsFetcher = useSWR(AuthUser.id && property.id && template && dateRange.start && dateRange.end ?
+    const fetcher = useSWR(AuthUser ? url : null, (async () => {
+        const token = await AuthUser.getIdToken();
+        return await axios.get(url, { baseURL: '/', headers: { Authorization: token } } )
+            .then(res => res.data)
+            .catch(e => { console.error(e); throw e });
+    }), swrOnceOptions);
+
+    const { data, error, isLoading, isValidating } = fetcher;
+    let property: undefined | null | yup.InferType<typeof PropertySchema> = data?.property;
+
+    return (
+        <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
+            <FilterContext.Provider value={{ template: template, dateRange: dateRange, search: search }}>
+                <Box px={2} mb={4}>
+                    <TitleBar TitleIcon={WorkHistoryIcon} Title={`${property?.name ?? 'Property'} - Work History`} />
+                    <Stack direction='row' flexWrap='wrap' sx={{ gap: '2em' }}>
+                        <Stack flex='3 0' sx={{ gap: '2em' }}>
+                            <Box bgcolor={'grey.400'} minHeight={400} borderRadius={4} position='relative' overflow='hidden'>
+                                {
+                                    (property)
+                                        ? <FirebaseImage storage={storage} imgURL={property?.displayImage} alt={`Image for ${property?.name}`}/>
+                                        : <Skeleton variant='rectangular' height={400} sx={{ borderRadius: 4 }}/>
+                                }
+                            </Box>
+                            <Box>
+                                <Box mb={3} sx={{ borderBottom: 1, borderColor: 'grey.500' }}>
+                                    <Tabs value={template} onChange={handleTemplate} >
+                                        <Tab label="Work Orders" value={TemplateID.WORK_ORDER}/>
+                                        <Tab label="Weekly Reports" value={TemplateID.WEEKLY_REPORT}/>
+                                    </Tabs>
+                                </Box>
+                                <WorkHistoryFilters search={search} searchControl={searchControl}
+                                                    from={dateRange.start} to={dateRange.end}  calendarControl={toggleCalendar}
+                                />
+                                <WorkHistoryList AuthUser={AuthUser} propertyId={property?.id} />
+                            </Box>
+                        </Stack>
+                        <Stack flex='2 0' position='relative' maxWidth={'100%'} minWidth={{ xs: '100%', md: 'calc(25% - 1em)' }} >
+                            <Box position='sticky' top={0}>
+                                <Box overflow='hidden'>
+                                    <H3 fontWeight={400} mb={1}>{`${property?.name ?? 'Property'} Details`}</H3>
+                                    <List disablePadding>
+                                        <AgaveDetails Icon={BadgeOutlinedIcon}
+                                                      primary={'Account Manager'} secondary={property?.accountMgr?.name}
+                                                      email={property?.accountMgr?.email}
+                                                      phone={property ? property.accountMgr?.phone?.toString() : undefined}
+                                                      storage={storage} imgURL={property?.accountMgr.image}
+                                        />
+                                        <AgaveDetails Icon={PersonOutlineOutlinedIcon}
+                                                      primary={'Community Manager'} secondary={property?.manager?.name}
+                                                      email={property?.manager?.email}
+                                        />
+                                        <AgaveDetails Icon={NumbersOutlinedIcon}
+                                                      primary={'Job Number'} secondary={property?.jobNumber}
+                                        />
+                                    </List>
+                                </Box>
+                                <Divider sx={{ mt: 3, mb: 2 }}/>
+                                <AgaveContacts />
+                            </Box>
+                        </Stack>
+                    </Stack>
+                    <Calendar open={calendar} onClose={() => toggleCalendar(false)} range={dateRange} onConfirm={rangeControl}/>
+                </Box>
+            </FilterContext.Provider>
+        </AuthLayout>
+    )
+}
+
+function WorkHistoryList ({ propertyId, AuthUser }: WorkHistoryListProps ) {
+
+    const historyURL = 'api/history';
+    const { template, dateRange, search } = useContext(FilterContext);
+
+    const fetcher = useSWR(AuthUser.id && propertyId && template && dateRange.start && dateRange.end ?
             [
-                historyURL, property.id, template,
+                historyURL, propertyId, template,
                 formatISO(dateRange.start, {representation: 'date'}),
                 formatISO(dateRange.end, { representation: 'date' })
             ] : null,
@@ -90,91 +174,42 @@ const PropertiesPage: NextPage<PropertiesPageProps> = ({ property }) => {
         })
     );
 
-    const { data: fData, error: fError, isLoading: fLoading, isValidating: fValidating } = formsFetcher;
+    const { data, isLoading } = fetcher;
 
-    return(
-        <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName}>
-            <Box px={2} mb={4}>
-                <TitleBar TitleIcon={WorkHistoryIcon} Title={`${property.name ?? 'Property'} - Work History`} />
-                <Stack direction='row' flexWrap='wrap' sx={{ gap: '2em' }}>
-                    <Stack flex='3 0' sx={{ gap: '2em' }}>
-                        <Box bgcolor={'grey.400'} minHeight={400} borderRadius={4} position='relative' overflow='hidden'>
-                            <ImageWithFallback src={urlImage ?? loadingGif.src} fill imgObjectFit={"cover"}
-                                               alt={`Image for ${property.name}`}/>
-                        </Box>
-                        <Box>
-                            <Box mb={3} sx={{ borderBottom: 1, borderColor: 'grey.500' }}>
-                                <Tabs value={template} onChange={handleTemplate} >
-                                    <Tab label="Work Orders" value={TemplateID.WORK_ORDER}/>
-                                    <Tab label="Weekly Reports" value={TemplateID.WEEKLY_REPORT}/>
-                                </Tabs>
-                            </Box>
-                            <WorkHistoryFilters search={search} searchControl={searchControl}
-                                                from={dateRange.start} to={dateRange.end}  calendarControl={toggleCalendar}
-                            />
-                            <Stack direction='row' flexWrap='wrap' sx={{ gap: '1em'}} minHeight='50vh' alignItems='flex-start'>
-                                {fLoading && 'Loading Work History...'}
-                                {fData?.forms.length == 0 && 'No Work History Available.'}
-                                {fData?.forms.map((i: any) =>
-                                    <WorkHistoryCard key={i?.formId} user={AuthUser} propertyId={property.id} searchStr={search}
-                                                     templateId={i?.templateId} formId={i?.formId} lastUpdated={i?.lastUpdateDate}
-                                    />
-                                )}
-                            </Stack>
-                        </Box>
-                    </Stack>
-                    <Stack flex='2 0' position='relative' maxWidth={'100%'}
-                           minWidth={{ xs: '100%', md: 'calc(25% - 1em)' }} >
-                        <Box position='sticky' top={0}>
-                            <Box overflow='hidden'>
-                                <H3 fontWeight={400} mb={1}>{`${property.name ?? 'Property'} Details`}</H3>
-                                <List disablePadding>
-                                    <AgaveDetails Icon={BadgeOutlinedIcon} url={urlAM ?? undefined} primary={'Account Manager'}
-                                                  secondary={property.accountMgr?.name ?? 'Unassigned'}
-                                                  email={property.accountMgr?.email}
-                                                  phone={property.accountMgr?.phone?.toString() ?? undefined} />
-                                    <AgaveDetails Icon={PersonOutlineOutlinedIcon} primary={'Community Manager'}
-                                                  secondary={property.manager?.name ?? 'Unassigned'}
-                                                  email={property.manager?.email} />
-                                    <AgaveDetails Icon={NumbersOutlinedIcon} primary={'Job Number'}
-                                                  secondary={property.jobNumber ?? 'Unassigned'} />
-                                </List>
-                            </Box>
-                            <Divider sx={{ mt: 3, mb: 2 }}/>
-                            <AgaveContacts />
-                        </Box>
-                    </Stack>
-                </Stack>
-                <Calendar open={calendar} onClose={() => toggleCalendar(false)} range={dateRange} onConfirm={rangeControl}/>
-            </Box>
-        </AuthLayout>
+    if (!propertyId || isLoading || !data) return (
+        <WorkHistoryAlert Icon={<CircularProgress sx={{ mb: 3 }}/>}
+                          title='Loading Work History' text='This will just take a moment...'
+        />
     );
+    return (
+        <Stack direction='column' sx={{ gap: '1em'}} minHeight='50vh' alignItems='flex-start' alignContent='flex-start'>
+            {   data?.forms.length == 0 &&
+                <WorkHistoryAlert Icon={<ErrorIcon sx={{ fontSize: '3rem', mb: 3 }}/>}
+                                  title='No Work History Available' text='Contact us if you need assistance.'
+                />
+            }
+            {data?.forms.map((i: any) =>
+                <WorkHistoryCard key={i?.formId} user={AuthUser} propertyId={propertyId} searchStr={search}
+                                 templateId={i?.templateId} formId={i?.formId} lastUpdated={i?.lastUpdateDate}
+                />
+            )}
+        </Stack>
+    )
 }
 
-export const getServerSideProps: GetServerSideProps<PropertiesPageProps> = withAuthUserTokenSSR({
-    whenUnauthed: AuthAction.REDIRECT_TO_LOGIN
-})(async ({ AuthUser, query, res }) => {
+function WorkHistoryAlert({ Icon, title, text }: {Icon: any, title: string, text: string}) {
+    return (
+        <Stack minHeight='50vh' width='100%' direction='column' alignItems='center' justifyContent='center' borderRadius={4}
+               sx={{ border: 1, borderColor: theme => `${theme.palette.grey["500"]}` }}
+        >
+            {Icon}
+            <H2 textAlign='center'>{title}</H2>
+            <p>{text}</p>
+        </Stack>
+    )
+}
 
-    res.setHeader('Cache-Control', 'public, s-maxage=1800, stale-while-revalidate=86400') // FIXME: sure about this?
-
-    const { propertyId } = query;
-    // const propertyId = (params && params['propertyId']) ? params['propertyId'].toString() : null
-
-    try {
-
-        const token = await AuthUser.getIdToken();
-        const res = await getPropertyData(token, propertyId as string);
-
-        return { props: { property: res } };
-
-        } catch (err: any | AxiosError) {
-            if (!!(err?.message)) console.error(err.message);
-            return { redirect: { permanent: false, destination: "/work-history" }, props: { property: undefined } };
-        }
-    }
-);
-
-export default withAuthUser<PropertiesPageProps>({
+export default withAuthUser<PropertyPageProps>({
     whenAuthed: AuthAction.RENDER, // Page is rendered, if the user is authenticated
     whenUnauthedBeforeInit: AuthAction.SHOW_LOADER, // Shows loader, if the user is not authenticated & the Firebase client JS SDK has not yet initialized.
     whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN, // Redirect to log-in page, if user is not authenticated
