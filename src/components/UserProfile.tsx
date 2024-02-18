@@ -24,9 +24,10 @@ interface UserProfileProps extends BoxProps {
     photoURL: string | null;
     displayName: string | null;
     children?: ReactNode;
+    toggle: (value?: boolean) => void;
 }
 
-const UserProfile: FC<UserProfileProps> = ({ photoURL, displayName, children, ...rest }: UserProfileProps) => {
+const UserProfile: FC<UserProfileProps> = ({ photoURL, displayName, children, toggle, ...rest }: UserProfileProps) => {
     return(
         <Box overflow='hidden' sx={{ backgroundColor: '#c6e4cd', borderRadius: (theme) => theme.spacing(3) }} {...rest} >
             <CardMedia image={coverPhoto.src} component={'div'}
@@ -34,7 +35,7 @@ const UserProfile: FC<UserProfileProps> = ({ photoURL, displayName, children, ..
             >
                 <Stack width='100%' direction='row' alignItems='center' justifyContent='flex-end' p={2}>
                     <Button variant='contained' color='secondary' startIcon={<AddPhotoAlternateOutlinedIcon/>}
-                            sx={{ borderRadius: (theme) => theme.spacing(3) }}
+                            sx={{ borderRadius: (theme) => theme.spacing(3) }} onClick={() => toggle(true)}
                     >
                         UPDATE
                     </Button>
