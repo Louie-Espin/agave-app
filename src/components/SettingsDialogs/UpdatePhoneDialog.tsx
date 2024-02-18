@@ -3,11 +3,7 @@ import { updatePhoneNumber, Auth, User, reload, RecaptchaVerifier, PhoneAuthProv
 import SettingsDialog, { SettingsDialogProps } from "./SettingsDialog";
 import { Button, DialogContentText, TextField } from "@mui/material";
 
-interface UpdatePhoneDialogProps extends SettingsDialogProps {
-    prev?: string;
-    user: User | null;
-    auth: Auth;
-}
+interface UpdatePhoneDialogProps extends SettingsDialogProps { prev?: string; user: User | null; auth: Auth; }
 
 const UpdatePhoneDialog: FC<UpdatePhoneDialogProps> = ({ user, auth, toggle, open }) => {
 
@@ -71,8 +67,8 @@ const UpdatePhoneDialog: FC<UpdatePhoneDialogProps> = ({ user, auth, toggle, ope
         <SettingsDialog title="Update Phone" toggle={toggle} open={open} alert={message}
                         actions={
                             <>
-                                <Button color='primary' onClick={handleVerify}>Verify</Button>
-                                <Button color='primary' onClick={handleSubmit} disabled={!verificationId}>Update</Button>
+                                <Button color='primary' onClick={handleVerify}>VERIFY</Button>
+                                <Button color='primary' onClick={handleSubmit} disabled={!verificationId}>UPDATE</Button>
                             </>
                         }
         >
