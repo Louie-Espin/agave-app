@@ -47,7 +47,7 @@ const SettingsPage: NextPage<SettingsPageProps> = () => {
     return(
         <AuthLayout signedIn={!!(AuthUser.id)} displayName={AuthUser.displayName} >
             <Box m={1} mb={3}>
-                <TitleBar TitleIcon={SettingsOutlinedIcon} Title={'Settings'} sx={{ mx: 1 }}/>
+                <TitleBar TitleIcon={SettingsOutlinedIcon} Title={'My Profile'} sx={{ mx: 1 }}/>
 
                 <Stack direction='row' flexWrap='wrap' justifyContent='center' sx={{ gap: '1em' }}>
                     <UserProfile displayName={AuthUser.displayName} photoURL={AuthUser.photoURL}
