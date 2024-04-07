@@ -55,7 +55,7 @@ const MainBox = styled(Box, {})(({theme}) => ({
 
 const AgaveNavigations: { key: number, title: string, NavIcon: any, href: string }[] = [
     { key: 1, title: 'Home', NavIcon: HomeOutlinedIcon, href: '/' },
-    { key: 2, title: 'History', NavIcon: WorkHistoryOutlinedIcon, href: '/work-history' },
+    // { key: 2, title: 'History', NavIcon: WorkHistoryOutlinedIcon, href: '/work-history' },
     { key: 3, title: 'Chat', NavIcon: MailOutlineOutlinedIcon, href: '/chat' },
     { key: 4, title: 'Settings', NavIcon: SettingsOutlinedIcon, href: '/settings' },
 ]

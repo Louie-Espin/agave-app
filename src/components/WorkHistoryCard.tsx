@@ -105,7 +105,7 @@ const WorkHistoryCard: FC<WorkHistoryCardProps> = ({formId, propertyId, template
 const CardTemplate: FC<CardTemplateProps> = ({ raise, link, date, Icon, chipColor, label, imgLen, locLen, children }: CardTemplateProps) => {
     return(
         <Card raised={raise}
-              sx={{ borderRadius: 6, flex: '1 1 auto', width: {xs: '100%', md: '100%'}, order: `${(raise) ? -1 : 0}` }}
+              sx={{ borderRadius: 6, flex: '0 1 auto', width: {xs: '100%', md: '100%'}, order: `${(raise) ? -1 : 0}` }}
         >
             <CardActionArea component={NextLinkComposed} to={link}>
                 <Stack direction='row' justifyContent='space-between' alignItems='flex-end' px={2} pt={2} pb={1}>

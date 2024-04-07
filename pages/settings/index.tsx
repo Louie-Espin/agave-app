@@ -13,7 +13,10 @@ import UserSettingsItem from "components/UserSettingsItem";
 import { NextLinkComposed } from "components/Link";
 
 /* SETTINGS DIALOG BOXES */
+import UpdateAvatarDialog from "components/SettingsDialogs/UpdateAvatarDialog";
 import UpdateNameDialog from "components/SettingsDialogs/UpdateNameDialog";
+import UpdateEmailDialog from "components/SettingsDialogs/UpdateEmailDialog";
+import UpdatePhoneDialog from "components/SettingsDialogs/UpdatePhoneDialog";
 import EmailVerificationDialog from "components/SettingsDialogs/EmailVerificationDialog";
 import PasswordResetDialog from "components/SettingsDialogs/PasswordResetDialog";
 import PushNotificationsDialog from "components/SettingsDialogs/PushNotificationsDialog";
@@ -35,6 +38,7 @@ const SettingsPage: NextPage<SettingsPageProps> = () => {
 
     const AuthUser = useAuthUser();
 
+    const [updateAvatar, toggleAvatar] = useToggle(false);
     const [updateName, toggleName] = useToggle(false);
     const [updateEmail, toggleEmail] = useToggle(false);
     const [updatePhone, togglePhone] = useToggle(false);
@@ -50,7 +54,7 @@ const SettingsPage: NextPage<SettingsPageProps> = () => {
                 <TitleBar TitleIcon={SettingsOutlinedIcon} Title={'My Profile'} sx={{ mx: 1 }}/>
 
                 <Stack direction='row' flexWrap='wrap' justifyContent='center' sx={{ gap: '1em' }}>
-                    <UserProfile displayName={AuthUser.displayName} photoURL={AuthUser.photoURL}
+                    <UserProfile displayName={AuthUser.displayName} photoURL={AuthUser.photoURL} toggle={toggleAvatar}
                         flex='1 0' maxWidth={{ xs: '100%', md: 'calc(50% - 1em)' }} minWidth={300}
                     >
                         <UserProfileItem primary={'Display Name'} secondary={ (AuthUser.displayName) ?? 'Add a display name.' }
@@ -82,8 +86,11 @@ const SettingsPage: NextPage<SettingsPageProps> = () => {
                     </Box>
                 </Stack>
             </Box>
+            <UpdateAvatarDialog auth={auth} toggle={toggleAvatar} open={updateAvatar} />
             <UpdateNameDialog auth={auth} prev={AuthUser.displayName ?? ''} user={AuthUser.firebaseUser}
                               open={updateName} toggle={toggleName} />
+            <UpdateEmailDialog auth={auth} open={updateEmail} toggle={toggleEmail} />
+            <UpdatePhoneDialog user={AuthUser.firebaseUser} auth={auth} toggle={togglePhone} open={updatePhone} />
             <EmailVerificationDialog  user={AuthUser.firebaseUser} toggle={toggleEmailVerify} open={emailVerify} />
             <PasswordResetDialog auth={auth} email={AuthUser.email} toggle={toggleResetPass} open={resetPass} />
             <PushNotificationsDialog toggle={togglePushNotifs} open={pushNotifs} uid={AuthUser.id} togglePwa={togglePwa}/>

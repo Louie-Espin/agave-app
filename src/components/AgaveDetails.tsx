@@ -1,12 +1,20 @@
 import { FC } from 'react';
 
-import { Avatar, IconButton, ListItem, ListItemAvatar, ListItemText, Stack } from '@mui/material';
+import { Avatar, IconButton, ListItem, ListItemAvatar, ListItemText, Stack, Skeleton } from '@mui/material';
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
+import { FirebaseStorage, StorageReference } from "@firebase/storage";
+import { ref } from "firebase/storage";
+import { useDownloadURL } from "react-firebase-hooks/storage";
 
-interface AgaveDetailsProps { Icon: any, primary: string, secondary: string, email?: string, phone?: string, url?: string }
+interface AgaveDetailsProps {
+    Icon: any,
+    primary: string, secondary?: string,
+    email?: string, phone?: string,
+    imgURL?: string, storage?: FirebaseStorage
+};
 
-const AgaveDetails: FC<AgaveDetailsProps> = ({Icon, primary, secondary, email, phone, url}: AgaveDetailsProps) => {
+const AgaveDetails: FC<AgaveDetailsProps> = ({Icon, primary, secondary, email, phone, imgURL, storage}: AgaveDetailsProps) => {
 
     return(
         <ListItem secondaryAction={
@@ -23,16 +31,34 @@ const AgaveDetails: FC<AgaveDetailsProps> = ({Icon, primary, secondary, email, p
                 }
             </Stack>
         }>
-            <ListItemAvatar>
-                <Avatar alt={'Account Manager Image'} src={url} sx={{ bgcolor: 'primary.main' }}>
-                    <Icon />
-                </Avatar>
-            </ListItemAvatar>
+            {
+                (imgURL && storage)
+                    ? <AgaveDetailsImage imgURL={imgURL} storage={storage} Icon={Icon} />
+                    : <ListItemAvatar>
+                        <Avatar alt={'Account Manager Image'} src={undefined} sx={{ bgcolor: 'primary.main' }}>
+                            <Icon />
+                        </Avatar>
+                      </ListItemAvatar>
+            }
             <ListItemText
                 primary={primary}
-                secondary={secondary}
+                secondary={secondary ?? <Skeleton variant="text" sx={{ fontSize: '1rem', maxWidth: '20ch' }} />}
             />
         </ListItem>
+    );
+};
+
+const AgaveDetailsImage = ({ imgURL, storage, Icon }: { imgURL: string, storage: FirebaseStorage, Icon: any }) => {
+
+    const refImage: StorageReference = ref(storage, imgURL);
+    const [url, loading, error] = useDownloadURL(refImage);
+
+    return(
+        <ListItemAvatar>
+            <Avatar alt={'Account Manager Image'} src={url} sx={{ bgcolor: 'primary.main' }}>
+                <Icon />
+            </Avatar>
+        </ListItemAvatar>
     );
 };
 

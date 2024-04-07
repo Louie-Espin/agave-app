@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import {Box, Container, Stack, styled, Typography, Link, IconButtonProps, Paper, Divider} from "@mui/material";
-import { LinkedIn, Instagram, Facebook, Twitter } from "@mui/icons-material";
+import { LinkedIn, Instagram, Facebook } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import {NextLinkComposed} from "./Link";
 import Image from "next/image";
@@ -52,8 +52,7 @@ const Footer: FC = () => {
 const FooterLinks = [
     { key: 'LinkedIn', link: 'https://www.linkedin.com/company/agaveincaz/', LinkLogo: <LinkedIn/> },
     { key: 'Facebook', link: 'https://fb.com/agaveincaz', LinkLogo: <Facebook/> },
-    { key: 'Instagram', link: 'https://instagram.com/agaveincaz', LinkLogo: <Instagram/> },
-    { key: 'Twitter', link: 'https://twitter.com/agaveincaz', LinkLogo: <Twitter/> },
+    { key: 'Instagram', link: 'https://instagram.com/agaveincaz', LinkLogo: <Instagram/> }
 ]
 
 export default Footer;
