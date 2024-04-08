@@ -12,6 +12,7 @@ import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import scottImage from '@public/assets/images/contacts/scottCosgrove.jpeg'
 import justinImage from '@public/assets/images/contacts/justinOrdonez.jpeg'
 import jasonImage from '@public/assets/images/contacts/jasonRichard.jpg'
+import ernieImage from '@public/assets/images/contacts/ernieUranga.jpg'
 import johnImage from '@public/assets/images/contacts/johnNesteruck.jpeg'
 import daveImage from '@public/assets/images/contacts/daveGraves.jpeg'
 import alexImage from '@public/assets/images/contacts/alexRosales.jpeg'
@@ -39,6 +40,10 @@ const contactsList = [
     {
         name: 'Jason Richard', title: 'Director of Arbor', id: 'jason-contact',
         email: 'jason.richard@agave-inc.com', tel: 6025508076, img: jasonImage,
+    },
+    {
+        name: 'Ernie Uranga', title: 'Director of Special Projects', id: 'ernie-contact',
+        email: 'euranga@agave-inc.com', tel: 6025415279, img: ernieImage,
     },
     {
         name: 'John Nesteruck', title: 'Director of Enhancements', id: 'john-contact',
